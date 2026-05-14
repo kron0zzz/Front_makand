@@ -1,193 +1,126 @@
 import React from 'react';
-import { X } from 'lucide-react';
+import { X, User, Mail, Phone, MapPin, CreditCard, Briefcase, Activity } from 'lucide-react';
 
 const CustomerDetail = ({ isOpen, onClose, cliente, onEdit }) => {
-  // Si el modal no está abierto o no hay un cliente seleccionado, no renderizamos nada
   if (!isOpen || !cliente) return null;
 
-  // Estilos compartidos para mantener consistencia visual
-  const labelStyle = {
-    fontSize: '12px',
-    color: '#9ca3af',
-    marginBottom: '4px',
-    display: 'block',
-    fontWeight: '400'
-  };
-
-  const valueStyle = {
-    fontSize: '14px',
-    fontWeight: '500',
-    color: '#374151',
-    marginBottom: '16px',
-    display: 'block'
-  };
-
-  // Función para manejar el paso a la edición
-  const handleEdit = () => {
-    onEdit(cliente); // Llama a la función del padre para abrir el formulario
-  };
+  // Estilos de la interfaz Luna Llena
+  const labelStyle = { fontSize: '12px', color: '#6b7280', marginBottom: '2px', fontWeight: '500' };
+  const valueStyle = { fontSize: '14px', color: '#111827', fontWeight: '600' };
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100vw',
-      height: '100vh',
-      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo oscurecido (overlay)
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000,
-      backdropFilter: 'blur(2px)'
-    }}>
-      <div style={{
-        backgroundColor: 'white',
-        borderRadius: '12px',
-        width: '90%',
-        maxWidth: '750px', // Ancho ajustado según image_2e0338.png
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-        overflow: 'hidden',
-        animation: 'modalAppear 0.3s ease-out'
-      }}>
+    <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0, 0, 0, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100 }}>
+      <div style={{ backgroundColor: 'white', borderRadius: '12px', width: '90%', maxWidth: '550px', overflow: 'hidden', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}>
         
-        {/* CABECERA DEL MODAL */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '20px 24px',
-          borderBottom: '1px solid #f3f4f6'
-        }}>
-          <h2 style={{ fontSize: '18px', fontWeight: '600', color: '#111827', margin: 0 }}>
-            Detalles del Cliente
-          </h2>
-          <button 
-            onClick={onClose} 
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', padding: '4px' }}
-          >
+        {/* Header Naranja Luna Llena */}
+        <div style={{ backgroundColor: '#ff6b35', padding: '20px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: '600', margin: 0 }}>Ficha del Cliente</h2>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white' }}>
             <X size={20} />
           </button>
         </div>
 
-        {/* CUERPO DEL MODAL */}
         <div style={{ padding: '24px' }}>
-          <h3 style={{ fontSize: '15px', fontWeight: '700', color: '#1f2937', marginBottom: '20px' }}>
-            Información General
-          </h3>
-
-          {/* Tarjeta Gris con Datos (Grid de 2 columnas) */}
-          <div style={{ 
-            background: '#f9fafb', 
-            borderRadius: '12px', 
-            padding: '24px',
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr', // Dos columnas iguales
-            gap: '10px 40px'
-          }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
             
-            {/* COLUMNA IZQUIERDA */}
-            <div>
-              <label style={labelStyle}>ID Cliente</label>
-              <span style={valueStyle}>{cliente.customId || `CLI-00${cliente.id}`}</span>
-
-              <label style={labelStyle}>Nombres</label>
-              <span style={valueStyle}>{cliente.firstName || 'N/A'}</span>
-
-              <label style={labelStyle}>Documento</label>
-              <span style={valueStyle}>{cliente.documento || 'N/A'}</span>
-
-              <label style={labelStyle}>Email</label>
-              <span style={{...valueStyle, color: '#3b82f6'}}>{cliente.email || 'No registrado'}</span>
-
-              <label style={labelStyle}>Dirección</label>
-              <span style={{...valueStyle, marginBottom: 0}}>{cliente.direccion || 'Sin dirección registrada'}</span>
-            </div>
-
-            {/* COLUMNA DERECHA */}
-            <div>
-              <label style={labelStyle}>Tipo Organización</label>
-              <span style={valueStyle}>{cliente.tipoOrganizacion || 'Persona Natural'}</span>
-
-              <label style={labelStyle}>Apellidos</label>
-              <span style={valueStyle}>{cliente.lastName || 'N/A'}</span>
-
-              <label style={labelStyle}>Celular</label>
-              <span style={valueStyle}>{cliente.telefono || 'Sin teléfono'}</span>
-
-              <label style={labelStyle}>Estado</label>
-              <div style={{ marginTop: '4px' }}>
-                <span style={{
-                  backgroundColor: cliente.estado ? '#dcfce7' : '#fee2e2',
-                  color: cliente.estado ? '#16a34a' : '#dc2626',
-                  padding: '4px 12px',
-                  borderRadius: '20px',
-                  fontSize: '12px',
-                  fontWeight: '600',
-                  display: 'inline-block'
-                }}>
-                  {cliente.estado ? 'Activo' : 'Inactivo'}
-                </span>
+            {/* Nombre Completo */}
+            <div style={{ gridColumn: 'span 2', display: 'flex', alignItems: 'center', gap: '12px', borderBottom: '1px solid #f3f4f6', paddingBottom: '15px' }}>
+              <div style={{ backgroundColor: '#fff7ed', padding: '10px', borderRadius: '50%', color: '#ff6b35' }}>
+                <User size={24} />
+              </div>
+              <div>
+                <p style={labelStyle}>Nombre Completo</p>
+                <p style={{ ...valueStyle, fontSize: '18px' }}>
+                  {cliente.customer_first_name} {cliente.customer_last_name}
+                </p>
               </div>
             </div>
+
+            {/* Documento */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <CreditCard size={16} color="#9ca3af" />
+                <p style={labelStyle}>Documento</p>
+              </div>
+              <p style={valueStyle}>
+                {/* Se asegura de usar customer_document_type */}
+                <span style={{ color: '#ff6b35', marginRight: '4px' }}>{cliente.customer_document_type}:</span> 
+                {cliente.customer_document_number}
+              </p>
+            </div>
+
+            {/* Tipo de Organización */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <Briefcase size={16} color="#9ca3af" />
+                <p style={labelStyle}>Tipo Cliente</p>
+              </div>
+              <p style={valueStyle}>{cliente.organization_type || 'No especificado'}</p>
+            </div>
+
+            {/* Teléfono */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <Phone size={16} color="#9ca3af" />
+                <p style={labelStyle}>Teléfono</p>
+              </div>
+              <p style={valueStyle}>{cliente.customer_phone || 'Sin teléfono'}</p>
+            </div>
+
+            {/* Email */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <Mail size={16} color="#9ca3af" />
+                <p style={labelStyle}>Email</p>
+              </div>
+              <p style={valueStyle}>{cliente.customer_email || 'No registra'}</p>
+            </div>
+
+            {/* Dirección */}
+            <div style={{ gridColumn: 'span 2' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <MapPin size={16} color="#9ca3af" />
+                <p style={labelStyle}>Dirección</p>
+              </div>
+              <p style={valueStyle}>{cliente.customer_address || 'Sin dirección'}</p>
+            </div>
+
+            {/* Estado */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <Activity size={16} color="#9ca3af" />
+                <p style={labelStyle}>Estado en Sistema</p>
+              </div>
+              <span style={{ 
+                padding: '4px 12px', 
+                borderRadius: '12px', 
+                fontSize: '12px', 
+                fontWeight: 'bold',
+                backgroundColor: cliente.customer_status ? '#dcfce7' : '#fee2e2',
+                color: cliente.customer_status ? '#166534' : '#991b1b'
+              }}>
+                {cliente.customer_status ? 'ACTIVO' : 'INACTIVO'}
+              </span>
+            </div>
+          </div>
+
+          {/* Botones de Acción */}
+          <div style={{ marginTop: '32px', display: 'flex', gap: '12px' }}>
+            <button 
+              onClick={() => onEdit(cliente)}
+              style={{ flex: 1, padding: '12px', borderRadius: '8px', border: 'none', backgroundColor: '#ff6b35', color: 'white', fontWeight: '600', cursor: 'pointer', transition: '0.2s' }}
+            >
+              Editar
+            </button>
+            <button 
+              onClick={onClose}
+              style={{ flex: 1, padding: '12px', borderRadius: '8px', border: '1px solid #d1d5db', backgroundColor: '#f9fafb', fontWeight: '600', cursor: 'pointer', color: '#374151' }}
+            >
+              Cerrar
+            </button>
           </div>
         </div>
-
-        {/* PIE DEL MODAL (BOTONES) */}
-        <div style={{
-          padding: '16px 24px',
-          borderTop: '1px solid #f3f4f6',
-          display: 'flex',
-          justifyContent: 'flex-end',
-          gap: '12px',
-          backgroundColor: '#fff'
-        }}>
-          <button 
-            onClick={onClose} 
-            style={{
-              padding: '10px 24px',
-              borderRadius: '8px',
-              border: '1px solid #d1d5db',
-              backgroundColor: 'white',
-              color: '#374151',
-              fontWeight: '600',
-              cursor: 'pointer',
-              fontSize: '14px'
-            }}
-          >
-            Cerrar
-          </button>
-          
-          <button 
-            onClick={handleEdit}
-            style={{
-              padding: '10px 24px',
-              borderRadius: '8px',
-              border: 'none',
-              backgroundColor: '#ff6b35', // Color naranja corporativo Makand
-              color: 'white',
-              fontWeight: '600',
-              cursor: 'pointer',
-              fontSize: '14px',
-              transition: 'background-color 0.2s'
-            }}
-            onMouseOver={(e) => e.target.style.backgroundColor = '#e85a2a'}
-            onMouseOut={(e) => e.target.style.backgroundColor = '#ff6b35'}
-          >
-            Editar
-          </button>
-        </div>
       </div>
-
-      {/* Estilo para la animación de entrada */}
-      <style>
-        {`
-          @keyframes modalAppear {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-        `}
-      </style>
     </div>
   );
 };
