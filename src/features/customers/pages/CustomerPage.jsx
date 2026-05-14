@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+// import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Plus, Search, Eye, Edit, Trash2 } from 'lucide-react';
 import { useCustomers } from '../hooks/useCustomers'; 
 import CustomerForm from '../components/CustomerForm';

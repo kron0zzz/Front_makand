@@ -80,10 +80,15 @@ export const useCustomers = () => {
     }
   };
 
+  
   // Efecto de carga inicial
   useEffect(() => {
-    cargarClientes();
-  }, [cargarClientes]);
+  const fetchTableData = async () => {
+    await cargarClientes();
+  };
+  
+  fetchTableData();
+}, [cargarClientes]);
 
   return { 
     customers, 
