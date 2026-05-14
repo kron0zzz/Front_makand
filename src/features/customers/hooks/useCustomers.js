@@ -14,25 +14,26 @@ export const useCustomers = () => {
    * 1. CARGAR CLIENTES (Conexión Real)
    * Usamos useCallback para que la función sea estable y no cause bucles en el useEffect.
    */
-  const cargarClientes = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      // Llamamos a la ruta optimizada para la tabla que creamos en el backend
-      const response = await fetch('http://localhost:3000/api/customers/table');
-      
-      if (!response.ok) {
-        throw new Error('No se pudo conectar con el servidor');
+  const cargarClientes = useCallback(async () => { 
+      setLoading(true);
+      setError(null);
+      try {
+        // Llamamos a la ruta optimizada para la tabla que creamos en el backend
+        const response = await fetch('http://localhost:3000/api/customers/table');
+        
+        if (!response.ok) {
+          throw new Error('No se pudo conectar con el servidor');
+        }
+        
+        const datos = await response.json();
+        // CAMBIO AQUÍ: Usamos setClientes para que coincida con lo que espera la página
+        setCustomers(datos); 
+      } catch (err) {
+        setError(err.message);
+        console.error("Error al cargar clientes:", err);
+      } finally {
+        setLoading(false);
       }
-      
-      const datos = await response.json();
-      setCustomers(datos);
-    } catch (err) {
-      setError(err.message);
-      console.error("Error al cargar clientes:", err);
-    } finally {
-      setLoading(false);
-    }
   }, []);
 
   /**
@@ -99,3 +100,4 @@ export const useCustomers = () => {
     eliminarCliente 
   };
 };
+
