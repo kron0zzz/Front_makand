@@ -143,6 +143,27 @@ const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
               <input name="direccion" type="text" className="form-input" value={formData.direccion || ''} onChange={handleChange} />
             </div>
 
+            {/* --- NUEVO CAMPO: ESTADO (Solo visible al editar) --- */}
+            {isEditing && (
+              <div className="form-full-width estado-field-container">
+                <label className="form-label">Estado del Cliente</label>
+                <div className="switch-with-text">
+                  <label className="switch">
+                    <input 
+                      type="checkbox" 
+                      name="estado"
+                      checked={formData.estado} 
+                      onChange={(e) => setFormData({...formData, estado: e.target.checked})} 
+                    />
+                    <span className="slider round"></span>
+                  </label>
+                  <span className={formData.estado ? "text-active" : "text-inactive"}>
+                    {formData.estado ? 'Activo' : 'Inactivo'}
+                  </span>
+                </div>
+              </div>
+            )}
+
           </div>
 
           {/* Botones de Acción */}

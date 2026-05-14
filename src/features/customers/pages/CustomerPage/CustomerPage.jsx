@@ -18,7 +18,42 @@ const CustomerPage = () => {
     cargarClientes();
   }, [cargarClientes]);
 
-  // FILTRO GLOBAL: Busca coincidencias en cualquier parte de la cadena
+  // Nueva función para cambiar el estado con advertencia
+  const handleToggleEstado = async (customer) => {
+    const nuevoEstado = !customer.customer_status;
+    const accion = nuevoEstado ? 'ACTIVAR' : 'DESACTIVAR';
+    const mensaje = `¿Estás seguro de que deseas ${accion} al cliente ${customer.customer_first_name} ${customer.customer_last_name}?`;
+    
+    if (window.confirm(mensaje)) {
+      try {
+        const response = await fetch(`http://localhost:3000/api/customers/${customer.customer_id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customer_first_name: customer.customer_first_name,
+            customer_last_name: customer.customer_last_name,
+            customer_document_type: customer.customer_document_type,
+            customer_document_number: customer.customer_document_number,
+            organization_type: customer.organization_type,
+            customer_phone: customer.customer_phone,
+            customer_email: customer.customer_email,
+            customer_address: customer.customer_address,
+            customer_status: nuevoEstado 
+          })
+        });
+
+        if (response.ok) {
+          await cargarClientes();
+        } else {
+          alert("No se pudo actualizar el estado del cliente.");
+        }
+      } catch (error) {
+        console.error("Error al cambiar estado:", error);
+        alert("Error de conexión con el servidor.");
+      }
+    }
+  };
+
   const customersFiltrados = useMemo(() => {
     const datos = Array.isArray(customers) ? customers : [];
     const termino = busqueda.toLowerCase();
@@ -26,8 +61,6 @@ const CustomerPage = () => {
     return datos.filter(c => {
       const nombreCompleto = `${c.customer_first_name} ${c.customer_last_name}`.toLowerCase();
       const documento = c.customer_document_number?.toString() || '';
-      
-      // .includes() garantiza que busque la coincidencia en cualquier posición
       return nombreCompleto.includes(termino) || documento.includes(termino);
     });
   }, [customers, busqueda]);
@@ -102,9 +135,15 @@ const CustomerPage = () => {
                   <td>{`${customer.customer_first_name} ${customer.customer_last_name}`}</td>
                   <td>{customer.customer_document_number}</td>
                   <td>
-                    <span className={customer.customer_status ? 'status-active' : 'status-inactive'}>
-                      {customer.customer_status ? 'Activo' : 'Inactivo'}
-                    </span>
+                    {/* Switch interactivo para el Estado */}
+                    <label className="switch">
+                      <input 
+                        type="checkbox" 
+                        checked={customer.customer_status} 
+                        onChange={() => handleToggleEstado(customer)} 
+                      />
+                      <span className="slider round"></span>
+                    </label>
                   </td>
                   <td className="actions-cell">
                     <button className="action-btn view" title="Ver" onClick={() => { setCustomerSeleccionado(customer); setMostrarModalDetalle(true); }}><Eye size={18} /></button>
@@ -136,10 +175,9 @@ const CustomerPage = () => {
         isOpen={mostrarModalDetalle}
         onClose={() => setMostrarModalDetalle(false)}
         cliente={customerSeleccionado}
-        // ESTA ES LA LÍNEA QUE FALTA O ESTÁ VACÍA:
         onEdit={(cliente) => {
-          setMostrarModalDetalle(false); // Primero cerramos el detalle
-          prepararEdicion(cliente);      // Luego abrimos el formulario de edición
+          setMostrarModalDetalle(false);
+          prepararEdicion(cliente);
         }}
       />
     </div>

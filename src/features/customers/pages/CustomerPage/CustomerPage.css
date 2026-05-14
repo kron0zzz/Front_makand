@@ -237,3 +237,108 @@
     white-space: nowrap; /* Evita que el texto del botón se rompa */
 }
 
+
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px; /* Ajustado para parecerse a la referencia */
+  height: 24px;
+  vertical-align: middle;
+}
+
+/* Ocultar el checkbox original */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* El slider (cuerpo del switch) */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e5e7eb; /* Gris claro (Inactivo) */
+  transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 34px;
+}
+
+/* El círculo blanco (botón) */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Estado ACTIVO (Verde como la referencia) */
+input:checked + .slider {
+  background-color: #4ade80; /* Verde brillante de la imagen */
+}
+
+/* Movimiento del círculo al estar activo */
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+/* ===========================================================
+   ESTILOS ESPECÍFICOS PARA LA TABLA PRINCIPAL
+   =========================================================== */
+
+.custom-table td label.switch {
+  margin: 0 auto;
+  display: block; /* Centra el switch en la celda si es necesario */
+}
+
+/* ===========================================================
+   ESTILOS ESPECÍFICOS PARA EL FORMULARIO DE EDICIÓN
+   =========================================================== */
+
+/* Contenedor que agrupa label + switch + texto (Activo/Inactivo) */
+.estado-field-container {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #f9fafb; /* Fondo sutil para destacar el campo */
+  border-radius: 10px;
+  border: 1px solid #f3f4f6;
+}
+
+.switch-with-text {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 8px;
+}
+
+/* Texto dinámico al lado del switch */
+.text-active {
+  color: #16a34a;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.text-inactive {
+  color: #dc2626;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+/* Ajuste del label del formulario para que no se pegue */
+.form-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #374151;
+}
