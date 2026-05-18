@@ -39,6 +39,8 @@
 import { useState } from 'react';
 import { Sidebar } from './shared/components/sidebar/SideBar';
 import CustomerPage from './features/customers/pages/CustomerPage';
+import SupplierPage from './features/suppliers/pages/SupplierPage';
+
 import './App.css';
 
 function App() {
@@ -49,6 +51,7 @@ function App() {
     switch (currentView) {
       case 'dashboard': return <div className="p-6"><h1>Dashboard</h1></div>;
       case 'clientes': return <CustomerPage />; 
+      case 'proveedores': return <SupplierPage />; 
       default: return <div className="p-6"><h1>Seleccione una opción</h1></div>;
     }
   };
