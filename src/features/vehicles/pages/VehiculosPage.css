@@ -1,639 +1,340 @@
-/* ============================================================
-   VEHÍCULOS PAGE — CSS PURO — TEMA NARANJA
-   ============================================================ */
-
-/* ── Variables de color ────────────────────────────────────── */
-.vpage {
-  --orange-50:  #fff7ed;
-  --orange-100: #ffedd5;
-  --orange-200: #fed7aa;
-  --orange-400: #fb923c;
-  --orange-500: #f97316;
-  --orange-600: #ea580c;
-  --orange-700: #c2410c;
-  --gray-50:    #f9fafb;
-  --gray-100:   #f3f4f6;
-  --gray-200:   #e5e7eb;
-  --gray-300:   #d1d5db;
-  --gray-500:   #6b7280;
-  --gray-700:   #374151;
-  --gray-900:   #111827;
-  --radius-sm:  10px;
-  --radius-md:  14px;
-  --radius-lg:  20px;
-  --shadow-sm:  0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05);
-  --shadow-md:  0 4px 20px rgba(15,23,42,.08);
-  --shadow-lg:  0 12px 40px rgba(15,23,42,.12);
+/* Contenedor Principal */
+.page-container {
+    padding: 24px;
+    background-color: #f9fafb;
+    min-height: 100vh;
 }
 
-/* ── Contenedor general ────────────────────────────────────── */
-.vehiculos-page-container {
-  padding: 1.5rem;
-  max-width: 1400px;
+/* Encabezado con Título y Botón */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
 }
 
-/* ══════════════════════════════════════════════
-   HEADER
-   ══════════════════════════════════════════════ */
-.vpage-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1.75rem;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-.vpage-header-text h1 {
-  font-size: 1.65rem;
-  font-weight: 800;
-  color: var(--gray-900);
-  letter-spacing: -.02em;
-}
-.vpage-header-text p {
-  font-size: .9rem;
-  color: var(--gray-500);
-  margin-top: .2rem;
-}
-.vpage-header-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: .4rem;
-  font-size: .8rem;
-  font-weight: 700;
-  color: var(--orange-600);
-  background: var(--orange-50);
-  border: 1px solid var(--orange-200);
-  padding: .45rem 1rem;
-  border-radius: 99px;
+.header-text h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
 }
 
-/* ══════════════════════════════════════════════
-   MANAGEMENT HEADER
-   ══════════════════════════════════════════════ */
-.vmgmt-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-}
-.vmgmt-header h2 {
-  font-size: 1.3rem;
-  font-weight: 800;
-  color: var(--gray-900);
-}
-.vmgmt-header p {
-  font-size: .85rem;
-  color: var(--gray-500);
-  margin-top: .2rem;
-}
-.vmgmt-right {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-/* Tabs inline en header */
-.vtabs {
-  display: flex;
-  gap: .3rem;
-  background: var(--gray-100);
-  border-radius: 99px;
-  padding: .25rem;
-  width: fit-content;
-}
-.vtab {
-  padding: .5rem 1rem;
-  border-radius: 99px;
-  font-size: .82rem;
-  font-weight: 600;
-  color: var(--gray-500);
-  border: none;
-  background: none;
-  cursor: pointer;
-  transition: background .2s, color .2s;
-}
-.vtab--active {
-  background: var(--orange-500);
-  color: white;
-  box-shadow: 0 2px 8px rgba(249,115,22,.35);
-  cursor: default;
+.header-text p {
+    color: #6b7280;
+    margin: 4px 0 0 0;
 }
 
-/* ══════════════════════════════════════════════
-   BOTONES NARANJAS
-   ══════════════════════════════════════════════ */
-.vbtn-orange {
-  display: inline-flex;
-  align-items: center;
-  gap: .45rem;
-  font-size: .88rem;
-  font-weight: 700;
-  color: white;
-  background: linear-gradient(135deg, var(--orange-500), var(--orange-600));
-  border: none;
-  padding: .75rem 1.5rem;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(249,115,22,.35);
-  transition: transform .15s, box-shadow .15s, background .15s;
-  white-space: nowrap;
-}
-.vbtn-orange:hover {
-  background: linear-gradient(135deg, var(--orange-600), var(--orange-700));
-  box-shadow: 0 6px 20px rgba(249,115,22,.45);
-  transform: translateY(-1px);
-}
-.vbtn-orange:active {
-  transform: translateY(0);
-}
-.vbtn-orange:disabled {
-  opacity: .65;
-  cursor: not-allowed;
-  transform: none;
+/* Botón Nuevo Cliente */
+.btn-nuevo {
+    background-color: #ff6b35; /* Naranja Luna Llena */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-/* ══════════════════════════════════════════════
-   SEARCH
-   ══════════════════════════════════════════════ */
-.vsearch-wrapper {
+.btn-nuevo:hover {
+    background-color: #e85a2a;
+    transform: translateY(-1px);
+}
+
+/* Barra de Búsqueda */
+.search-container {
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid #f3f4f6;
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: #374151;
+}
+
+/* Tabla Estilizada */
+.table-wrapper {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #f3f4f6;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.custom-table th {
+    background-color: #f9fafb;
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+}
+
+.custom-table td {
+    padding: 16px;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 14px;
+    color: #111827;
+    vertical-align: middle;
+}
+
+/* --- ESTILOS DE ESTADOS (Activo/Inactivo) --- */
+.status-active {
+    background-color: #ecfdf5;
+    color: #059669;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-inactive {
+    background-color: #fef2f2;
+    color: #dc2626;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* --- COLUMNA DE ACCIONES (Garantiza alineación horizontal) --- */
+.actions-cell {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    transform: scale(1.05);
+}
+
+.action-btn.view {
+    color: #3b82f6; /* Azul */
+}
+
+.action-btn.view:hover {
+    background-color: #eff6ff;
+    border-color: #3b82f6;
+}
+
+.action-btn.edit {
+    color: #f59e0b; /* Amarillo/Naranja */
+}
+
+.action-btn.edit:hover {
+    background-color: #fffbeb;
+    border-color: #f59e0b;
+}
+
+.action-btn.delete {
+    color: #ef4444; /* Rojo */
+}
+
+.action-btn.delete:hover {
+    background-color: #fef2f2;
+    border-color: #ef4444;
+}
+
+.empty-row {
+    color: #9ca3af;
+    font-style: italic;
+}
+
+/*barra*/
+
+/* ... (manten lo anterior de .page-container y .header-text) ... */
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end; /* Alinea los elementos a la base para que se vean parejos */
+    margin-bottom: 24px;
+}
+
+/* Agrupador de Buscador y Botón */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px; /* Espacio entre el buscador y el botón */
+}
+
+/* Buscador Pequeño y Proporcional */
+.search-container-small {
+    background: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #e5e7eb;
+    width: 250px; /* Tamaño fijo pero discreto */
+    transition: border-color 0.2s;
+}
+
+.search-container-small:focus-within {
+    border-color: #ff6b35; /* Color naranja al escribir */
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 13px;
+    color: #374151;
+    background: transparent;
+}
+
+/* Ajuste del botón para que coincida en altura */
+.btn-nuevo {
+    background-color: #ff6b35;
+    color: white;
+    padding: 8px 16px; /* Un poco más compacto */
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    white-space: nowrap; /* Evita que el texto del botón se rompa */
+}
+
+
+
+.switch {
   position: relative;
-  margin-bottom: 1.5rem;
-}
-.vsearch-icon {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--gray-300);
-  pointer-events: none;
-}
-.vsearch-input {
-  width: 100%;
-  max-width: 420px;
-  padding: .75rem 1rem .75rem 2.6rem;
-  font-size: .9rem;
-  color: var(--gray-900);
-  background: white;
-  border: 1.5px solid var(--gray-200);
-  border-radius: var(--radius-md);
-  transition: border-color .2s, box-shadow .2s;
-}
-.vsearch-input::placeholder { color: var(--gray-300); }
-.vsearch-input:focus {
-  border-color: var(--orange-400);
-  box-shadow: 0 0 0 3px rgba(250,146,60,.18);
-}
-
-/* ══════════════════════════════════════════════
-   BANNER ERROR
-   ══════════════════════════════════════════════ */
-.vbanner {
-  border-radius: var(--radius-sm);
-  padding: .65rem 1rem;
-  font-size: .875rem;
-  font-weight: 500;
-  margin-bottom: 1rem;
-}
-.vbanner--error {
-  background: #fef2f2;
-  color: #b91c1c;
-  border: 1px solid #fecaca;
-}
-
-/* ══════════════════════════════════════════════
-   TABLA
-   ══════════════════════════════════════════════ */
-.vtable-card {
-  background: white;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--gray-200);
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  overflow-x: auto;
-}
-.vtable {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: .9rem;
-  min-width: 760px;
-}
-/* HEADER */
-.vtable thead {
-  background: linear-gradient(180deg, var(--orange-50) 0%, #fff7ed 100%);
-  border-bottom: 2px solid var(--orange-200);
-}
-.vtable th {
-  padding: 1rem 1.25rem;
-  text-align: left;
-  font-size: .72rem;
-  font-weight: 700;
-  letter-spacing: .07em;
-  text-transform: uppercase;
-  color: var(--orange-700);
-  white-space: nowrap;
-}
-/* FILAS */
-.vtable tbody tr {
-  border-bottom: 1px solid var(--gray-100);
-  transition: background .15s;
-}
-.vtable tbody tr:last-child { border-bottom: none; }
-.vtable tbody tr:hover {
-  background: var(--orange-50);
-}
-/* CELDAS */
-.vcell {
-  padding: 1rem 1.25rem;
-  color: var(--gray-700);
-  white-space: nowrap;
-}
-.vcell--placa {
-  font-weight: 700;
-  color: var(--gray-900);
-}
-.vcell-empty {
-  padding: 2.5rem;
-  text-align: center;
-  color: var(--gray-500);
-  font-size: .9rem;
-}
-/* ACCIONES */
-.vcell--actions { width: 150px; }
-.vaction-row {
-  display: flex;
-  gap: 6px;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-/* ── Botones de acción en tabla – estilo limpio ── */
-.vbtn-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border: none;
-  border-radius: 9px;
-  cursor: pointer;
-  transition: transform .15s, background .2s, box-shadow .2s, color .2s;
-  position: relative;
-  overflow: hidden;
-  color: white;
-  box-shadow: 0 2px 6px rgba(0,0,0,.12);
-}
-
-/* Fondo base naranja */
-.vbtn-icon {
-  background: linear-gradient(135deg, var(--orange-500), var(--orange-600));
-}
-.vbtn-icon:hover {
-  transform: scale(1.12);
-  box-shadow: 0 4px 14px rgba(249,115,22,.55);
-}
-
-/* ── Variante VER (verde) ── */
-.vbtn-view {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-}
-.vbtn-view:hover {
-  box-shadow: 0 4px 14px rgba(34,197,94,.55);
-}
-
-/* ── Variante EDITAR (azul) ── */
-.vbtn-edit {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-}
-.vbtn-edit:hover {
-  box-shadow: 0 4px 14px rgba(59,130,246,.55);
-}
-
-/* ── Variante ELIMINAR (rojo) ── */
-.vbtn-delete {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-}
-.vbtn-delete:hover {
-  box-shadow: 0 4px 14px rgba(239,68,68,.55);
-}
-
-/* Deshabilitado */
-.vbtn-icon:disabled {
-  opacity: .45;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-/* Variante ancha para diálogo */
-.vbtn-icon--wide {
-  width: auto;
-  padding: .7rem 1.4rem;
-  gap: .45rem;
-  font-size: .875rem;
-  font-weight: 700;
-}
-}
-
-/* ══════════════════════════════════════════════
-   BADGE DE ESTADO
-   ══════════════════════════════════════════════ */
-.vbadge {
-  display: inline-flex;
-  align-items: center;
-  gap: .35rem;
-  font-size: .75rem;
-  font-weight: 700;
-  padding: .35rem .85rem;
-  border-radius: 99px;
-  white-space: nowrap;
-}
-
-.vbadge--active {
-  background: #dcfce7;
-  color: #15803d;
-  border: 1px solid #bbf7d0;
-}
-
-.vbadge--inactive {
-  background: var(--gray-100);
-  color: var(--gray-500);
-  border: 1px solid var(--gray-200);
-}
-
-/* punto dentro badge – siempre visible, sin parpadeo */
-.vw-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
   display: inline-block;
-  flex-shrink: 0;
+  width: 46px; /* Ajustado para parecerse a la referencia */
+  height: 24px;
+  vertical-align: middle;
 }
-.vbadge--active .vw-dot { background: #15803d; }
-.vbadge--inactive .vw-dot { background: var(--gray-500); }
 
-/* spinner */
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+/* Ocultar el checkbox original */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
-/* ══════════════════════════════════════════════
-   MODAL OVERLAY
-   ══════════════════════════════════════════════ */
-.vmodal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(17, 24, 39, .5);
-  backdrop-filter: blur(6px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  z-index: 1000;
-  animation: vfadeIn .15s ease;
-}
-@keyframes vfadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-/* Caja del modal */
-.vmodal-box {
-  background: white;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  width: 100%;
-  max-width: 600px;
-  max-height: 90vh;
-  overflow-y: auto;
-  animation: vslideUp .2s ease;
-}
-@keyframes vslideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
-}
-.vmodal-box--view { max-width: 560px; }
 
-/* Header del modal */
-.vmodal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid var(--gray-100);
-}
-.vmodal-header h3 {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--gray-900);
-}
-.vmodal-close {
-  background: var(--gray-100);
-  border: none;
-  border-radius: var(--radius-sm);
-  width: 34px;
-  height: 34px;
-  display: grid;
-  place-items: center;
+/* El slider (cuerpo del switch) */
+.slider {
+  position: absolute;
   cursor: pointer;
-  color: var(--gray-500);
-  transition: background .15s;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e5e7eb; /* Gris claro (Inactivo) */
+  transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 34px;
 }
-.vmodal-close:hover { background: var(--gray-200); color: var(--gray-700); }
 
-/* ──────────────────────────────────────────────
-   FORMULARIO DEL MODAL
-   ────────────────────────────────────────────── */
-.vmodal-form {
-  padding: 1.5rem;
-}
-.vform-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-.vform-field {
-  display: flex;
-  flex-direction: column;
-  gap: .45rem;
-}
-.vform-field label {
-  font-size: .82rem;
-  font-weight: 700;
-  color: var(--gray-700);
-}
-.vrequired { color: var(--orange-500); }
-
-.vform-field input {
-  width: 100%;
-  padding: .75rem 1rem;
-  font-size: .9rem;
-  color: var(--gray-900);
-  background: var(--gray-50);
-  border: 1.5px solid var(--gray-200);
-  border-radius: var(--radius-sm);
-  transition: border-color .2s, box-shadow .2s;
-}
-.vform-field input:focus {
-  background: white;
-  border-color: var(--orange-400);
-  box-shadow: 0 0 0 3px rgba(250,146,60,.18);
-}
-.vform-field input::placeholder { color: var(--gray-300); }
-
-/* Checkbox */
-.vcheckbox-row {
-  margin-bottom: 1.5rem;
-}
-.vcheckbox-label {
-  display: inline-flex;
-  align-items: center;
-  gap: .5rem;
-  font-size: .875rem;
-  font-weight: 600;
-  color: var(--gray-700);
-  cursor: pointer;
-  user-select: none;
-}
-.vcheckbox-label input[type="checkbox"] {
-  width: 18px;
+/* El círculo blanco (botón) */
+.slider:before {
+  position: absolute;
+  content: "";
   height: 18px;
-  accent-color: var(--orange-500);
-  cursor: pointer;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* ══════════════════════════════════════════════
-   MODAL ACTION BUTTONS
-   ══════════════════════════════════════════════ */
-.vmodal-actions {
+/* Estado ACTIVO (Verde como la referencia) */
+input:checked + .slider {
+  background-color: #4ade80; /* Verde brillante de la imagen */
+}
+
+/* Movimiento del círculo al estar activo */
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+/* ===========================================================
+   ESTILOS ESPECÍFICOS PARA LA TABLA PRINCIPAL
+   =========================================================== */
+
+.custom-table td label.switch {
+  margin: 0 auto;
+  display: block; /* Centra el switch en la celda si es necesario */
+}
+
+/* ===========================================================
+   ESTILOS ESPECÍFICOS PARA EL FORMULARIO DE EDICIÓN
+   =========================================================== */
+
+/* Contenedor que agrupa label + switch + texto (Activo/Inactivo) */
+.estado-field-container {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #f9fafb; /* Fondo sutil para destacar el campo */
+  border-radius: 10px;
+  border: 1px solid #f3f4f6;
+}
+
+.switch-with-text {
   display: flex;
-  justify-content: flex-end;
-  gap: .75rem;
-  padding: 1.25rem 1.5rem;
-  border-top: 1px solid var(--gray-100);
-}
-.vbtn-secondary {
-  padding: .75rem 1.5rem;
-  font-size: .875rem;
-  font-weight: 700;
-  color: var(--gray-600);
-  background: white;
-  border: 1.5px solid var(--gray-200);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  opacity: 1;
-  transition: background .15s, color .15s, border-color .15s;
-  box-shadow: 0 1px 3px rgba(0,0,0,.06);
-}
-.vbtn-secondary:hover { background: var(--gray-50); color: var(--gray-900); border-color: var(--gray-300); }
-.vbtn-secondary:disabled { opacity: .55; cursor: not-allowed; }
-
-.vbtn-primary-orange {
-  display: inline-flex;
   align-items: center;
-  gap: .45rem;
-  padding: .75rem 1.6rem;
-  font-size: .875rem;
-  font-weight: 700;
-  color: white;
-  background: linear-gradient(135deg, var(--orange-500), var(--orange-600));
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(249,115,22,.35);
-  transition: transform .12s, box-shadow .12s, background .15s;
-  opacity: 1;
+  gap: 15px;
+  margin-top: 8px;
 }
-.vbtn-primary-orange:hover {
-  box-shadow: 0 4px 16px rgba(249,115,22,.5);
-  transform: translateY(-1px);
-  background: linear-gradient(135deg, var(--orange-600), var(--orange-700));
-}
-.vbtn-primary-orange:disabled { opacity: .65; cursor: not-allowed; transform: none; }
 
-/* ══════════════════════════════════════════════
-   MODAL VER DETALLES
-   ══════════════════════════════════════════════ */
-.vview-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem 2rem;
-  padding: 1.5rem;
-}
-.vview-item {
-  display: flex;
-  flex-direction: column;
-  gap: .3rem;
-}
-.vview-label {
-  font-size: .72rem;
-  font-weight: 700;
-  letter-spacing: .07em;
+/* Texto dinámico al lado del switch */
+.text-active {
+  color: #16a34a;
+  font-weight: 600;
+  font-size: 0.9rem;
   text-transform: uppercase;
-  color: var(--orange-600);
-}
-.vview-value {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--gray-900);
-}
-.vview-value--placa {
-  color: var(--orange-700);
-  font-weight: 800;
-  letter-spacing: .04em;
-}
-.vview-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: .75rem;
-  padding: 0 1.5rem 1.5rem;
-  border-top: 1px solid var(--gray-100);
-  padding-top: 1.25rem;
 }
 
-/* ══════════════════════════════════════════════
-   TOAST
-   ══════════════════════════════════════════════ */
-.vtoast {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  z-index: 9999;
-  padding: .8rem 1.5rem;
-  border-radius: var(--radius-md);
-  font-size: .875rem;
+.text-inactive {
+  color: #dc2626;
   font-weight: 600;
-  box-shadow: var(--shadow-lg);
-  animation: vslideUpToast .25s ease;
-  max-width: 380px;
-}
-@keyframes vslideUpToast {
-  from { transform: translateY(20px); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
-}
-.vtoast--success {
-  background: #15803d;
-  color: white;
-}
-.vtoast--error {
-  background: #dc2626;
-  color: white;
+  font-size: 0.9rem;
+  text-transform: uppercase;
 }
 
-/* ══════════════════════════════════════════════
-   RESPONSIVE
-   ══════════════════════════════════════════════ */
-@media (max-width: 900px) {
-  .vform-row   { grid-template-columns: 1fr; }
-  .vview-grid  { grid-template-columns: 1fr; }
-  .vmgmt-header { flex-direction: column; align-items: stretch; }
-  .vbtn-orange { width: 100%; justify-content: center; }
-}
-@media (max-width: 600px) {
-  .vehiculos-page-container { padding: 1rem; }
-  /* Tabla se desliza horizontalmente */
-  .vtable-card { overflow-x: auto; }
-  .vtoast { left: 1rem; right: 1rem; bottom: 1rem; max-width: none; }
+/* Ajuste del label del formulario para que no se pegue */
+.form-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #374151;
 }

@@ -31,15 +31,14 @@ export const vehiculosService = {
       vehicle_brand: datos.marca,
       vehicle_model: datos.modelo,
       license_plate: datos.placa,
-      capacity_kg: parseFloat(datos.capacidadKg),
-      vehicle_status: (() => {
-        switch (datos.estado) {
-          case 'Activo': return true;
-          case 'Inactivo': return false;
-          default: return Boolean(datos.estado);
-        }
-      })()
+      capacity_kg: datos.capacidadKg !== undefined && datos.capacidadKg !== null && datos.capacidadKg !== ''
+        ? parseFloat(datos.capacidadKg)
+        : null,
+      vehicle_status: typeof datos.estado === 'boolean'
+        ? datos.estado
+        : datos.estado === 'Activo' ? true : false
     };
+    console.log('Payload crear:', payload);
     return await apiClient.post('/api/vehicles', payload);
   },
   
@@ -48,14 +47,12 @@ export const vehiculosService = {
       vehicle_brand: datos.marca,
       vehicle_model: datos.modelo,
       license_plate: datos.placa,
-      capacity_kg: parseFloat(datos.capacidadKg),
-      vehicle_status: (() => {
-        switch (datos.estado) {
-          case 'Activo': return true;
-          case 'Inactivo': return false;
-          default: return !!datos.estado;
-        }
-      })()
+      capacity_kg: datos.capacidadKg !== undefined && datos.capacidadKg !== null && datos.capacidadKg !== ''
+        ? parseFloat(datos.capacidadKg)
+        : null,
+      vehicle_status: typeof datos.estado === 'boolean'
+        ? datos.estado
+        : datos.estado === 'Activo' ? true : false
     };
     return await apiClient.put(`/api/vehicles/${id}`, payload);
   },
