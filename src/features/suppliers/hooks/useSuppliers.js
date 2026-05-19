@@ -19,28 +19,7 @@ export const useSuppliers = () => {
     setError(null);
     try {
       // Llamamos a la ruta optimizada para la tabla que creamos en el backend
-      const response = await fetch('http://localhost:3000/api/suppliers');
-      
-      if (!response.ok) {
-        throw new Error('No se pudo conectar con el servidor');
-      }
-      
-      const datos = await response.json();
-      setSuppliers(datos);
-    } catch (err) {
-      setError(err.message);
-      console.error("Error al cargar proveedores:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const cargarDatosProveedores = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      // Llamamos a la ruta optimizada para la tabla que creamos en el backend
-      const response = await fetch('http://localhost:3000/api/suppliers');
+      const response = await fetch('http://localhost:3000/api/suppliers'); 
       
       if (!response.ok) {
         throw new Error('No se pudo conectar con el servidor');
@@ -119,7 +98,6 @@ export const useSuppliers = () => {
     error, 
     cargarProveedores, 
     toggleProveedorEstado, 
-    eliminarProveedor, 
-    cargarDatosProveedores
+    eliminarProveedor
   };
 };

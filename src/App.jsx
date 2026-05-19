@@ -38,7 +38,7 @@
 
 import { useState } from 'react';
 import { Sidebar } from './shared/components/sidebar/SideBar';
-import CustomerPage from './features/customers/pages/CustomerPage';
+import CustomerPage from './features/customers/pages/CustomerPage/CustomerPage';
 import SupplierPage from './features/suppliers/pages/SupplierPage';
 
 import './App.css';
