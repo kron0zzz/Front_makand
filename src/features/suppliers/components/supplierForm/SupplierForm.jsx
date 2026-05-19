@@ -22,8 +22,8 @@ const SupplierForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
       supplier_phone: formData.supplier_phone,
       supplier_address: formData.supplier_address,
       supplier_email: formData.supplier_email,
-      supplier_state: formData.supplier_state,
-      supplier_city: formData.supplier_city,
+      supplier_state: formData.supplier_state || 'Antioquia',
+      supplier_city: formData.supplier_city || 'Medayork',
       supplier_status: formData.supplier_status !== undefined ? formData.supplier_status : true
     };
 
