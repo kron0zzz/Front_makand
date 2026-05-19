@@ -1,4 +1,3 @@
-//import React from "react";
 import {Truck, LayoutDashboard, Menu, X, LogOut, User, Building,} from "lucide-react";
 
 const menuItems = [

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import './Vehiculo.css';
 
 const Vehiculo = ({ vehiculo, onSave, onCancel, isEditing = false }) => {
   const [formData, setFormData] = useState(() => ({
@@ -23,53 +24,55 @@ const Vehiculo = ({ vehiculo, onSave, onCancel, isEditing = false }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="vehiculo-form grid grid-cols-2 gap-4">
-      <div className="form-group">
-        <label>Marca *</label>
-        <input
-          type="text"
-          name="marca"
-          placeholder="Ej: Toyota"
-          value={formData.marca}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div className="form-group">
-        <label>Modelo *</label>
-        <input
-          type="text"
-          name="modelo"
-          placeholder="Ej: Hilux 2022"
-          value={formData.modelo}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div className="form-group">
-        <label>Placa *</label>
-        <input
-          type="text"
-          name="placa"
-          placeholder="Ej: ABC-123"
-          value={formData.placa}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div className="form-group">
-        <label>Capacidad (kg) *</label>
-        <input
-          type="number"
-          name="capacidadKg"
-          placeholder="Ej: 1000"
-          value={formData.capacidadKg}
-          onChange={handleChange}
-          required
-        />
+    <form onSubmit={handleSubmit} className="vehiculo-form">
+      <div className="vehiculo-form-row">
+        <div className="form-group">
+          <label>Marca *</label>
+          <input
+            type="text"
+            name="marca"
+            placeholder="Ej: Toyota"
+            value={formData.marca}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Modelo *</label>
+          <input
+            type="text"
+            name="modelo"
+            placeholder="Ej: Hilux 2022"
+            value={formData.modelo}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Placa *</label>
+          <input
+            type="text"
+            name="placa"
+            placeholder="Ej: ABC-123"
+            value={formData.placa}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Capacidad (kg) *</label>
+          <input
+            type="number"
+            name="capacidadKg"
+            placeholder="Ej: 1000"
+            value={formData.capacidadKg}
+            onChange={handleChange}
+            required
+          />
+        </div>
       </div>
       <div className="form-group form-full">
-        <label>
+        <label className="checkbox-label">
           <input
             type="checkbox"
             name="estado"
@@ -79,7 +82,7 @@ const Vehiculo = ({ vehiculo, onSave, onCancel, isEditing = false }) => {
           Activo
         </label>
       </div>
-      <div className="modal-actions form-full">
+      <div className="modal-actions">
         <button type="button" className="btn-secondary" onClick={onCancel}>
           Cancelar
         </button>

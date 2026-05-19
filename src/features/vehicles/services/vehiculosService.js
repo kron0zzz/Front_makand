@@ -1,15 +1,10 @@
-// Importamos la configuración global de Axios
-// Subimos 4 niveles para llegar a src/services/
-import apiClient from "../../../shared/services/api";
+import { apiClient } from "../../../shared/services/api";
+
 export const vehiculosService = {
   obtenerTodos: async () => {
     try {
-      // Ahora usamos apiClient porque así lo llamamos arriba en la importación
       const response = await apiClient.get('/api/vehicles');
-      
-      const data = Array.isArray(response.data) 
-        ? response.data 
-        : (response.data.vehicles || []);
+      const data = Array.isArray(response.data) ? response.data : (response.data.vehicles || []);
       
       return data.map(v => ({
         id: v.vehicle_id,
@@ -17,37 +12,55 @@ export const vehiculosService = {
         marca: v.vehicle_brand,
         modelo: v.vehicle_model,
         capacidadKg: v.capacity_kg,
-        estado: v.vehicle_status ? 'Activo' : 'Inactivo',
-        ...v 
+        estado: (() => {
+          switch (v.vehicle_status) {
+            case true: return 'Activo';
+            case false: return 'Inactivo';
+            default: return 'Inactivo';
+          }
+        })()
       }));
     } catch (error) {
       console.error('Error al obtener vehículos:', error);
       throw error;
     }
   },
-
+  
   crear: async (datos) => {
     const payload = {
       vehicle_brand: datos.marca,
       vehicle_model: datos.modelo,
       license_plate: datos.placa,
-      capacity_kg: Number(datos.capacidadKg),
-      vehicle_status: datos.estado !== false
+      capacity_kg: parseFloat(datos.capacidadKg),
+      vehicle_status: (() => {
+        switch (datos.estado) {
+          case 'Activo': return true;
+          case 'Inactivo': return false;
+          default: return Boolean(datos.estado);
+        }
+      })()
     };
-    // Usamos apiClient para enviar los datos al backend de Makand
-    const response = await apiClient.post('/api/vehicles', payload);
-    return response.data;
+    return await apiClient.post('/api/vehicles', payload);
   },
-
+  
   actualizar: async (id, datos) => {
     const payload = {
       vehicle_brand: datos.marca,
       vehicle_model: datos.modelo,
       license_plate: datos.placa,
-      capacity_kg: Number(datos.capacidadKg),
-      vehicle_status: datos.estado === 'Activo' || datos.estado === true
+      capacity_kg: parseFloat(datos.capacidadKg),
+      vehicle_status: (() => {
+        switch (datos.estado) {
+          case 'Activo': return true;
+          case 'Inactivo': return false;
+          default: return !!datos.estado;
+        }
+      })()
     };
-    const response = await apiClient.put(`/api/vehicles/${id}`, payload);
-    return response.data;
+    return await apiClient.put(`/api/vehicles/${id}`, payload);
+  },
+  
+  eliminar: async (id) => {
+    return await apiClient.delete(`/api/vehicles/${id}`);
   }
 };
