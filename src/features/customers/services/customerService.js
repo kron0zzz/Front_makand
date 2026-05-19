@@ -2,7 +2,7 @@
 
 
 
-export const supplierService = {
+export const customerService = {
   obtenerTodos: async () => {
     // Por ahora, devolvemos un array vacío para que no falle al cargar
     return []; 
