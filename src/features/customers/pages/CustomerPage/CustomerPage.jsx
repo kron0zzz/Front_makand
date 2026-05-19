@@ -5,6 +5,7 @@ import CustomerForm from '../../components/CustomerForm/CustomerForm';
 import CustomerDetail from '../../components/CustomerDetail/CustomerDetail';
 import './CustomerPage.css';
 
+
 const CustomerPage = () => {
   const { customers, cargarClientes, eliminarCliente } = useCustomers();
   const [busqueda, setBusqueda] = useState('');
