@@ -1,9 +1,84 @@
 import { X } from 'lucide-react';
 import { useSuppliers } from "../../hooks/useSuppliers";
 import './SupplierForm.css';
+import React, { useEffect, useState } from 'react';
 
 const SupplierForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
   const { cargarProveedores } = useSuppliers();
+
+  const [departamentos, setDepartamentos] = useState([]);
+  const [ciudades, setCiudades] = useState([]);
+
+  useEffect(() => {
+
+    const cargarDepartamentos = async () => {
+
+      try {
+
+        const response = await fetch(
+          'https://api-colombia.com/api/v1/Department'
+        );
+
+        const data = await response.json();
+
+        setDepartamentos(data);
+
+      } catch (error) {
+
+        console.error('Error cargando departamentos:', error);
+
+      }
+
+    };
+
+    cargarDepartamentos();
+
+  },[]);
+
+
+
+  useEffect(() => {
+
+    const cargarCiudades = async () => {
+
+      if (!formData.supplier_state) return;
+
+      try {
+
+        const response = await fetch(
+          'https://api-colombia.com/api/v1/City'
+        );
+
+        const data = await response.json();
+
+        const departamentoSeleccionado = departamentos.find(
+          dep => dep.name === formData.supplier_state
+        );
+
+        const ciudadesFiltradas = data.filter(
+          city => city.departmentId === departamentoSeleccionado?.id
+        );
+
+        setCiudades(ciudadesFiltradas);
+
+      } catch (error) {
+
+        console.error('Error cargando ciudades:', error);
+
+      }
+
+    };
+
+    cargarCiudades();
+
+  }, [formData.supplier_state, departamentos]);
+
+
+
+
+
+
+
 
   if (!isOpen) return null;
 
@@ -92,8 +167,12 @@ const SupplierForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
                 value={formData.supplier_state || 'indefinido'} 
                 onChange={handleChange}
               >
-                <option value="Antioquia">Antioquia</option>
-                <option value="Chocó">Chocó</option>
+                <option value="">Seleccione un departamento</option>
+                {departamentos.map((dep) => (
+                  <option key={dep.id} value={dep.name}>
+                    {dep.name}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -106,8 +185,12 @@ const SupplierForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
                 value={formData.supplier_city || 'indefinido'} 
                 onChange={handleChange}
               >
-                <option value="Medellin">Medayork</option>
-                <option value="Barrancabermeja">Barrancabermeja</option>
+                <option value="">Seleccione un municipio</option>
+                {ciudades.map((city) => (
+                  <option key={city.id} value={city.name}>
+                    {city.name}
+                  </option>
+                ))}
               </select>
             </div>
 
