@@ -1,4 +1,5 @@
-import {Truck, LayoutDashboard, Menu, X, LogOut, User, Building,} from "lucide-react";
+//import React from "react";
+import {Truck, LayoutDashboard, Menu, X, LogOut, User, Building, Wrench} from "lucide-react";
 
 const menuItems = [
   {
@@ -21,6 +22,16 @@ const menuItems = [
     icon: Truck,
     key: "vehiculos",
   },
+  {
+    name: "Estado Máquina",
+    icon: Wrench, 
+    key: "estados_maquinaria"
+  },
+  {
+  name: "Categorías Máquina",
+  icon: Wrench, 
+  key: "categorias_maquinaria",
+  }
 ];
 
 export function Sidebar({
