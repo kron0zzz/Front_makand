@@ -43,6 +43,7 @@ import SupplierPage from './features/suppliers/pages/SupplierPage';
 import VehiculosPage from './features/vehicles/pages/VehiculosPage';
 import MachineryStatusPage from './features/machinery_status/pages/MachineryStatusPage';
 import MachineryCategoryPage from './features/machinery_category/pages/MachineryCategoryPage';
+import PositionPage from './features/positions/pages/PositionPage'
 import './App.css';
 
 function App() {
@@ -57,6 +58,7 @@ function App() {
       case 'vehiculos': return <VehiculosPage />; 
       case 'estados_maquinaria': return <MachineryStatusPage />; 
       case 'categorias_maquinaria': return <MachineryCategoryPage />;
+      case 'cargos': return <PositionPage />;
       default: return <div className="p-6"><h1>Seleccione una opción</h1></div>;
     }
   };

@@ -31,6 +31,11 @@ const menuItems = [
   name: "Categorías Máquina",
   icon: Wrench, 
   key: "categorias_maquinaria",
+  },
+  {
+  name: "Cargos",
+  icon: Wrench, 
+  key: "cargos",
   }
 ];
 
