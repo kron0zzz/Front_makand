@@ -38,7 +38,8 @@ textarea {
 }
 
 
-/* --- 2. SIDEBAR BLANCO --- */
+/* --- 2. SIDEBAR BLANCO ---
+
 .sidebar {
   display: flex;
   flex-direction: column;
@@ -162,6 +163,8 @@ textarea {
   gap: 8px;
   cursor: pointer;
 }
+*/
+
 
 /* --- 3. CONTENIDO PRINCIPAL --- */
 .page-header {

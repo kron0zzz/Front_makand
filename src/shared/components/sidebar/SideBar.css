@@ -1,0 +1,482 @@
+/* ===== SIDEBAR GENERAL ===== */
+
+.sidebar {
+  width: 280px;
+  height: 100vh;
+
+  background: #ffffff;
+
+  border-right: 1px solid #e5e7eb;
+
+  display: flex;
+  flex-direction: column;
+
+  transition: width 0.25s ease;
+
+  position: relative;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 4px 12px rgba(0,0,0,0.04);
+}
+
+.sidebar-closed {
+  width: 78px;
+}
+
+.sidebar-open {
+  width: 280px;
+}
+
+/* ===== HEADER ===== */
+
+.sidebar-top {
+  height: 72px;
+
+  padding: 0 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid #f1f5f9;
+
+  flex-shrink: 0;
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  min-width: 0;
+}
+
+.brand-logo {
+  width: 38px;
+  height: 38px;
+
+  border-radius: 10px;
+
+  background: linear-gradient(
+    135deg,
+    #ff6b35,
+    #ff8c42
+  );
+
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: bold;
+  font-size: 14px;
+
+  flex-shrink: 0;
+
+  box-shadow:
+    0 4px 10px rgba(255,107,53,0.20);
+}
+
+.brand-title {
+  margin: 0;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  color: #111827;
+}
+
+.brand-subtitle {
+  margin: 0;
+
+  font-size: 11px;
+
+  color: #6b7280;
+}
+
+.sidebar-toggle {
+  border: none;
+  background: transparent;
+
+  cursor: pointer;
+
+  width: 34px;
+  height: 34px;
+
+  min-width: 34px;
+
+  border-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #6b7280;
+
+  transition: 0.2s;
+
+  flex-shrink: 0;
+}
+
+.sidebar-toggle:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+/* ===== NAVIGATION ===== */
+
+.sidebar-nav {
+
+  flex: 1;
+
+  overflow-y: auto;
+
+  padding: 12px 8px 14px 8px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 20px;
+}
+
+/* ===== LINKS ===== */
+
+.sidebar-link {
+
+  width: 100%;
+
+  min-height: 44px;
+
+  border: none;
+  background: transparent;
+
+  border-radius: 10px;
+
+  padding: 0 12px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  cursor: pointer;
+
+  color: #4b5563;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+
+  overflow: hidden;
+}
+
+.sidebar-link:hover {
+
+  background: #f3f4f6;
+
+  color: #111827;
+}
+
+.sidebar-link:active {
+  transform: scale(0.98);
+}
+
+/* =========================
+   BOTONES DESPLEGABLES
+   ========================= */
+
+.sidebar-link.menu-expanded {
+
+  background: #e5e7eb;
+
+  color: #111827;
+
+  font-weight: 600;
+}
+
+/* Hover del menú desplegable */
+
+.sidebar-link.menu-expanded:hover {
+
+  background: #dbe1e7;
+}
+
+/* =========================
+   PÁGINA ACTIVA REAL
+   ========================= */
+
+.sidebar-link.active-page {
+
+  background: linear-gradient(
+    135deg,
+    #ff6b35,
+    #ff8c42
+  );
+
+  color: white;
+
+  box-shadow:
+    0 4px 12px rgba(255,107,53,0.22);
+}
+
+.sidebar-link.active-page .sidebar-icon {
+  color: white;
+}
+/* ===== ICONS ===== */
+
+.sidebar-icon {
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
+/* ===== LABEL ===== */
+
+.sidebar-label {
+
+  flex: 1;
+
+  text-align: left;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  white-space: nowrap;
+}
+
+/* ===== SUBMENU ===== */
+
+.sidebar-submenu {
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+
+  margin-top: 4px;
+  margin-bottom: 6px;
+
+  padding-left: 10px;
+
+  border-left: 2px solid #f3f4f6;
+
+  animation: submenuFade 0.2s ease;
+}
+
+@keyframes submenuFade {
+
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sidebar-submenu .sidebar-link {
+
+  min-height: 38px;
+
+  font-size: 12px;
+}
+
+/* Fondo suave SOLO si NO está activo */
+
+.sidebar-submenu .sidebar-link:not(.active-page):not(.menu-expanded) {
+
+  background: #fafafa;
+}
+
+.sidebar-link.active-page svg {
+
+  color: white;
+}
+
+/*
+.sidebar-submenu .sidebar-link:hover {
+
+  background: #f3f4f6;
+}
+*/
+
+/* ===== FOOTER ===== */
+
+.sidebar-footer {
+
+  padding: 10px;
+
+  border-top: 1px solid #f1f5f9;
+
+  background: white;
+
+  flex-shrink: 0;
+}
+
+/* USER */
+
+.sidebar-user {
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 8px;
+
+  color: #4b5563;
+}
+
+.sidebar-user svg {
+
+  width: 16px;
+  height: 16px;
+
+  flex-shrink: 0;
+}
+
+.sidebar-user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-user-name {
+
+  font-size: 12px;
+  font-weight: 600;
+
+  color: #111827;
+
+  line-height: 1.1;
+}
+
+.sidebar-user-role {
+
+  font-size: 10px;
+
+  color: #6b7280;
+}
+
+/* LOGOUT */
+
+.sidebar-logout {
+
+  width: 100%;
+
+  border: none;
+
+  background: #fff1f2;
+
+  color: #dc2626;
+
+  border-radius: 8px;
+
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.sidebar-logout svg {
+
+  width: 15px;
+  height: 15px;
+}
+
+.sidebar-logout:hover {
+
+  background: #ffe4e6;
+}
+
+/* ===== COLLAPSED MODE ===== */
+
+.sidebar-closed .sidebar-label,
+.sidebar-closed .brand-title,
+.sidebar-closed .brand-subtitle,
+.sidebar-closed .sidebar-user-info {
+
+  display: none;
+}
+
+.sidebar-closed .sidebar-link {
+
+  justify-content: center;
+
+  padding: 0;
+}
+
+.sidebar-closed .sidebar-user {
+
+  justify-content: center;
+
+  margin-bottom: 6px;
+}
+
+.sidebar-closed .sidebar-logout {
+
+  padding: 0;
+
+  width: 42px;
+  height: 36px;
+
+  margin: 0 auto;
+}
+
+.sidebar-closed .sidebar-logout span {
+  display: none;
+}
+
+.sidebar-closed .sidebar-submenu {
+  display: none;
+}
+
+/* IMPORTANTE:
+ESTO ARREGLA EL BUG DEL BOTÓN DE COLAPSAR
+QUE SE IBA A NARNIA CUANDO EL SIDEBAR SE CERRABA.
+Frontend: el arte de mover 2 píxeles durante 4 horas.
+*/
+
+.sidebar-closed .sidebar-top {
+
+  justify-content: center;
+
+  padding: 0 8px;
+}
+
+.sidebar-closed .brand-wrapper {
+
+  display: none;
+}
+
+.sidebar-closed .sidebar-toggle {
+
+  margin: 0 auto;
+}
