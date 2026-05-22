@@ -42,7 +42,7 @@ import CustomerPage from './features/customers/pages/CustomerPage/CustomerPage';
 import SupplierPage from './features/suppliers/pages/SupplierPage';
 import MachineryStatusPage from './features/machinery_status/pages/MachineryStatusPage';
 import MachineryCategoryPage from './features/machinery_category/pages/MachineryCategoryPage';
-
+import MachineryPage from './features/machinery/pages/MachineryPage'
 import './App.css';
 
 function App() {
@@ -56,6 +56,7 @@ function App() {
       case 'proveedores': return <SupplierPage />; 
       case 'estados_maquinaria': return <MachineryStatusPage />; 
       case 'categorias_maquinaria': return <MachineryCategoryPage />;
+      case 'maquinaria': return <MachineryPage />;
       default: return <div className="p-6"><h1>Seleccione una opción</h1></div>;
     }
   };

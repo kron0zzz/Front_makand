@@ -1,0 +1,176 @@
+/* Estilos base del modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+}
+
+.modal-container {
+    background-color: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 550px;
+    /* 🌟 NUEVO: Altura máxima controlada para que nunca se desborde de la pantalla */
+    max-height: 85vh;
+    overflow: hidden;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+    /* 🌟 NUEVO: Columna flex para fijar el Header y los Botones */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Naranja Luna Llena */
+.modal-header {
+    background-color: #ff6b35;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    /* 🌟 NUEVO: Evita que el encabezado colapse */
+    flex-shrink: 0;
+}
+
+.modal-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+}
+
+/* Contenido y Grid */
+.modal-content {
+    padding: 24px;
+    /* 🌟 NUEVO: Toma el espacio restante y genera la barra de scroll si la info es muy larga */
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+/* Elementos de información */
+.label-text {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 2px;
+    font-weight: 500;
+}
+
+.value-text {
+    font-size: 14px;
+    color: #111827;
+    font-weight: 600;
+}
+
+.value-text-large {
+    font-size: 18px;
+}
+
+.doc-type-tag {
+    color: #ff6b35;
+    margin-right: 4px;
+}
+
+/* Secciones específicas */
+.full-width {
+    grid-column: span 2;
+}
+
+.user-avatar-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 15px;
+}
+
+.avatar-icon-wrapper {
+    background-color: #fff7ed;
+    padding: 10px;
+    border-radius: 50%; /* 🌟 CORREGIDO: Sintaxis estándar kebab-case para CSS limpio */
+    color: #ff6b35;
+}
+
+.info-item-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+/* Estados */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block; 
+    margin-bottom: 5px; 
+}
+
+.status-active {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-inactive {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+/* Botones / Footer del Detalle */
+.action-buttons {
+    /* 🌟 CORREGIDO: Fusionadas las dos definiciones duplicadas que tenías */
+    margin-top: 16px; 
+    display: flex;
+    gap: 12px;
+    border-top: 1px solid #f3f4f6; 
+    padding: 16px 24px; /* Padding interno balanceado */
+    /* 🌟 NUEVO: Mantiene el bloque de botones fijo abajo en blanco */
+    flex-shrink: 0;
+    background-color: white;
+}
+
+.btn-primary {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background-color: #ff6b35;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;            
+    justify-content: center;   
+    align-items: center;      
+    text-align: center;
+}
+
+.btn-secondary {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background-color: #f9fafb;
+    font-weight: 600;
+    cursor: pointer;
+    color: #374151;
+}
