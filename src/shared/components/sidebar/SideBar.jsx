@@ -76,6 +76,11 @@ const menuItems = [
 
         submenu: [
           {
+            name: "Maquinaria",
+            icon: Wrench,
+            key: "maquinaria",
+          },
+          {
             name: "Vehículos",
             icon: Truck,
             key: "vehiculos",
