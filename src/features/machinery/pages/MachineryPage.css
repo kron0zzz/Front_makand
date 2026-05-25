@@ -1,0 +1,366 @@
+/* Contenedor Principal */
+.page-container {
+    padding: 24px;
+    background-color: #f9fafb;
+    min-height: 100vh;
+}
+
+/* Encabezado con Título y Botón */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.header-text h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.header-text p {
+    color: #6b7280;
+    margin: 4px 0 0 0;
+}
+
+/* Botón Nuevo Cliente */
+.btn-nuevo {
+    background-color: #ff6b35; /* Naranja Luna Llena */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btn-nuevo:hover {
+    background-color: #e85a2a;
+    transform: translateY(-1px);
+}
+
+/* Barra de Búsqueda */
+.search-container {
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid #f3f4f6;
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: #374151;
+}
+
+/* Tabla Estilizada */
+.table-wrapper {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #f3f4f6;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.custom-table th {
+    background-color: #f9fafb;
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+}
+
+.custom-table td {
+    padding: 16px;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 14px;
+    color: #111827;
+    vertical-align: middle;
+}
+
+/* --- ESTILOS DE ESTADOS (Activo/Inactivo) --- */
+.status-active {
+    background-color: #ecfdf5;
+    color: #059669;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-inactive {
+    background-color: #fef2f2;
+    color: #dc2626;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* --- COLUMNA DE ACCIONES (Garantiza alineación horizontal) --- */
+.actions-cell {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    transform: scale(1.05);
+}
+
+.action-btn.view {
+    color: #3b82f6; /* Azul */
+}
+
+.action-btn.view:hover {
+    background-color: #eff6ff;
+    border-color: #3b82f6;
+}
+
+.action-btn.edit {
+    color: #f59e0b; /* Amarillo/Naranja */
+}
+
+.action-btn.edit:hover {
+    background-color: #fffbeb;
+    border-color: #f59e0b;
+}
+
+.action-btn.delete {
+    color: #ef4444; /* Rojo */
+}
+
+.action-btn.delete:hover {
+    background-color: #fef2f2;
+    border-color: #ef4444;
+}
+
+.empty-row {
+    color: #9ca3af;
+    font-style: italic;
+}
+
+
+
+
+
+/*barra*/
+
+/* ... (manten lo anterior de .page-container y .header-text) ... */
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end; /* Alinea los elementos a la base para que se vean parejos */
+    margin-bottom: 24px;
+}
+
+/* Agrupador de Buscador y Botón */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px; /* Espacio entre el buscador y el botón */
+}
+
+/* Buscador Pequeño y Proporcional */
+.search-container-small {
+    background: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #e5e7eb;
+    width: 250px; /* Tamaño fijo pero discreto */
+    transition: border-color 0.2s;
+}
+
+.search-container-small:focus-within {
+    border-color: #ff6b35; /* Color naranja al escribir */
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 13px;
+    color: #374151;
+    background: transparent;
+}
+
+/* Ajuste del botón para que coincida en altura */
+.btn-nuevo {
+    background-color: #ff6b35;
+    color: white;
+    padding: 8px 16px; /* Un poco más compacto */
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    white-space: nowrap; /* Evita que el texto del botón se rompa */
+}
+
+
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px; /* Ajustado para parecerse a la referencia */
+  height: 24px;
+  vertical-align: middle;
+}
+
+/* Ocultar el checkbox original */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* El slider (cuerpo del switch) */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e5e7eb; /* Gris claro (Inactivo) */
+  transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 34px;
+}
+
+/* El círculo blanco (botón) */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Estado ACTIVO (Verde como la referencia) */
+input:checked + .slider {
+  background-color: #4ade80; /* Verde brillante de la imagen */
+}
+
+/* Movimiento del círculo al estar activo */
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+/* ===========================================================
+   ESTILOS ESPECÍFICOS PARA LA TABLA PRINCIPAL
+   =========================================================== */
+
+.custom-table td label.switch {
+  margin: 0 auto;
+  display: block; /* Centra el switch en la celda si es necesario */
+}
+
+/* ===========================================================
+   ESTILOS ESPECÍFICOS PARA EL FORMULARIO DE EDICIÓN
+   =========================================================== */
+
+/* Contenedor que agrupa label + switch + texto (Activo/Inactivo) */
+.estado-field-container {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #f9fafb; /* Fondo sutil para destacar el campo */
+  border-radius: 10px;
+  border: 1px solid #f3f4f6;
+}
+
+.switch-with-text {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 8px;
+}
+
+/* Texto dinámico al lado del switch */
+.text-active {
+  color: #16a34a;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.text-inactive {
+  color: #dc2626;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+/* Ajuste del label del formulario para que no se pegue */
+.form-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #374151;
+}
+
+
+
+
+
+
+
+
+
+
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+/* Ejemplos de clases dinámicas según lo que responda tu base de datos */
+.status-disponible { background-color: #d1fae5; color: #065f46; }
+.status-mantenimiento { background-color: #fef3c7; color: #92400e; }
+.status-alquilado { background-color: #e0f2fe; color: #0369a1; }
