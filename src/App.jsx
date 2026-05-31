@@ -10,7 +10,7 @@ import MachineryCategoryPage from './features/machinery_category/pages/Machinery
 import MachineryPage from './features/machinery/pages/MachineryPage';
 import PositionPage from './features/positions/pages/PositionPage';
 
-import LoginPage from './features/login/pages/LoginPage';
+import LoginPage from './features/login/pages/loginPage';
 
 import './App.css';
 

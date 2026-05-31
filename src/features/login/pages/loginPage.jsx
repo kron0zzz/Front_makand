@@ -1,4 +1,4 @@
-import "./LoginPage.css";
+import "./loginPage.css";
 
 import { useState } from "react";
 import { Mail, Lock } from "lucide-react";
