@@ -9,7 +9,7 @@ import MachineryStatusPage from './features/machinery_status/pages/MachineryStat
 import MachineryCategoryPage from './features/machinery_category/pages/MachineryCategoryPage';
 import MachineryPage from './features/machinery/pages/MachineryPage';
 import PositionPage from './features/positions/pages/PositionPage';
-
+import EmployeePage from './features/employees/pages/EmployeePage';
 import LoginPage from './features/login/pages/LoginPage';
 
 import './App.css';
@@ -69,6 +69,9 @@ function App() {
 
       case 'cargos':
         return <PositionPage />;
+
+      case 'empleados':
+        return <EmployeePage />;
 
       default:
         return (

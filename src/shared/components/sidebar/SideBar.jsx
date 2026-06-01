@@ -116,6 +116,11 @@ const menuItems = [
         icon: Users,
         key: "clientes",
       },
+      {
+        name: "Empleados",
+        icon: Users,
+        key: "empleados",
+      },
     ]
   },
 ];
