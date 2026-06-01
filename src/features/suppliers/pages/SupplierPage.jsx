@@ -26,9 +26,10 @@ const SupplierPage = () => {
     
     if (window.confirm(mensaje)) {
       try {
+        const token = localStorage.getItem("token");
         const response = await fetch(`http://localhost:3000/api/suppliers/${supplier.supplier_id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
           body: JSON.stringify({
             document_type: supplier.document_type,
             document_number: supplier.document_number,

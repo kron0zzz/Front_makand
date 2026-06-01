@@ -109,9 +109,10 @@ const SupplierForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
     const method = isEditing ? 'PUT' : 'POST';
 
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(url, {
         method: method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json',  Authorization: `Bearer ${token}` },
         body: JSON.stringify(dataToSend)
       });
 
