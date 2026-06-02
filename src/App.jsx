@@ -19,14 +19,14 @@ function App() {
 
   // Estado login
   const [isAuthenticated, setIsAuthenticated] =
-    useState(false);
+  useState(
+    !!localStorage.getItem("token")
+  );
 
   // Estado sidebar
-  const [currentView, setCurrentView] =
-    useState('dashboard');
+  const [currentView, setCurrentView] = useState('dashboard');
 
-  const [collapsed, setCollapsed] =
-    useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   // Login exitoso
   const handleLogin = () => {
@@ -35,6 +35,7 @@ function App() {
 
   // Logout
   const handleLogout = () => {
+    localStorage.removeItem("token");
     setIsAuthenticated(false);
   };
 
