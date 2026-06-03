@@ -65,22 +65,25 @@
 //     });
 //   }, [employees, busqueda]);
 
-//   // Prepara los datos para cargarlos limpios en el formulario de edición
-//   const prepararEdicion = (employee) => {
-//     setIsEditing(true);
-//     setFormData({
-//       employee_id: employee.employee_id,
-//       employee_document_type: employee.employee_document_type,
-//       employee_document_number: employee.employee_document_number,
-//       employee_status: employee.employee_status,
-//       employee_first_name: employee.employee_first_name,
-//       employee_last_name: employee.employee_last_name,
-//       employee_email: employee.employee_email,
-//       employee_phone: employee.employee_phone,
-//       employee_eps: employee.employee_eps,
-//       position_id: employee.position_id
-//     });
-//     setMostrarModalForm(true);
+//   // Prepara los datos buscando el registro original e individual directamente de la API
+//   const prepararEdicion = async (employee) => {
+//     try {
+//       const response = await fetch(`http://localhost:3000/api/employees/${employee.employee_id}`);
+      
+//       if (response.ok) {
+//         const empleadoCompleto = await response.json();
+        
+//         setIsEditing(true);
+//         // Cargamos el objeto original con todos los campos separados de la DB en el formulario
+//         setFormData(empleadoCompleto); 
+//         setMostrarModalForm(true);
+//       } else {
+//         alert("No se pudieron cargar los datos originales del empleado.");
+//       }
+//     } catch (error) {
+//       console.error("Error al obtener detalles del empleado:", error);
+//       alert("Error de conexión al intentar editar.");
+//     }
 //   };
 
 //   return (
@@ -154,6 +157,7 @@
 //                   </td>
 //                   <td className="actions-cell">
 //                     <button 
+//                       type="button"
 //                       className="action-btn view" 
 //                       title="Ver Detalles" 
 //                       onClick={() => { setEmployeeSeleccionado(employee); setMostrarModalDetalle(true); }}
@@ -161,6 +165,7 @@
 //                       <Eye size={18} />
 //                     </button>
 //                     <button 
+//                       type="button"
 //                       className="action-btn edit" 
 //                       title="Editar" 
 //                       onClick={() => prepararEdicion(employee)}
@@ -168,6 +173,7 @@
 //                       <Edit size={18} />
 //                     </button>
 //                     <button 
+//                       type="button"
 //                       className="action-btn delete" 
 //                       title="Eliminar" 
 //                       onClick={() => eliminarEmpleado(employee.employee_id)}
@@ -226,6 +232,7 @@
 
 
 
+
 import { useState, useMemo, useEffect } from 'react';
 import { Plus, Search, Eye, Edit, Trash2 } from 'lucide-react';
 import { useEmployees } from '../hooks/useEmployees'; 
@@ -254,19 +261,32 @@ const EmployeePage = () => {
     
     if (window.confirm(mensaje)) {
       try {
+        // 1. Obtenemos el registro completo del empleado desde la API
+        const getResponse = await fetch(`http://localhost:3000/api/employees/${employee.employee_id}`);
+        if (!getResponse.ok) {
+          alert("No se pudieron obtener los datos completos del empleado para actualizar su estado.");
+          return;
+        }
+        const empleadoCompleto = await getResponse.json();
+
+        // 2. Modificamos únicamente la propiedad del estado
+        const empleadoActualizado = {
+          ...empleadoCompleto,
+          employee_status: nuevoEstado
+        };
+
+        // 3. Enviamos el registro completo para evitar errores de validación por campos obligatorios faltantes
         const response = await fetch(`http://localhost:3000/api/employees/${employee.employee_id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          // Enviamos únicamente el estado modificado para evitar conflictos de validación en el backend
-          body: JSON.stringify({
-            employee_status: nuevoEstado
-          })
+          body: JSON.stringify(empleadoActualizado)
         });
 
         if (response.ok) {
           await cargarEmpleados();
         } else {
-          alert("No se pudo actualizar el estado del empleado.");
+          const resultado = await response.json();
+          alert(resultado.error || "No se pudo actualizar el estado del empleado.");
         }
       } catch (error) {
         console.error("Error al cambiar estado:", error);
