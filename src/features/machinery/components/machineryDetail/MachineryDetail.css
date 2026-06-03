@@ -1,176 +1,368 @@
-/* Estilos base del modal */
+/* Animaciones para las transiciones del modal */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fondo oscuro detrás del modal con difuminado moderno */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1100;
+    animation: fadeIn 0.2s ease-out;
 }
 
+/* Contenedor del Modal con límites de altura y distribución flexible */
 .modal-container {
     background-color: white;
-    border-radius: 12px;
+    border-radius: 16px;
     width: 90%;
-    max-width: 550px;
-    /* 🌟 NUEVO: Altura máxima controlada para que nunca se desborde de la pantalla */
+    max-width: 640px; /* Ancho idóneo para el Grid simétrico */
     max-height: 85vh;
     overflow: hidden;
-    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-    /* 🌟 NUEVO: Columna flex para fijar el Header y los Botones */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Header Naranja Luna Llena */
+/* Cabecera del modal con título perfectamente centrado */
 .modal-header {
     background-color: #ff6b35;
-    padding: 20px 24px;
+    padding: 18px 24px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    position: relative;
     color: white;
-    /* 🌟 NUEVO: Evita que el encabezado colapse */
     flex-shrink: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-header h2 {
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 700;
     margin: 0;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
 }
 
+/* Botón de cerrar posicionado absolutamente a la derecha */
 .close-button {
-    background: none;
+    position: absolute;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.15);
     border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
     cursor: pointer;
     color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
 }
 
-/* Contenido y Grid */
+.close-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+/* Contenido Principal con sobreescritura de App.css */
 .modal-content {
     padding: 24px;
-    /* 🌟 NUEVO: Toma el espacio restante y genera la barra de scroll si la info es muy larga */
     flex-grow: 1;
     overflow-y: auto;
+    background-color: #ffffff;
+    width: 100% !important; /* Fuerza a ocupar todo el ancho del modal-container */
+    max-width: 100% !important;
+    border-radius: 0 !important; /* Elimina bordes redondeados globales heredados */
+    box-shadow: none !important; /* Elimina sombras globales heredadas */
 }
 
+/* Cuadrícula simétrica para la información */
 .detail-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
 }
 
-/* Elementos de información */
-.label-text {
-    font-size: 12px;
-    color: #6b7280;
-    margin-bottom: 2px;
-    font-weight: 500;
-}
-
-.value-text {
-    font-size: 14px;
-    color: #111827;
-    font-weight: 600;
-}
-
-.value-text-large {
-    font-size: 18px;
-}
-
-.doc-type-tag {
-    color: #ff6b35;
-    margin-right: 4px;
-}
-
-/* Secciones específicas */
+/* Clases auxiliares para columnas completas */
 .full-width {
     grid-column: span 2;
 }
 
-.user-avatar-section {
+/* Encabezado principal del equipo (dentro del contenido) */
+.machinery-main-header {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
-    border-bottom: 1px solid #f3f4f6;
-    padding-bottom: 15px;
+    justify-content: center;
+    text-align: center;
+    padding: 12px 0 20px 0;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 8px;
 }
 
 .avatar-icon-wrapper {
     background-color: #fff7ed;
-    padding: 10px;
-    border-radius: 50%; /* 🌟 CORREGIDO: Sintaxis estándar kebab-case para CSS limpio */
+    padding: 16px;
+    border-radius: 50%;
     color: #ff6b35;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px -1px rgba(255, 107, 53, 0.1), 0 2px 4px -1px rgba(255, 107, 53, 0.06);
+    margin-bottom: 12px;
 }
 
+.machinery-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 6px 0;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+.machinery-code {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    background-color: #f1f5f9;
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+/* Tarjetas individuales de datos */
+.info-card {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.info-card:hover {
+    border-color: #ff6b35;
+    background-color: white;
+    box-shadow: 0 10px 15px -3px rgba(255, 107, 53, 0.05), 0 4px 6px -2px rgba(255, 107, 53, 0.03);
+    transform: translateY(-2px);
+}
+
+/* Encabezado interno de cada tarjeta de información */
 .info-item-header {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 4px;
 }
 
-/* Estados */
+.info-item-header svg {
+    color: #ff6b35;
+    flex-shrink: 0;
+}
+
+/* Tipografía de las etiquetas y valores */
+.label-text {
+    font-size: 11px;
+    color: #64748b;
+    margin: 0;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.value-text {
+    font-size: 14px;
+    color: #0f172a;
+    font-weight: 600;
+    margin: 0;
+}
+
+.value-text strong {
+    font-size: 16px;
+    color: #0f172a;
+}
+
+/* Formato de listas en valores (Propiedades del equipo) */
+.value-text-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-weight: 500;
+}
+
+.value-text-list span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #334155;
+}
+
+/* Tarjeta específica para la descripción general */
+.description-card {
+    background-color: #f8fafc;
+    border-style: dashed;
+    gap: 10px;
+}
+
+.description-card:hover {
+    border-style: solid;
+}
+
+.description-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #475569;
+    font-weight: 400;
+    white-space: pre-line;
+}
+
+/* Etiquetas de Estados */
 .status-badge {
     padding: 6px 12px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: bold;
-    display: inline-block; 
-    margin-bottom: 5px; 
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-flex; 
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
-.status-active {
-    background-color: #dcfce7;
-    color: #166534;
+/* Mapeo de colores para estados */
+.status-disponible, .status-activo, .status-active, .status-disponibles {
+    background-color: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
 }
 
-.status-inactive {
-    background-color: #fee2e2;
-    color: #991b1b;
+.status-en-mantenimiento, .status-mantenimiento, .status-revision {
+    background-color: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fde68a;
 }
 
-/* Botones / Footer del Detalle */
+.status-alquilado, .status-ocupado {
+    background-color: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+}
+
+.status-inactivo, .status-fuera-de-servicio, .status-baja, .status-inactive {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+/* Botones en el pie de página (Footer) */
 .action-buttons {
-    /* 🌟 CORREGIDO: Fusionadas las dos definiciones duplicadas que tenías */
-    margin-top: 16px; 
     display: flex;
-    gap: 12px;
-    border-top: 1px solid #f3f4f6; 
-    padding: 16px 24px; /* Padding interno balanceado */
-    /* 🌟 NUEVO: Mantiene el bloque de botones fijo abajo en blanco */
+    gap: 16px;
+    border-top: 1px solid #f1f5f9; 
+    padding: 16px 24px;
     flex-shrink: 0;
-    background-color: white;
+    background-color: #f8fafc;
 }
 
 .btn-primary {
     flex: 1;
-    padding: 12px;
-    border-radius: 8px;
+    padding: 12px 20px;
+    border-radius: 10px;
     border: none;
     background-color: #ff6b35;
     color: white;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 14px;
     cursor: pointer;
-    transition: 0.2s;
+    transition: all 0.2s ease;
     display: flex;            
     justify-content: center;   
     align-items: center;      
     text-align: center;
+    box-shadow: 0 4px 10px rgba(255, 107, 53, 0.2);
+}
+
+.btn-primary:hover {
+    background-color: #fa5a1e;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(255, 107, 53, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 6px rgba(255, 107, 53, 0.2);
 }
 
 .btn-secondary {
     flex: 1;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #d1d5db;
-    background-color: #f9fafb;
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    background-color: white;
     font-weight: 600;
+    font-size: 14px;
     cursor: pointer;
-    color: #374151;
+    color: #475569;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #f8fafc;
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+
+/* Comportamiento responsivo en pantallas más pequeñas (teléfonos) */
+@media (max-width: 640px) {
+    .modal-container {
+        width: 95%;
+        max-height: 90vh;
+    }
+    
+    .modal-content {
+        padding: 16px;
+    }
+
+    .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .full-width {
+        grid-column: span 1;
+    }
+    
+    .action-buttons {
+        padding: 16px;
+        gap: 10px;
+    }
 }

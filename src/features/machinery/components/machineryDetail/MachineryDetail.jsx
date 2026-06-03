@@ -27,7 +27,7 @@ const MachineryDetail = ({ isOpen, onClose, machinery, onEdit }) => {
         {/* Header del Modal */}
         <div className="modal-header">
           <h2>Detalle de la Maquinaria</h2>
-          <button onClick={onClose} className="close-button">
+          <button onClick={onClose} className="close-button" aria-label="Cerrar">
             <X size={20} />
           </button>
         </div>
@@ -36,89 +36,85 @@ const MachineryDetail = ({ isOpen, onClose, machinery, onEdit }) => {
         <div className="modal-content">
           <div className="detail-grid">
             
-            {/* Nombre e ID de la Maquinaria */}
-            <div className="full-width user-avatar-section">
+            {/* Nombre e ID de la Maquinaria - Destacado y Centrado */}
+            <div className="machinery-main-header full-width">
               <div className="avatar-icon-wrapper">
-                <Wrench size={24} />
+                <Wrench size={32} />
               </div>
-              <div>
-                <p className="label-text">Nombre del Equipo (Código Interno: #{machinery.machinery_id})</p>
-                <p className="value-text value-text-large">
-                  {machinery.machinery_name}
-                </p>
-              </div>
+              <h1 className="machinery-title">{machinery.machinery_name}</h1>
+              <span className="machinery-code">Código Interno: #{machinery.machinery_id}</span>
             </div>
             
             {/* Categoría */}
-            <div>
+            <div className="info-card">
               <div className="info-item-header">
-                <Cpu size={16} color="#9ca3af" />
+                <Cpu size={16} />
                 <p className="label-text">Categoría / Tipo</p>
               </div>
               <p className="value-text">{machinery.category_name || 'Sin categoría asignada'}</p>
             </div>
 
             {/* Cantidad disponible en Inventario */}
-            <div>
+            <div className="info-card">
               <div className="info-item-header">
-                <Layers size={16} color="#9ca3af" />
+                <Layers size={16} />
                 <p className="label-text">Stock Disponible</p>
               </div>
               <p className="value-text"><strong>{machinery.stock_quantity}</strong> unidades</p>
             </div>
 
             {/* Precio de Venta */}
-            <div>
+            <div className="info-card">
               <div className="info-item-header">
-                <DollarSign size={16} color="#9ca3af" />
+                <DollarSign size={16} />
                 <p className="label-text">Precio de Venta</p>
               </div>
               <p className="value-text">{formatCurrency(machinery.sale_price)}</p>
             </div>
 
             {/* Precio de Alquiler Diario */}
-            <div>
+            <div className="info-card">
               <div className="info-item-header">
-                <DollarSign size={16} color="#9ca3af" />
+                <DollarSign size={16} />
                 <p className="label-text">Alquiler por Día</p>
               </div>
               <p className="value-text">{formatCurrency(machinery.daily_rental_price)}</p>
             </div>
 
             {/* Peso */}
-            <div>
+            <div className="info-card">
               <div className="info-item-header">
-                <Scale size={16} color="#9ca3af" />
+                <Scale size={16} />
                 <p className="label-text">Peso Neto</p>
               </div>
               <p className="value-text">{machinery.weight_kg ? `${machinery.weight_kg} Kg` : 'No especificado'}</p>
             </div>
 
             {/* Próxima Revisión */}
-            <div>
+            <div className="info-card">
               <div className="info-item-header">
-                <Calendar size={16} color="#9ca3af" />
+                <Calendar size={16} />
                 <p className="label-text">Próxima Revisión Técnica</p>
               </div>
               <p className="value-text">{formatDate(machinery.next_revision_date)}</p>
             </div>
 
             {/* Atributos Booleanos (Motorizado / Propiedad) */}
-            <div>
+            <div className="info-card">
               <div className="info-item-header">
-                <Wrench size={16} color="#9ca3af" />
+                <Wrench size={16} />
                 <p className="label-text">Propiedades del Equipo</p>
               </div>
-              <p className="value-text" style={{ fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div className="value-text value-text-list">
                 <span>⚡ <strong>Motorizado:</strong> {machinery.is_motorized ? 'Sí' : 'No'}</span>
                 <span>🏢 <strong>Origen:</strong> {machinery.is_owned ? 'Propio de la Empresa' : 'Subcontratado / Externo'}</span>
-              </p>
+              </div>
             </div>
 
             {/* Estado actual en el sistema */}
-            <div>
+            <div className="info-card">
               <div className="info-item-header">
-                <Activity size={16} color="#9ca3af" />
+                <Activity size={16} />
                 <p className="label-text">Estado Actual</p>
               </div>
               <span className={`status-badge status-${machinery.status_name?.toLowerCase().replace(/\s+/g, '-')}`}>
@@ -127,12 +123,12 @@ const MachineryDetail = ({ isOpen, onClose, machinery, onEdit }) => {
             </div>
 
             {/* Descripción Completa */}
-            <div className="full-width">
+            <div className="full-width info-card description-card">
               <div className="info-item-header">
-                <FileText size={16} color="#9ca3af" />
+                <FileText size={16} />
                 <p className="label-text">Descripción y Especificaciones Técnicas</p>
               </div>
-              <p className="value-text" style={{ whiteSpace: 'pre-line', fontStyle: machinery.machinery_description ? 'normal' : 'italic' }}>
+              <p className="value-text description-text" style={{ fontStyle: machinery.machinery_description ? 'normal' : 'italic' }}>
                 {machinery.machinery_description || 'Sin especificaciones o descripciones adicionales registradas.'}
               </p>
             </div>

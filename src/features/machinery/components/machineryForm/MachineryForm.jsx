@@ -1,11 +1,50 @@
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { useMachinery } from "../../hooks/useMachinery";
 import './MachineryForm.css'; 
 
-// 🌟 RECIBIMOS categories Y statuses AQUÍ EN LAS PROPS
-const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, categories = [], statuses = [] }) => {
-  // Consumimos solo las funciones de acción del hook maestro
+const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
   const { crearMaquinaria, actualizarMaquinaria } = useMachinery();
+
+  const [categories, setCategories] = useState([]);
+  const [statuses, setStatuses] = useState([]);
+  const [errorForm, setErrorForm] = useState('');
+
+  // Carga controlada: Solo cuando el modal se abre e interactúa con tus endpoints reales
+  useEffect(() => {
+    const cargarOpcionesDelFormulario = async () => {
+      try {
+        setErrorForm('');
+        
+        // 🌟 CORREGIDO: URLs idénticas a tus endpoints del backend
+        const [resCategories, resStatuses] = await Promise.all([
+          fetch('http://localhost:3000/api/machine-categories'),
+          fetch('http://localhost:3000/api/machine-statuses')
+        ]);
+
+        if (resCategories.ok) {
+          const datosCat = await resCategories.json();
+          setCategories(datosCat);
+        } else {
+          console.error("Error al obtener las categorías (404/500)");
+        }
+
+        if (resStatuses.ok) {
+          const datosStat = await resStatuses.json();
+          setStatuses(datosStat);
+        } else {
+          console.error("Error al obtener los estados de maquinaria (404/500)");
+        }
+      } catch (error) {
+        console.error("Error de conexión al cargar opciones de formulario:", error);
+        setErrorForm('No se pudieron cargar los listados del formulario.');
+      }
+    };
+
+    if (isOpen) {
+      cargarOpcionesDelFormulario();
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -19,6 +58,7 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, cate
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorForm('');
     
     const dataToSend = {
       status_id: parseInt(formData.status_id),
@@ -31,10 +71,9 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, cate
       next_revision_date: formData.next_revision_date || null,
       weight_kg: formData.weight_kg ? parseFloat(formData.weight_kg) : null,
       is_motorized: !!formData.is_motorized,
-      is_owned: !!formData.is_owned
+      is_owned: formData.is_owned ?? true
     };
 
-    // 🌟 CORREGIDO: Usamos un ternario directo para evitar el aviso de reasignación del linter
     const exito = isEditing 
       ? await actualizarMaquinaria(formData.machinery_id, dataToSend)
       : await crearMaquinaria(dataToSend);
@@ -42,6 +81,8 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, cate
     if (exito) {
       alert(isEditing ? '¡Maquinaria actualizada con éxito!' : '¡Maquinaria registrada con éxito!');
       onClose(); 
+    } else {
+      setErrorForm('Ocurrió un problema en el servidor al intentar guardar la maquinaria.');
     }
   };
 
@@ -57,6 +98,8 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, cate
             <X size={20} />
           </button>
         </div>
+
+        {errorForm && <div className="form-error-alert" style={{ color: 'red', padding: '10px 20px', fontWeight: 'bold' }}>{errorForm}</div>}
 
         <form onSubmit={handleSubmit} className="form-body">
           <div className="form-grid">
@@ -83,7 +126,6 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, cate
               />
             </div>
 
-            {/* Selector de Categoría */}
             <div>
               <label className="form-label">Categoría *</label>
               <select 
@@ -97,7 +139,6 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, cate
                 {categories.map((cat) => {
                   const id = cat.category_id || cat.machinery_category_id;
                   const name = cat.category_name || cat.machinery_category_name;
-
                   return (
                     <option key={id} value={id}>
                       {name}
@@ -107,7 +148,6 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, cate
               </select>
             </div>
 
-            {/* Selector de Estado */}
             <div>
               <label className="form-label">Estado de la Máquina *</label>
               <select 
