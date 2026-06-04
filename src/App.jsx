@@ -10,6 +10,7 @@ import MachineryCategoryPage from './features/machinery_category/pages/Machinery
 import MachineryPage from './features/machinery/pages/MachineryPage';
 import PositionPage from './features/positions/pages/PositionPage';
 import EmployeePage from './features/employees/pages/EmployeePage';
+
 import LoginPage from './features/login/pages/LoginPage';
 // import PurchaseInvoicePage from './features/purchase_invoices/pages/PurchaseInvoicePage/PurchaseInvoicePage';
 import PurchaseInvoicePage from './features/purchase_invoices/pages/PurchaseInvoicePage';
@@ -19,14 +20,14 @@ function App() {
 
   // Estado login
   const [isAuthenticated, setIsAuthenticated] =
-    useState(false);
+  useState(
+    !!localStorage.getItem("token")
+  );
 
   // Estado sidebar
-  const [currentView, setCurrentView] =
-    useState('dashboard');
+  const [currentView, setCurrentView] = useState('dashboard');
 
-  const [collapsed, setCollapsed] =
-    useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   // Login exitoso
   const handleLogin = () => {
@@ -35,6 +36,7 @@ function App() {
 
   // Logout
   const handleLogout = () => {
+    localStorage.removeItem("token");
     setIsAuthenticated(false);
   };
 

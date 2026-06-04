@@ -19,7 +19,14 @@ export const useSuppliers = () => {
     setError(null);
     try {
       // Llamamos a la ruta optimizada para la tabla que creamos en el backend
-      const response = await fetch('http://localhost:3000/api/suppliers'); 
+      const token = localStorage.getItem("token");
+      const response = await fetch('http://localhost:3000/api/suppliers',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      ); 
       
       if (!response.ok) {
         throw new Error('No se pudo conectar con el servidor');
@@ -43,9 +50,10 @@ export const useSuppliers = () => {
    */
   const toggleProveedorEstado = async (id, estadoActual) => {
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(`http://localhost:3000/api/suppliers/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ 
           supplier_status: !estadoActual // Invertimos el booleano
         })
@@ -64,15 +72,18 @@ export const useSuppliers = () => {
    * 3. ELIMINAR Proveedor (Conexión Real)
    */
   const eliminarProveedor = async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este proveedor?')) {
+    if (window.confirm('¿Estás seguro de que deseas eliminar este proveedor?')){
       try {
+        const token = localStorage.getItem("token");
         const response = await fetch(`http://localhost:3000/api/suppliers/${id}`, {
-          method: 'DELETE'
+          method: 'DELETE',
+          headers: {Authorization: `Bearer ${token}`}
         });
 
         if (response.ok) {
           // Filtramos el estado local para una respuesta visual instantánea
           setSuppliers(prev => prev.filter(c => c.customer_id !== id));
+          await cargarProveedores();
         } else {
           alert("No se pudo eliminar el proveedor.");
         }

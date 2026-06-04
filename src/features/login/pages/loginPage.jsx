@@ -1,4 +1,4 @@
-import "./LoginPage.css";
+import "./loginPage.css";
 
 import { useState } from "react";
 import { Mail, Lock } from "lucide-react";
@@ -28,12 +28,10 @@ function LoginPage({ onLogin }) {
 
       console.log(response.data);
 
-      /*
-        aquí después puedes guardar:
-        - token
-        - usuario
-        - rol
-      */
+      localStorage.setItem(
+        "token",
+        response.data.token
+      );
 
       onLogin();
 
