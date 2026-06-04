@@ -121,6 +121,11 @@ const menuItems = [
         icon: Users,
         key: "empleados",
       },
+      {
+        name: "Facturas de Compra",
+        icon: FileText,
+        key: "facturas_compra",
+      },
     ]
   },
 ];
