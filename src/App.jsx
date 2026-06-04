@@ -10,10 +10,10 @@ import MachineryCategoryPage from './features/machinery_category/pages/Machinery
 import MachineryPage from './features/machinery/pages/MachineryPage';
 import PositionPage from './features/positions/pages/PositionPage';
 import EmployeePage from './features/employees/pages/EmployeePage';
+import PurchaseInvoicePage from './features/purchase_invoices/pages/PurchaseInvoicePage';
+import SubRentalPage from './features/sub_rental/pages/SubRentalPage';
 
 import LoginPage from './features/login/pages/LoginPage';
-// import PurchaseInvoicePage from './features/purchase_invoices/pages/PurchaseInvoicePage/PurchaseInvoicePage';
-import PurchaseInvoicePage from './features/purchase_invoices/pages/PurchaseInvoicePage';
 import './App.css';
 
 function App() {
@@ -78,6 +78,9 @@ function App() {
 
       case 'facturas_compra':
         return <PurchaseInvoicePage />;
+
+      case 'subalquiler':
+        return <SubRentalPage />;
 
       default:
         return (
