@@ -61,6 +61,12 @@ const menuItems = [
         icon: FileText,
         key: "facturas_compra",
       },
+      {
+        name: "SubAlquileres",
+        icon: FileText,
+        key: "subalquileres",
+      },
+
     ]
   },
 
