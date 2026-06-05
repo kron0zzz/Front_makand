@@ -2,13 +2,8 @@ import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import './MachineryForm.css'; 
 
-<<<<<<< Updated upstream
-const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, onSuccess }) => {
-  const { crearMaquinaria, actualizarMaquinaria } = useMachinery();
-=======
 // 🛠️ ACTUALIZADO: Ahora recibe crearMaquinaria y actualizarMaquinaria por props desde el padre
 const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crearMaquinaria, actualizarMaquinaria }) => {
->>>>>>> Stashed changes
 
   const [categories, setCategories] = useState([]);
   const [statuses, setStatuses] = useState([]);
@@ -43,21 +38,13 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crea
     }
   }, [isOpen]);
 
-<<<<<<< Updated upstream
-  // 🛠️ 2. CORRECCIÓN CLAVE: Si venimos de edición y faltan los IDs, los buscamos por el nombre de texto
-=======
   // 🛠️ 2. Auto-emparejar listas si la base de datos solo retorna texto en la edición
->>>>>>> Stashed changes
   useEffect(() => {
     if (isOpen && isEditing) {
       setFormData((prevData) => {
         const newData = { ...prevData };
         let huboCambio = false;
 
-<<<<<<< Updated upstream
-        // Si no hay ID de categoría pero sí tenemos el nombre de texto
-=======
->>>>>>> Stashed changes
         if (!newData.category_id && newData.category_name && categories.length > 0) {
           const encontrada = categories.find(c => 
             (c.category_name || c.machinery_category_name || '').toLowerCase() === newData.category_name.toLowerCase()
@@ -69,10 +56,6 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crea
           }
         }
 
-<<<<<<< Updated upstream
-        // Si no hay ID de estado pero sí tenemos el nombre de texto
-=======
->>>>>>> Stashed changes
         if (!newData.status_id && newData.status_name && statuses.length > 0) {
           const encontrado = statuses.find(s => 
             (s.status_name || '').toLowerCase() === newData.status_name.toLowerCase()
@@ -90,10 +73,7 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crea
 
   if (!isOpen) return null;
 
-<<<<<<< Updated upstream
-=======
   // Limpiador de formatos decimales de moneda
->>>>>>> Stashed changes
   const limpiarPrecioFormato = (valor) => {
     if (valor === undefined || valor === null || valor === '') return 0;
     const stringLimpio = valor.toString().replace(/\./g, '').replace(/,/g, '');
@@ -109,10 +89,7 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crea
         [name]: type === 'checkbox' ? checked : value
       };
 
-<<<<<<< Updated upstream
-=======
       // Control de cantidad si es motorizado
->>>>>>> Stashed changes
       if (name === 'is_motorized' && checked) {
         updatedData.stock_quantity = 1;
       }
@@ -145,7 +122,6 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crea
 
     if (exito) {
       alert(isEditing ? '¡Maquinaria actualizada con éxito!' : '¡Maquinaria registrada con éxito!');
-      if (onSuccess) await onSuccess(); 
       onClose(); 
     } else {
       setErrorForm('Ocurrió un problema en el servidor al intentar guardar la maquinaria.');

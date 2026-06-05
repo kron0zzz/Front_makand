@@ -37,18 +37,10 @@ const MachineryPage = () => {
     });
   }, [machineries, busqueda]);
 
-<<<<<<< Updated upstream
-  // 🛠️ Función auxiliar para limpiar ceros decimales innecesarios (ej: "600000.00" -> "600000")
-  const limpiarCerosDecimales = (valor) => {
-    if (valor === undefined || valor === null || valor === '') return '';
-    const numero = parseFloat(valor);
-    // Si al convertirlo a entero sigue siendo igual, quitamos los decimales.
-=======
   // Función auxiliar para limpiar ceros decimales innecesarios (ej: "600000.00" -> "600000")
   const limpiarCerosDecimales = (valor) => {
     if (valor === undefined || valor === null || valor === '') return '';
     const numero = parseFloat(valor);
->>>>>>> Stashed changes
     return numero % 1 === 0 ? numero.toString() : valor.toString();
   };
 
@@ -74,11 +66,7 @@ const MachineryPage = () => {
       machinery_name: machinery.machinery_name,
       is_motorized: machinery.is_motorized,
       
-<<<<<<< Updated upstream
-      // 🛠️ ACTUALIZADO: Limpiamos los precios para quitarle los .00 de la base de datos
-=======
       // Limpiamos los precios de los molestos ceros decimales (.00) del backend
->>>>>>> Stashed changes
       sale_price: limpiarCerosDecimales(machinery.sale_price),
       daily_rental_price: limpiarCerosDecimales(machinery.daily_rental_price),
       
@@ -199,15 +187,11 @@ const MachineryPage = () => {
         </table>
       </div>
 
-      {/* 🛠️ Componente Modal del Formulario (Crear / Editar) */}
+      {/* 🛠 * Componente Modal del Formulario (Crear / Editar) */}
       {/* Pasamos las operaciones directamente como props para compartir el mismo estado reactivo */}
       <MachineryForm 
         isOpen={mostrarModalForm} 
         onClose={() => setMostrarModalForm(false)}
-<<<<<<< Updated upstream
-        onSuccess={cargarMaquinarias} 
-=======
->>>>>>> Stashed changes
         formData={formData}
         setFormData={setFormData}
         isEditing={isEditing}
