@@ -12,7 +12,8 @@ import PositionPage from './features/positions/pages/PositionPage';
 import EmployeePage from './features/employees/pages/EmployeePage';
 
 import LoginPage from './features/login/pages/LoginPage';
-
+// import PurchaseInvoicePage from './features/purchase_invoices/pages/PurchaseInvoicePage/PurchaseInvoicePage';
+import PurchaseInvoicePage from './features/purchase_invoices/pages/PurchaseInvoicePage';
 import './App.css';
 
 function App() {
@@ -74,6 +75,9 @@ function App() {
 
       case 'empleados':
         return <EmployeePage />;
+
+      case 'facturas_compra':
+        return <PurchaseInvoicePage />;
 
       default:
         return (

@@ -56,6 +56,11 @@ const menuItems = [
         icon: Building,
         key: "proveedores",
       },
+      {
+        name: "Facturas de Compra",
+        icon: FileText,
+        key: "facturas_compra",
+      },
     ]
   },
 
@@ -121,6 +126,7 @@ const menuItems = [
         icon: Users,
         key: "empleados",
       },
+      
     ]
   },
 ];
