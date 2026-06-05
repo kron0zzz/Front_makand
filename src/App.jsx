@@ -79,7 +79,7 @@ function App() {
       case 'facturas_compra':
         return <PurchaseInvoicePage />;
 
-      case 'subalquiler':
+      case 'subalquileres':
         return <SubRentalPage />;
 
       default:
