@@ -1,22 +1,19 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { useMachinery } from "../../hooks/useMachinery";
 import './MachineryForm.css'; 
 
-const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
-  const { crearMaquinaria, actualizarMaquinaria } = useMachinery();
+// 🛠️ ACTUALIZADO: Ahora recibe crearMaquinaria y actualizarMaquinaria por props desde el padre
+const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crearMaquinaria, actualizarMaquinaria }) => {
 
   const [categories, setCategories] = useState([]);
   const [statuses, setStatuses] = useState([]);
   const [errorForm, setErrorForm] = useState('');
 
-  // Carga controlada: Solo cuando el modal se abre e interactúa con tus endpoints reales
+  // 1. Carga inicial de opciones desde el backend
   useEffect(() => {
     const cargarOpcionesDelFormulario = async () => {
       try {
         setErrorForm('');
-        
-        // 🌟 CORREGIDO: URLs idénticas a tus endpoints del backend
         const [resCategories, resStatuses] = await Promise.all([
           fetch('http://localhost:3000/api/machine-categories'),
           fetch('http://localhost:3000/api/machine-statuses')
@@ -25,18 +22,13 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing }) =>
         if (resCategories.ok) {
           const datosCat = await resCategories.json();
           setCategories(datosCat);
-        } else {
-          console.error("Error al obtener las categorías (404/500)");
         }
-
         if (resStatuses.ok) {
           const datosStat = await resStatuses.json();
           setStatuses(datosStat);
-        } else {
-          console.error("Error al obtener los estados de maquinaria (404/500)");
         }
       } catch (error) {
-        console.error("Error de conexión al cargar opciones de formulario:", error);
+        console.error("Error al cargar opciones de formulario:", error);
         setErrorForm('No se pudieron cargar los listados del formulario.');
       }
     };
@@ -46,13 +38,63 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing }) =>
     }
   }, [isOpen]);
 
+  // 🛠️ 2. Auto-emparejar listas si la base de datos solo retorna texto en la edición
+  useEffect(() => {
+    if (isOpen && isEditing) {
+      setFormData((prevData) => {
+        const newData = { ...prevData };
+        let huboCambio = false;
+
+        if (!newData.category_id && newData.category_name && categories.length > 0) {
+          const encontrada = categories.find(c => 
+            (c.category_name || c.machinery_category_name || '').toLowerCase() === newData.category_name.toLowerCase()
+          );
+          if (encontrada) {
+            const id = encontrada.category_id || encontrada.machinery_category_id;
+            newData.category_id = id ? id.toString() : '';
+            huboCambio = true;
+          }
+        }
+
+        if (!newData.status_id && newData.status_name && statuses.length > 0) {
+          const encontrado = statuses.find(s => 
+            (s.status_name || '').toLowerCase() === newData.status_name.toLowerCase()
+          );
+          if (encontrado) {
+            newData.status_id = encontrado.status_id ? encontrado.status_id.toString() : '';
+            huboCambio = true;
+          }
+        }
+
+        return huboCambio ? newData : prevData;
+      });
+    }
+  }, [isOpen, isEditing, categories, statuses, setFormData]);
+
   if (!isOpen) return null;
+
+  // Limpiador de formatos decimales de moneda
+  const limpiarPrecioFormato = (valor) => {
+    if (valor === undefined || valor === null || valor === '') return 0;
+    const stringLimpio = valor.toString().replace(/\./g, '').replace(/,/g, '');
+    return parseFloat(stringLimpio) || 0;
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({ 
-      ...formData, 
-      [name]: type === 'checkbox' ? checked : value 
+    
+    setFormData((prevData) => {
+      const updatedData = {
+        ...prevData,
+        [name]: type === 'checkbox' ? checked : value
+      };
+
+      // Control de cantidad si es motorizado
+      if (name === 'is_motorized' && checked) {
+        updatedData.stock_quantity = 1;
+      }
+
+      return updatedData;
     });
   };
 
@@ -65,8 +107,8 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing }) =>
       category_id: parseInt(formData.category_id),
       machinery_name: formData.machinery_name,
       machinery_description: formData.machinery_description || '',
-      sale_price: parseFloat(formData.sale_price),
-      daily_rental_price: parseFloat(formData.daily_rental_price),
+      sale_price: limpiarPrecioFormato(formData.sale_price),
+      daily_rental_price: limpiarPrecioFormato(formData.daily_rental_price),
       stock_quantity: parseInt(formData.stock_quantity),
       next_revision_date: formData.next_revision_date || null,
       weight_kg: formData.weight_kg ? parseFloat(formData.weight_kg) : null,
@@ -131,7 +173,7 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing }) =>
               <select 
                 name="category_id" 
                 className="form-input"
-                value={formData.category_id || ''} 
+                value={formData.category_id ? formData.category_id.toString() : ''} 
                 onChange={handleChange}
                 required
               >
@@ -140,7 +182,7 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing }) =>
                   const id = cat.category_id || cat.machinery_category_id;
                   const name = cat.category_name || cat.machinery_category_name;
                   return (
-                    <option key={id} value={id}>
+                    <option key={id?.toString()} value={id?.toString()}>
                       {name}
                     </option>
                   );
@@ -153,13 +195,13 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing }) =>
               <select 
                 name="status_id" 
                 className="form-input"
-                value={formData.status_id || ''} 
+                value={formData.status_id ? formData.status_id.toString() : ''} 
                 onChange={handleChange}
                 required
               >
                 <option value="">Seleccione un estado</option>
                 {statuses.map((stat) => (
-                  <option key={stat.status_id} value={stat.status_id}>
+                  <option key={stat.status_id?.toString()} value={stat.status_id?.toString()}>
                     {stat.status_name}
                   </option>
                 ))}
@@ -172,10 +214,11 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing }) =>
                 name="stock_quantity" 
                 type="number" 
                 min="0"
-                className="form-input" 
+                className={`form-input ${formData.is_motorized ? 'form-input-disabled' : ''}`} 
                 value={formData.stock_quantity ?? ''} 
                 onChange={handleChange} 
                 required 
+                disabled={!!formData.is_motorized} 
               />
             </div>
 
@@ -196,8 +239,7 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing }) =>
               <label className="form-label">Precio de Venta ($) *</label>
               <input 
                 name="sale_price" 
-                type="number" 
-                min="0"
+                type="text" 
                 className="form-input" 
                 value={formData.sale_price ?? ''} 
                 onChange={handleChange} 
@@ -209,8 +251,7 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing }) =>
               <label className="form-label">Precio Alquiler Diario ($) *</label>
               <input 
                 name="daily_rental_price" 
-                type="number" 
-                min="0"
+                type="text" 
                 className="form-input" 
                 value={formData.daily_rental_price ?? ''} 
                 onChange={handleChange} 
