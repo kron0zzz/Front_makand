@@ -6,7 +6,8 @@
 // import './MachineryPage.css';
 
 // const MachineryPage = () => {
-//   const { machineries, cargarMaquinarias, eliminarMaquinaria } = useMachinery();
+//   // 🌟 EXTRAEMOS LAS CATEGORÍAS Y ESTADOS AQUÍ TAMBIÉN
+//   const { machineries, categories, statuses, cargarMaquinarias, eliminarMaquinaria } = useMachinery();
 //   const [busqueda, setBusqueda] = useState('');
 //   const [formData, setFormData] = useState({});
 //   const [isEditing, setIsEditing] = useState(false);
@@ -18,7 +19,6 @@
 //     cargarMaquinarias();
 //   }, [cargarMaquinarias]);
 
-//   // Filtro inteligente por nombre de maquinaria o nombre de categoría
 //   const machineriesFiltrados = useMemo(() => {
 //     const datos = Array.isArray(machineries) ? machineries : [];
 //     const termino = busqueda.toLowerCase();
@@ -151,12 +151,15 @@
 //         </table>
 //       </div>
 
+//       {/* 🌟 AQUÍ LE PASAMOS LAS CATEGORÍAS Y ESTADOS DIRECTAMENTE POR PROPS */}
 //       <MachineryForm 
 //         isOpen={mostrarModalForm} 
-//         onClose={async () => { setMostrarModalForm(false); await cargarMaquinarias(); }}
+//         onClose={() => setMostrarModalForm(false)}
 //         formData={formData}
 //         setFormData={setFormData}
 //         isEditing={isEditing}
+//         categories={categories}
+//         statuses={statuses}
 //       />
       
 //       <MachineryDetail 
@@ -181,16 +184,17 @@
 
 
 
+
 import { useState, useMemo, useEffect } from 'react';
 import { Plus, Search, Eye, Edit, Trash2 } from 'lucide-react';
 import { useMachinery } from '../hooks/useMachinery'; 
-import MachineryForm from '../components/machineryForm/MachineryForm';
+import MachineryForm from '../components/machineryForm/MachineryForm'; 
 import MachineryDetail from '../components/machineryDetail/MachineryDetail';
 import './MachineryPage.css';
 
 const MachineryPage = () => {
-  // 🌟 EXTRAEMOS LAS CATEGORÍAS Y ESTADOS AQUÍ TAMBIÉN
-  const { machineries, categories, statuses, cargarMaquinarias, eliminarMaquinaria } = useMachinery();
+  const { machineries, cargarMaquinarias, eliminarMaquinaria } = useMachinery();
+  
   const [busqueda, setBusqueda] = useState('');
   const [formData, setFormData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
@@ -198,21 +202,24 @@ const MachineryPage = () => {
   const [mostrarModalDetalle, setMostrarModalDetalle] = useState(false);
   const [machinerySeleccionado, setMachinerySeleccionado] = useState(null);
 
+  // Dispara la carga inicial de datos de la tabla al montar el componente
   useEffect(() => {
     cargarMaquinarias();
   }, [cargarMaquinarias]);
 
+  // Filtro inteligente optimizado por nombre de maquinaria o nombre de categoría
   const machineriesFiltrados = useMemo(() => {
     const datos = Array.isArray(machineries) ? machineries : [];
     const termino = busqueda.toLowerCase();
     
     return datos.filter(m => {
-      const nombreMaquina = `${m.machinery_name}`.toLowerCase();
+      const nombreMaquina = `${m.machinery_name || ''}`.toLowerCase();
       const nombreCategoria = `${m.category_name || ''}`.toLowerCase();
       return nombreMaquina.includes(termino) || nombreCategoria.includes(termino);
     });
   }, [machineries, busqueda]);
 
+  // Prepara el estado del formulario con los datos existentes para la edición
   const prepararEdicion = (machinery) => {
     setIsEditing(true);
     setFormData({
@@ -234,12 +241,14 @@ const MachineryPage = () => {
 
   return (
     <div className="page-container">
+      {/* Encabezado de la Sección */}
       <div className="header-container">
         <div className="header-text">
           <h1>Maquinaria</h1>
           <p>Gestión de inventario de maquinaria - Makand</p>
         </div>
 
+        {/* Acciones Superiores: Búsqueda y Botón de Registro */}
         <div className="header-actions">
           <div className="search-container-small">
             <Search size={18} color="#9ca3af" />
@@ -271,6 +280,7 @@ const MachineryPage = () => {
         </div>
       </div>
 
+      {/* Tabla de Datos de Maquinarias */}
       <div className="table-wrapper">
         <table className="custom-table">
           <thead>
@@ -334,17 +344,16 @@ const MachineryPage = () => {
         </table>
       </div>
 
-      {/* 🌟 AQUÍ LE PASAMOS LAS CATEGORÍAS Y ESTADOS DIRECTAMENTE POR PROPS */}
+      {/* Componente Modal del Formulario (Crear / Editar) */}
       <MachineryForm 
         isOpen={mostrarModalForm} 
-        onClose={() => setMostrarModalForm(false)}
+        onClose={async () => { setMostrarModalForm(false); await cargarMaquinarias(); }}
         formData={formData}
         setFormData={setFormData}
         isEditing={isEditing}
-        categories={categories}
-        statuses={statuses}
       />
       
+      {/* Componente Modal del Detalle Técnico */}
       <MachineryDetail 
         isOpen={mostrarModalDetalle}
         onClose={() => setMostrarModalDetalle(false)}
