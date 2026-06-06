@@ -13,7 +13,7 @@ import EmployeePage from './features/employees/pages/EmployeePage';
 import PurchaseInvoicePage from './features/purchase_invoices/pages/PurchaseInvoicePage';
 import SubRentalPage from './features/sub_rental/pages/SubRentalPage';
 
-import LoginPage from './features/login/pages/LoginPage';
+import LoginPage from './features/login/pages/loginPage';
 import './App.css';
 
 function App() {
