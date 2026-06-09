@@ -108,6 +108,19 @@ const menuItems = [
           },
         ]
       },
+      {
+        name: "Pedidos",
+        icon: FileText,
+        key: "pedido-parent",
+
+        submenu: [
+          {
+            name: "Pedidos",
+            icon: FileText,
+            key: "pedidos",
+          }
+        ]
+      },
     ]
 
     

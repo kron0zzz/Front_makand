@@ -1,24 +1,28 @@
-const API_URL = "http://localhost:3000/api/orders";
+const API_URL =
+  "http://localhost:3000/api/orders";
 
 export const orderService = {
 
-  // Obtener todos los pedidos completos
-  obtenerTodos: async () => {
+  // Tabla principal
 
-    const token = localStorage.getItem("token");
+  obtenerTabla: async () => {
+
+    const token =
+      localStorage.getItem("token");
 
     const response = await fetch(
-      `${API_URL}/full`,
+      `${API_URL}/table`,
       {
         headers: {
-          Authorization: `Bearer ${token}`       //nota:  debo aclararle a gpt que las rutas tal vez sean distintas, en especial la de get full, porque se está pidiendo en id en realidad, también debería mostrarle y corregir el endpoint de table, para que traiga los nombres y no los id´s
+          Authorization:
+            `Bearer ${token}`
         }
       }
     );
 
     if (!response.ok) {
       throw new Error(
-        "Error al obtener pedidos"
+        "Error obteniendo pedidos"
       );
     }
 
@@ -27,23 +31,26 @@ export const orderService = {
 
 
 
-  // Obtener un pedido específico
-  obtenerPorId: async (id) => {
+  // Pedido completo
 
-    const token = localStorage.getItem("token");
+  obtenerCompleto: async (id) => {
+
+    const token =
+      localStorage.getItem("token");
 
     const response = await fetch(
-      `${API_URL}/${id}`,
+      `${API_URL}/${id}/full`,
       {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization:
+            `Bearer ${token}`
         }
       }
     );
 
     if (!response.ok) {
       throw new Error(
-        "Error al obtener pedido"
+        "Error obteniendo pedido"
       );
     }
 
@@ -53,9 +60,11 @@ export const orderService = {
 
 
   // Crear pedido completo
+
   crearCompleto: async (data) => {
 
-    const token = localStorage.getItem("token");
+    const token =
+      localStorage.getItem("token");
 
     const response = await fetch(
       `${API_URL}/complete`,
@@ -78,7 +87,7 @@ export const orderService = {
 
       throw new Error(
         error.error ||
-        "Error al crear pedido"
+        "Error creando pedido"
       );
     }
 
@@ -86,44 +95,13 @@ export const orderService = {
   },
 
 
-
-  // Actualizar pedido
-  actualizar: async (
-    id,
-    data
-  ) => {
-
-    const token = localStorage.getItem("token");
-
-    const response = await fetch(
-      `${API_URL}/${id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type":
-            "application/json",
-          Authorization:
-            `Bearer ${token}`
-        },
-        body: JSON.stringify(data)
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        "Error al actualizar pedido"
-      );
-    }
-
-    return await response.json();
-  },
+  
 
 
-
-  // Eliminar pedido
   eliminar: async (id) => {
 
-    const token = localStorage.getItem("token");
+    const token =
+      localStorage.getItem("token");
 
     const response = await fetch(
       `${API_URL}/${id}`,
@@ -138,7 +116,7 @@ export const orderService = {
 
     if (!response.ok) {
       throw new Error(
-        "Error al eliminar pedido"
+        "Error eliminando pedido"
       );
     }
 

@@ -12,6 +12,7 @@ import PositionPage from './features/positions/pages/PositionPage';
 import EmployeePage from './features/employees/pages/EmployeePage';
 import PurchaseInvoicePage from './features/purchase_invoices/pages/PurchaseInvoicePage';
 import SubRentalPage from './features/sub_rental/pages/SubRentalPage';
+import OrderPage from './features/orders/pages/OrderPage'
 
 import LoginPage from './features/login/pages/loginPage';
 import './App.css';
@@ -81,6 +82,10 @@ function App() {
 
       case 'subalquileres':
         return <SubRentalPage />;
+
+      case 'pedidos':
+        return <OrderPage />;
+        
 
       default:
         return (
