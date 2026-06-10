@@ -38,7 +38,8 @@ export const useMachineryCategories = () => {
         if (response.ok) {
           setCategories(prev => prev.filter(cat => cat.category_id !== id));
         } else {
-          alert("No se pudo eliminar la categoría.");
+          alert("No se pudo eliminar ya que la categoría se encuentra en uso.");
+
         }
       } catch (err) {
         console.error("Error al eliminar categoría:", err);
@@ -59,4 +60,4 @@ export const useMachineryCategories = () => {
     cargarCategorias, 
     eliminarCategoria 
   };
-}; // <-- Revisa que esta llave cierre aquí al final, después del return.
+};
