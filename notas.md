@@ -19,7 +19,7 @@ Este archivo es pa borrar luego, son cosas que deberíamos tener en cuenta.
 - la fecha en los detalles de pedido deberían mostrar hora y en la tabla debería ser más entendible
 - la información del usuario no debería ser el correo, más bien el nombre del empleado para identificarlo fácilmente, o no?
 - poner botón de editar en ver detalles
-
+- la fecha de creacion de pedido debería ser manual y modificable !!!
 
 
 ### next
