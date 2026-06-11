@@ -4,7 +4,7 @@ import { Plus, Search, Eye, Trash2 } from "lucide-react";
 import { useOrders } from "../hooks/useOrders";
 
 //import OrderForm from "../components/orderForm/OrderForm";
-//import OrderDetail from "../components/orderDetail/OrderDetail";
+import OrderDetail from "../components/orderDetail/OrderDetail";
 
 import "./OrderPage.css";
 
@@ -13,7 +13,8 @@ const OrderPage = () => {
   const {
     orders,
     cargarPedidos,
-    eliminarPedido
+    eliminarPedido,
+    obtenerPedidoCompleto
   } = useOrders();
 
   const [busqueda, setBusqueda] = useState("");
@@ -55,7 +56,8 @@ const OrderPage = () => {
         order.project_name?.toLowerCase() || "";
 
       const cliente =
-        order.customer_name?.toLowerCase() || "";
+        `${order.customer_first_name || ""} ${order.customer_last_name || ""}`
+          .toLowerCase();
 
       const pedido =
         order.order_id?.toString() || "";
@@ -69,6 +71,34 @@ const OrderPage = () => {
     });
 
   }, [orders, busqueda]);
+
+
+
+
+  const abrirDetallePedido = async (orderId) => {
+
+    try {
+
+      const pedidoCompleto =
+        await obtenerPedidoCompleto(orderId);
+
+      setPedidoSeleccionado(
+        pedidoCompleto
+      );
+
+      setMostrarModalDetalle(true);
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "No se pudo cargar el detalle del pedido"
+      );
+
+    }
+
+  };
 
 
 
@@ -189,9 +219,7 @@ const OrderPage = () => {
                     </td>
 
                     <td>
-                      {
-                        order.customer_name
-                      }
+                      {`${order.customer_first_name} ${order.customer_last_name}`}
                     </td>
 
                     <td>
@@ -207,13 +235,9 @@ const OrderPage = () => {
                         title="Ver"
                         onClick={() => {
 
-                          setPedidoSeleccionado(
-                            order
-                          );
-
-                          setMostrarModalDetalle(
-                            true
-                          );
+                          abrirDetallePedido(
+                            order.order_id
+                          )
 
                         }}
                       >
@@ -295,7 +319,7 @@ const OrderPage = () => {
         formData={formData}
         setFormData={setFormData}
       />
-
+*/}
 
 
       <OrderDetail
@@ -310,7 +334,7 @@ const OrderPage = () => {
         order={
           pedidoSeleccionado
         }
-      />*/}
+      />
 
     </div>
   );
