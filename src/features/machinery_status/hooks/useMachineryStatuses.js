@@ -46,7 +46,7 @@ export const useMachineryStatuses = () => {
           // Filtramos el estado local para actualizar la UI al instante
           setStatuses(prev => prev.filter(status => status.status_id !== id));
         } else {
-          alert("No se pudo eliminar el estado de maquinaria.");
+          alert("No se pudo eliminar ya que este estado se encuentra en uso.");
         }
       } catch (err) {
         console.error("Error al eliminar estado:", err);
