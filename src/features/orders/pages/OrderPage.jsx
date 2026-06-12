@@ -4,7 +4,7 @@ import { Plus, Search, Eye, Trash2 } from "lucide-react";
 import { useOrders } from "../hooks/useOrders";
 
 //import OrderForm from "../components/orderForm/OrderForm";
-import OrderDetail from "../components/orderDetail/OrderDetail";
+import OrderDetail from "../components/OrderDetail/OrderDetail";
 
 import "./OrderPage.css";
 
