@@ -3,7 +3,7 @@ import { Plus, Search, Eye, Trash2 } from "lucide-react";
 
 import { useOrders } from "../hooks/useOrders";
 
-//import OrderForm from "../components/orderForm/OrderForm";
+import OrderForm from "../components/OrderForm/OrderForm";
 import OrderDetail from "../components/OrderDetail/OrderDetail";
 
 import "./OrderPage.css";
@@ -56,7 +56,7 @@ const OrderPage = () => {
         order.project_name?.toLowerCase() || "";
 
       const cliente =
-        `${order.customer_first_name || ""} ${order.customer_last_name || ""}`
+        `${order.customer_name || ""}`
           .toLowerCase();
 
       const pedido =
@@ -219,7 +219,7 @@ const OrderPage = () => {
                     </td>
 
                     <td>
-                      {`${order.customer_first_name} ${order.customer_last_name}`}
+                      {`${order.customer_name}`}
                     </td>
 
                     <td>
@@ -303,7 +303,7 @@ const OrderPage = () => {
 
 
 
-      {/*<OrderForm
+      <OrderForm
         isOpen={
           mostrarModalForm
         }
@@ -319,7 +319,7 @@ const OrderPage = () => {
         formData={formData}
         setFormData={setFormData}
       />
-*/}
+
 
 
       <OrderDetail
