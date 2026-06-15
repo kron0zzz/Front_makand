@@ -19,9 +19,12 @@ Este archivo es pa borrar luego, son cosas que deberíamos tener en cuenta.
 - la fecha en los detalles de pedido deberían mostrar hora y en la tabla debería ser más entendible
 - la información del usuario no debería ser el correo, más bien el nombre del empleado para identificarlo fácilmente, o no?
 - poner botón de editar en ver detalles
-- la fecha de creacion de pedido debería ser manual y modificable !!!
+- no solo debe haber proyectos, también clientes pero que sirva solo como filrtro
+- el seleccionar maquinaria debe ser más cómodo, permitiendo filtrar
+- entonces que se va a hacer con el precio dentro de tales? se puede modificar completamente?
 
+!!! IMPORTANTE: esta mierda de orders tiene mucha más lógica de la que creí, en especial con anular un pedido
 
 ### next
 
-ahora voy a hacer registrar
+aparte de hacer los ajustes de arriba, falta entonces el editar pedido y anular
