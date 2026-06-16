@@ -21,7 +21,7 @@ Este archivo es pa borrar luego, son cosas que deberíamos tener en cuenta.
 - poner botón de editar en ver detalles
 - no solo debe haber proyectos, también clientes pero que sirva solo como filrtro
 - el seleccionar maquinaria debe ser más cómodo, permitiendo filtrar
-- entonces que se va a hacer con el precio dentro de tales? se puede modificar completamente?
+- entonces que se va a hacer con el precio dentro de detallles? se puede modificar completamente?
 
 !!! IMPORTANTE: esta mierda de orders tiene mucha más lógica de la que creí, en especial con anular un pedido
 
