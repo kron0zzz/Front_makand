@@ -12,7 +12,13 @@ import PositionPage from './features/positions/pages/PositionPage';
 import EmployeePage from './features/employees/pages/EmployeePage';
 import PurchaseInvoicePage from './features/purchase_invoices/pages/PurchaseInvoicePage';
 import SubRentalPage from './features/sub_rental/pages/SubRentalPage';
-import OrderPage from './features/orders/pages/OrderPage'
+import OrderPage from './features/orders/pages/OrderPage';
+import ProjectsPage from './features/projects/pages/ProjectsPage';
+import ChargeTypesPage from './features/charge-types/pages/ChargeTypesPage';
+import MaintenancesPage from './features/maintenances/pages/MaintenancesPage';
+import UsersPage from './features/users/pages/UsersPage';
+import OrderStatusPage from './features/order-status/pages/OrderStatusPage'
+
 
 import LoginPage from './features/login/pages/loginPage';
 import './App.css';
@@ -85,6 +91,21 @@ function App() {
 
       case 'pedidos':
         return <OrderPage />;
+      
+      case 'proyectos':
+        return <ProjectsPage />;
+
+      case 'tipos-cobro':
+        return <ChargeTypesPage />;
+
+      case 'mantenimientos':
+        return <MaintenancesPage />;
+
+      case 'usuarios':
+        return <UsersPage />;
+
+      case 'estados-pedido':
+        return <OrderStatusPage />;
         
 
       default:

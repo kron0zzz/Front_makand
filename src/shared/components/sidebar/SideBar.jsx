@@ -15,7 +15,9 @@ import {
   ShoppingCart,
   FolderOpen,
   Users,
-  FileText
+  FileText,
+  FolderKanban,
+  ReceiptText
 } from "lucide-react";
 
 const menuItems = [
@@ -40,6 +42,11 @@ const menuItems = [
         icon: Wrench,
         key: "cargos",
       },
+      {
+      name: "Usuarios",
+      icon: Users,
+      key: "usuarios",
+    },
     ]
   },
   
@@ -75,12 +82,21 @@ const menuItems = [
 
   // Proyectos
   {
-    name: "Proyectos",
+    name: "Proyectos", 
     icon: Building,
     key: "projects-parent",
 
     submenu: [
+
       {
+        name: "Proyectos",
+        icon: FolderKanban,
+        key: "proyectos",
+      },
+
+      {
+        
+
         name: "Maquinaria",
         icon: Wrench,
         key: "maquinaria-parent",
@@ -106,6 +122,11 @@ const menuItems = [
             icon: FileText,
             key: "categorias_maquinaria",
           },
+          {
+            name: "Mantenimientos",
+            icon: Wrench,
+            key: "mantenimientos",
+          },
         ]
       },
       {
@@ -118,7 +139,12 @@ const menuItems = [
             name: "Pedidos",
             icon: FileText,
             key: "pedidos",
-          }
+          },
+          {
+            name: "Estados de Pedido",
+            icon: ShoppingCart,
+            key: "estados-pedido",
+          },
         ]
       },
     ]
@@ -144,6 +170,11 @@ const menuItems = [
         name: "Empleados",
         icon: Users,
         key: "empleados",
+      },
+      {
+        name: "Tipos de Cobro",
+        icon: ReceiptText,
+        key: "tipos-cobro",
       },
       
     ]
