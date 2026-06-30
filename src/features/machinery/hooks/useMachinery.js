@@ -1,18 +1,20 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 export const useMachinery = () => {
   const [machineries, setMachineries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  /**
-   * 1. CARGAR MAQUINARIAS (Data combinada con JOINs para la grilla)
-   */
   const cargarMaquinarias = useCallback(async () => { 
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch('http://localhost:3000/api/machines/table');
+        const token = localStorage.getItem("token");
+        const response = await fetch('http://localhost:3000/api/machines/table', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         
         if (!response.ok) {
           throw new Error('No se pudo conectar con el servidor para cargar las maquinarias');
@@ -28,14 +30,15 @@ export const useMachinery = () => {
       }
   }, []);
 
-  /**
-   * 2. ELIMINAR MAQUINARIA
-   */
   const eliminarMaquinaria = async (id) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar esta maquinaria?')) {
       try {
+        const token = localStorage.getItem("token");
         const response = await fetch(`http://localhost:3000/api/machines/${id}`, {
-          method: 'DELETE'
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
         });
 
         if (response.ok) {
@@ -49,14 +52,15 @@ export const useMachinery = () => {
     }
   };
 
-  /**
-   * 3. CREAR MAQUINARIA
-   */
   const crearMaquinaria = async (maquinariaData) => {
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch('http://localhost:3000/api/machines', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
         body: JSON.stringify(maquinariaData)
       });
 
@@ -73,14 +77,15 @@ export const useMachinery = () => {
     }
   };
 
-  /**
-   * 4. ACTUALIZAR MAQUINARIA
-   */
   const actualizarMaquinaria = async (id, maquinariaData) => {
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(`http://localhost:3000/api/machines/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
         body: JSON.stringify(maquinariaData)
       });
 
@@ -96,6 +101,10 @@ export const useMachinery = () => {
       return false;
     }
   };
+
+  useEffect(() => {
+    cargarMaquinarias();
+  }, [cargarMaquinarias]);
 
   return { 
     machineries,

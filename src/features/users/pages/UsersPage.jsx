@@ -13,32 +13,11 @@ const UsersPage = () => {
 
   const usersFiltrados = useMemo(() => {
     const datos = Array.isArray(users) ? users : [];
-    const termino = busqueda.toLowerCase();
-    
-    return datos.filter(u =>
-      u.user_email.toLowerCase().includes(termino) ||
-      u.user_id.toString().includes(termino)
+    return datos.filter(u => 
+      u.user_email?.toLowerCase().includes(busqueda.toLowerCase()) || 
+      u.user_id.toString().includes(busqueda)
     );
   }, [users, busqueda]);
-
-  const prepararEdicion = (user) => {
-    setIsEditing(true);
-    setFormData({
-      user_id: user.user_id,
-      user_email: user.user_email,
-      password: user.password,
-      user_status: user.user_status,
-      role_id: user.role_id,
-      employee_id: user.employee_id,
-    });
-    setMostrarModalForm(true);
-  };
-
-  const handleEliminar = async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-      await eliminarUser(id);
-    }
-  };
 
   return (
     <div className="page-container">
@@ -62,14 +41,9 @@ const UsersPage = () => {
 
           <button
             className="btn-nuevo"
-            onClick={() => {
-              setIsEditing(false);
-              setFormData({});
-              setMostrarModalForm(true);
-            }}
+            onClick={() => { setIsEditing(false); setFormData({}); setMostrarModalForm(true); }}
           >
-            <Plus size={20} />
-            Nuevo Usuario
+            <Plus size={20} /> Nuevo Usuario
           </button>
         </div>
       </div>
@@ -92,8 +66,12 @@ const UsersPage = () => {
                   <td>{user.user_email}</td>
                   <td>{user.user_status ? 'Activo' : 'Inactivo'}</td>
                   <td className="actions-cell">
-                    <button className="action-btn edit" title="Editar" onClick={() => prepararEdicion(user)}><Edit size={18} /></button>
-                    <button className="action-btn delete" title="Eliminar" onClick={() => handleEliminar(user.user_id)}><Trash2 size={18} /></button>
+                    <button className="action-btn edit" onClick={() => { setIsEditing(true); setFormData(user); setMostrarModalForm(true); }}>
+                      <Edit size={18} />
+                    </button>
+                    <button className="action-btn delete" onClick={() => eliminarUser(user.user_id)}>
+                      <Trash2 size={18} />
+                    </button>
                   </td>
                 </tr>
               ))
@@ -110,10 +88,11 @@ const UsersPage = () => {
 
       <UserForm
         isOpen={mostrarModalForm}
-        onClose={async () => { setMostrarModalForm(false); await cargarUsers(); }}
+        onClose={() => setMostrarModalForm(false)}
         formData={formData}
         setFormData={setFormData}
         isEditing={isEditing}
+        cargarUsers={cargarUsers}
       />
     </div>
   );

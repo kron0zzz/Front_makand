@@ -1,91 +1,72 @@
-// // Capa de servicios para interactuar con el endpoint de clientes en el backend.
-// // Hook para separar la lógica de negocio de la interfaz visual
-
-// //(Toda la lógica de estados, carga y funciones)
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
 export const useSuppliers = () => {
-  // Inicializamos con un array vacío, ya no necesitamos los datos de prueba
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  /**
-   * 1. CARGAR CLIENTES (Conexión Real)
-   * Usamos useCallback para que la función sea estable y no cause bucles en el useEffect.
-   */
   const cargarProveedores = useCallback(async () => {
     setLoading(true);
-    setError(null);
     try {
-      // Llamamos a la ruta optimizada para la tabla que creamos en el backend
       const token = localStorage.getItem("token");
-      const response = await fetch('http://localhost:3000/api/suppliers',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      ); 
-      
-      if (!response.ok) {
-        throw new Error('No se pudo conectar con el servidor');
-      }
-      
+      const response = await fetch('http://localhost:3000/api/suppliers', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
       const datos = await response.json();
       setSuppliers(datos);
     } catch (err) {
       setError(err.message);
-      console.error("Error al cargar proveedores:", err);
     } finally {
       setLoading(false);
     }
   }, []);
 
+  const toggleProveedorEstado = async (id, estadoActual, proveedorCompleto) => {
+    // 1. Advertencia de confirmación antes de proceder
+    const mensaje = `¿Estás seguro de que deseas ${estadoActual ? 'desactivar' : 'activar'} este proveedor?`;
+    if (!window.confirm(mensaje)) {
+      return; // Si el usuario cancela, salimos de la función
+    }
 
-
-  /**
-   * 2. CAMBIAR ESTADO (Para el Switch de la interfaz)
-   * Esta función enviará el cambio a la base de datos PostgreSQL.
-   */
-  const toggleProveedorEstado = async (id, estadoActual) => {
     try {
       const token = localStorage.getItem("token");
+      
+      const datosParaEnviar = {
+        ...proveedorCompleto,
+        supplier_status: !estadoActual
+      };
+
       const response = await fetch(`http://localhost:3000/api/suppliers/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ 
-          supplier_status: !estadoActual // Invertimos el booleano
-        })
+        headers: { 
+          'Content-Type': 'application/json', 
+          'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify(datosParaEnviar)
       });
 
       if (response.ok) {
-        // Refrescamos la tabla para ver el cambio reflejado desde la DB
-        await cargarProveedores();
+        setSuppliers(prev => prev.map(s => 
+          s.supplier_id === id ? { ...s, supplier_status: !estadoActual } : s
+        ));
+      } else {
+        alert("No se pudo actualizar el estado.");
       }
     } catch (err) {
-      console.error("Error al actualizar estado:", err);
+      console.error("Error al actualizar:", err);
     }
   };
 
-  /**
-   * 3. ELIMINAR Proveedor (Conexión Real)
-   */
   const eliminarProveedor = async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este proveedor?')){
+    if (window.confirm('¿Seguro que deseas eliminar este proveedor?')) {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(`http://localhost:3000/api/suppliers/${id}`, {
           method: 'DELETE',
-          headers: {Authorization: `Bearer ${token}`}
+          headers: { 'Authorization': `Bearer ${token}` }
         });
-
         if (response.ok) {
-          // Filtramos el estado local para una respuesta visual instantánea
-          setSuppliers(prev => prev.filter(c => c.customer_id !== id));
-          await cargarProveedores();
-        } else {
-          alert("No se pudo eliminar el proveedor.");
+          setSuppliers(prev => prev.filter(s => s.supplier_id !== id));
         }
       } catch (err) {
         console.error("Error al eliminar:", err);
@@ -93,22 +74,5 @@ export const useSuppliers = () => {
     }
   };
 
-  
-  // Efecto de carga inicial
-  useEffect(() => {
-  const fetchTableData = async () => {
-    await cargarProveedores();
-  };
-  
-  fetchTableData();
-}, [cargarProveedores]);
-
-  return { 
-    suppliers, 
-    loading, 
-    error, 
-    cargarProveedores, 
-    toggleProveedorEstado, 
-    eliminarProveedor
-  };
+  return { suppliers, loading, error, cargarProveedores, toggleProveedorEstado, eliminarProveedor, setSuppliers };
 };

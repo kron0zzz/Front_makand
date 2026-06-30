@@ -6,7 +6,6 @@ import MachineryDetail from '../components/machineryDetail/MachineryDetail';
 import './MachineryPage.css';
 
 const MachineryPage = () => {
-  // 1. Instanciamos el hook ÚNICAMENTE aquí en el componente padre
   const { 
     machineries, 
     cargarMaquinarias, 
@@ -14,7 +13,7 @@ const MachineryPage = () => {
     crearMaquinaria, 
     actualizarMaquinaria 
   } = useMachinery();
-  
+
   const [busqueda, setBusqueda] = useState('');
   const [formData, setFormData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
@@ -187,8 +186,6 @@ const MachineryPage = () => {
         </table>
       </div>
 
-      {/* 🛠 * Componente Modal del Formulario (Crear / Editar) */}
-      {/* Pasamos las operaciones directamente como props para compartir el mismo estado reactivo */}
       <MachineryForm 
         isOpen={mostrarModalForm} 
         onClose={() => setMostrarModalForm(false)}

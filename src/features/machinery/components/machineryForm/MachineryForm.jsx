@@ -14,9 +14,16 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crea
     const cargarOpcionesDelFormulario = async () => {
       try {
         setErrorForm('');
+        const token = localStorage.getItem("token"); // Obtén el token
+        
+        // Añade el header de autorización a las peticiones
         const [resCategories, resStatuses] = await Promise.all([
-          fetch('http://localhost:3000/api/machine-categories'),
-          fetch('http://localhost:3000/api/machine-statuses')
+          fetch('http://localhost:3000/api/machine-categories', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          }),
+          fetch('http://localhost:3000/api/machine-statuses', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          })
         ]);
 
         if (resCategories.ok) {

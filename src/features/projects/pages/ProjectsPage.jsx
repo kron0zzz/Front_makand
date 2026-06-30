@@ -67,7 +67,8 @@ const ProjectsPage = () => {
       project_name: proyecto.project_name,
       project_address: proyecto.project_address,
       project_phone: proyecto.project_phone,
-      project_city: proyecto.project_city,
+      project_city: proyecto.project_city, 
+      project_state: proyecto.project_state, 
       customer_id: proyecto.customer_id,
       project_status: proyecto.project_status
     });

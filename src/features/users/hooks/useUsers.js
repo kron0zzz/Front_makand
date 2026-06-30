@@ -21,10 +21,7 @@ export const useUsers = () => {
   }, []);
 
   useEffect(() => {
-    const load = async () => {
-      await cargarUsers();
-    };
-    load();
+    cargarUsers();
   }, [cargarUsers]);
 
   const eliminarUser = async (id) => {
@@ -39,11 +36,5 @@ export const useUsers = () => {
     }
   };
 
-  return {
-    users,
-    loading,
-    error,
-    cargarUsers,
-    eliminarUser
-  };
+  return { users, loading, error, cargarUsers, eliminarUser };
 };

@@ -27,11 +27,12 @@ const MachineryStatusForm = ({ isOpen, onClose, formData, setFormData, isEditing
       : 'http://localhost:3000/api/machine-statuses';
     
     const method = isEditing ? 'PUT' : 'POST';
+    const token = localStorage.getItem("token");
 
     try {
       const response = await fetch(url, {
         method: method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify(dataToSend)
       });
 

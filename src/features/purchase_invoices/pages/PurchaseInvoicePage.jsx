@@ -61,7 +61,7 @@ const PurchaseInvoicePage = () => {
       <div className="header-container">
         <div className="header-text">
           <h1>Facturas de Compra</h1>
-          <p>Control y soporte de compras de machinery - Makand</p>
+          <p>Gestión de Compras - Makand</p>
         </div>
 
         <div className="header-actions">

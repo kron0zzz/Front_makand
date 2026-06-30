@@ -1,6 +1,3 @@
-// Capa de servicios para interactuar con el endpoint de empleados en el backend.
-// Hook para separar la lógica de negocio de la interfaz visual
-
 import { useState, useEffect, useCallback } from 'react';
 
 export const useEmployees = () => {
@@ -8,16 +5,21 @@ export const useEmployees = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Función auxiliar para obtener el token
+  const getToken = () => localStorage.getItem("token");
+
   /**
-   * 1. CARGAR EMPLEADOS (Conexión Real)
-   * Usamos useCallback para que la función sea estable y no cause bucles en el useEffect.
+   * 1. CARGAR EMPLEADOS
    */
   const cargarEmpleados = useCallback(async () => { 
       setLoading(true);
       setError(null);
       try {
-        // Llamamos a la ruta optimizada para la tabla de empleados en el backend
-        const response = await fetch('http://localhost:3000/api/employees/table');
+        const response = await fetch('http://localhost:3000/api/employees/table', {
+          headers: { 
+            'Authorization': `Bearer ${getToken()}` 
+          }
+        });
         
         if (!response.ok) {
           throw new Error('No se pudo conectar con el servidor');
@@ -34,21 +36,22 @@ export const useEmployees = () => {
   }, []);
 
   /**
-   * 2. CAMBIAR ESTADO (Para el Switch de la interfaz)
-   * Esta función enviará el cambio a la base de datos PostgreSQL.
+   * 2. CAMBIAR ESTADO
    */
   const toggleEmpleadoEstado = async (id, estadoActual) => {
     try {
       const response = await fetch(`http://localhost:3000/api/employees/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}` 
+        },
         body: JSON.stringify({ 
-          employee_status: !estadoActual // Invertimos el booleano del estado del empleado
+          employee_status: !estadoActual
         })
       });
 
       if (response.ok) {
-        // Refrescamos la tabla para ver el cambio reflejado desde la DB
         await cargarEmpleados();
       } else {
         console.error("No se pudo actualizar el estado del empleado.");
@@ -59,17 +62,19 @@ export const useEmployees = () => {
   };
 
   /**
-   * 3. ELIMINAR EMPLEADO (Conexión Real)
+   * 3. ELIMINAR EMPLEADO
    */
   const eliminarEmpleado = async (id) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este empleado?')) {
       try {
         const response = await fetch(`http://localhost:3000/api/employees/${id}`, {
-          method: 'DELETE'
+          method: 'DELETE',
+          headers: { 
+            'Authorization': `Bearer ${getToken()}` 
+          }
         });
 
         if (response.ok) {
-          // Filtramos el estado local usando 'employee_id' para una respuesta visual instantánea
           setEmployees(prev => prev.filter(e => e.employee_id !== id));
         } else {
           alert("No se pudo eliminar el empleado.");
@@ -80,13 +85,8 @@ export const useEmployees = () => {
     }
   };
 
-  // Efecto de carga inicial
   useEffect(() => {
-    const fetchTableData = async () => {
-      await cargarEmpleados();
-    };
-    
-    fetchTableData();
+    cargarEmpleados();
   }, [cargarEmpleados]);
 
   return { 

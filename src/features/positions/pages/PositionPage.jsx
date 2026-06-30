@@ -1,8 +1,7 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Plus, Search, Edit, Trash2 } from 'lucide-react';
 import { usePositions } from '../hooks/usePositions'; 
 import PositionForm from '../components/positionForm/PositionForm';
-//import SupplierDetail from '../components/supplierDetail/SupplierDetail';
 import './PositionPage.css';
 
 const PositionPage = () => {
@@ -11,14 +10,7 @@ const PositionPage = () => {
   const [formData, setFormData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [mostrarModalForm, setMostrarModalForm] = useState(false);
-  //const [mostrarModalDetalle, setMostrarModalDetalle] = useState(false);
-  //const [positionSeleccionado, setPositionSeleccionado] = useState(null);
-
-  useEffect(() => {
-    cargarCargos();
-  }, [cargarCargos]);
-
-
+  
   const positionsFiltrados = useMemo(() => {
     const datos = Array.isArray(positions) ? positions : [];
     const termino = busqueda.toLowerCase();
@@ -34,8 +26,8 @@ const PositionPage = () => {
     setFormData({
       position_id: position.position_id,
       position_name: position.position_name
-    }); setMostrarModalForm(true)
-    
+    }); 
+    setMostrarModalForm(true);
   };
 
   return (
@@ -106,12 +98,12 @@ const PositionPage = () => {
 
       <PositionForm 
         isOpen={mostrarModalForm} 
-        onClose={async () => { setMostrarModalForm(false); await cargarCargos(); }}
+        onClose={() => setMostrarModalForm(false)} 
         formData={formData}
         setFormData={setFormData}
         isEditing={isEditing}
+        cargarCargos={cargarCargos}
       />
-    
     </div>
   );
 };

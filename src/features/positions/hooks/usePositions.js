@@ -1,78 +1,46 @@
-// // Capa de servicios para interactuar con el endpoint de clientes en el backend.
-// // Hook para separar la lógica de negocio de la interfaz visual
-
-// //(Toda la lógica de estados, carga y funciones)
 import { useState, useEffect, useCallback } from 'react';
+import { apiClient } from "../../../shared/services/api";
 
 export const usePositions = () => {
-  // Inicializamos con un array vacío, ya no necesitamos los datos de prueba
   const [positions, setPositions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  /**
-   * 1. CARGAR cargos (Conexión Real)
-   * Usamos useCallback para que la función sea estable y no cause bucles en el useEffect.
-   */
   const cargarCargos = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      // Llamamos a la ruta optimizada para la tabla que creamos en el backend
-      const response = await fetch('http://localhost:3000/api/positions'); 
-      
-      if (!response.ok) {
-        throw new Error('No se pudo conectar con el servidor');
-      }
-      
-      const datos = await response.json();
-      setPositions(datos);
+      const response = await apiClient.get('/api/positions');
+      setPositions(response.data);
     } catch (err) {
-      setError(err.message);
-      console.error("Error al cargar Cargos:", err);
+      setError(err.response?.status === 403 ? "Sin permisos." : "Error al cargar.");
+      console.error("Error:", err);
     } finally {
       setLoading(false);
     }
   }, []);
 
-
-  /**
-   * 3. ELIMINAR cargo (Conexión Real)
-   */
+  // AGREGAMOS ESTA FUNCIÓN: Lógica para eliminar
   const eliminarCargo = async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este cargo?')) {
-      try {
-        const response = await fetch(`http://localhost:3000/api/positions/${id}`, {
-          method: 'DELETE'
-        });
+    if (!window.confirm("¿Estás seguro de que deseas eliminar este cargo?")) {
+      return;
+    }
 
-        if (response.ok) {
-          // Filtramos el estado local para una respuesta visual instantánea
-          setPositions(prev => prev.filter(p => p.position_id !== id));
-        } else {
-          alert("No se pudo eliminar el Cargo.");
-        }
-      } catch (err) {
-        console.error("Error al eliminar:", err);
-      }
+    try {
+      await apiClient.delete(`/api/positions/${id}`);
+      alert("Cargo eliminado correctamente");
+      // Recargamos la lista después de borrar
+      await cargarCargos();
+    } catch (err) {
+      console.error("Error al eliminar:", err);
+      alert(err.response?.data?.message || "Error al intentar eliminar el cargo.");
     }
   };
 
-  
-  // Efecto de carga inicial
   useEffect(() => {
-  const fetchTableData = async () => {
-    await cargarCargos();
-  };
-  
-  fetchTableData();
-}, [cargarCargos]);
+    cargarCargos();
+  }, [cargarCargos]); 
 
-  return { 
-    positions, 
-    loading, 
-    error, 
-    cargarCargos, 
-    eliminarCargo
-  };
+  // RETORNAMOS LA FUNCIÓN REAL
+  return { positions, loading, error, cargarCargos, eliminarCargo };
 };

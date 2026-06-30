@@ -28,22 +28,30 @@ const ChargeTypeForm = ({ isOpen, onClose, formData, setFormData, isEditing }) =
         await chargeTypeService.crear(dataToSend);
         alert('Tipo de cobro creado con éxito.');
       }
+      
+      // Recargamos la lista después del éxito
       await cargarTiposCobro();
       onClose();
     } catch (error) {
-      console.error("Error en la petición:", error);
-      alert("Error de conexión: Asegúrate de que el servidor de Makand esté corriendo.");
+      // MEJORA: Identificar si es permiso (403) o sesión (401)
+      const status = error.response?.status;
+      if (status === 401) {
+        alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+        // Opcional: window.location.href = '/login';
+      } else if (status === 403) {
+        alert("No tienes permiso para realizar esta acción. Contacta al administrador.");
+      } else {
+        alert("Error de conexión con el servidor. Revisa la consola.");
+      }
+      console.error("Detalle del error:", error.response || error);
     }
   };
 
   return (
     <div className="form-modal-overlay">
       <div className="form-modal-container">
-
         <div className="form-header">
-          <h2>
-            {isEditing ? 'Editar Tipo de Cobro' : 'Registrar Nuevo Tipo de Cobro'}
-          </h2>
+          <h2>{isEditing ? 'Editar Tipo de Cobro' : 'Registrar Nuevo Tipo de Cobro'}</h2>
           <button onClick={onClose} className="form-close-btn">
             <X size={20} />
           </button>
@@ -51,7 +59,6 @@ const ChargeTypeForm = ({ isOpen, onClose, formData, setFormData, isEditing }) =
 
         <form onSubmit={handleSubmit} className="form-body">
           <div className="form-grid">
-
             <div>
               <label className="form-label">ID</label>
               <input
@@ -61,7 +68,6 @@ const ChargeTypeForm = ({ isOpen, onClose, formData, setFormData, isEditing }) =
                 disabled
               />
             </div>
-
             <div>
               <label className="form-label">Nombre del Tipo de Cobro *</label>
               <input
@@ -74,7 +80,6 @@ const ChargeTypeForm = ({ isOpen, onClose, formData, setFormData, isEditing }) =
                 placeholder="Ej: Alquiler por día, Transporte..."
               />
             </div>
-
           </div>
 
           <div className="form-footer">

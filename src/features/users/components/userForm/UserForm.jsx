@@ -1,11 +1,8 @@
 import { X } from 'lucide-react';
-import { useUsers } from "../../hooks/useUsers";
 import { userService } from "../../services/userService";
 import './UserForm.css';
 
-const UserForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
-  const { cargarUsers } = useUsers();
-
+const UserForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarUsers }) => {
   if (!isOpen) return null;
 
   const handleChange = (e) => {
@@ -13,7 +10,7 @@ const UserForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const dataToSend = {
@@ -32,22 +29,21 @@ const handleSubmit = async (e) => {
         await userService.crear(dataToSend);
         alert('Usuario creado con éxito.');
       }
-      await cargarUsers();
+      
+      // Recargamos los datos y cerramos
+      if (cargarUsers) await cargarUsers();
       onClose();
     } catch (error) {
       console.error("Error en la petición:", error);
-      alert("Error de conexión: Asegúrate de que el servidor de Makand esté corriendo.");
+      alert("Error de conexión: Asegúrate de que el servidor esté corriendo.");
     }
   };
 
   return (
     <div className="form-modal-overlay">
       <div className="form-modal-container">
-
         <div className="form-header">
-          <h2>
-            {isEditing ? 'Editar Usuario' : 'Registrar Nuevo Usuario'}
-          </h2>
+          <h2>{isEditing ? 'Editar Usuario' : 'Registrar Nuevo Usuario'}</h2>
           <button onClick={onClose} className="form-close-btn">
             <X size={20} />
           </button>
@@ -55,7 +51,6 @@ const handleSubmit = async (e) => {
 
         <form onSubmit={handleSubmit} className="form-body">
           <div className="form-grid">
-
             <div>
               <label className="form-label">ID</label>
               <input
@@ -86,7 +81,7 @@ const handleSubmit = async (e) => {
                 className="form-input"
                 value={formData.password || ''}
                 onChange={handleChange}
-                required
+                required={!isEditing}
               />
             </div>
 
@@ -126,7 +121,6 @@ const handleSubmit = async (e) => {
                 <option value="false">Inactivo</option>
               </select>
             </div>
-
           </div>
 
           <div className="form-footer">

@@ -14,7 +14,7 @@ const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    const token = localStorage.getItem("token"); 
     const dataToSend = {
       customer_first_name: formData.firstName,
       customer_last_name: formData.lastName,
@@ -36,7 +36,7 @@ const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
     try {
       const response = await fetch(url, {
         method: method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify(dataToSend)
       });
 

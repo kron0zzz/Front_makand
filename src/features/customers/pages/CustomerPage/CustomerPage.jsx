@@ -27,9 +27,10 @@ const CustomerPage = () => {
     
     if (window.confirm(mensaje)) {
       try {
+        const token = localStorage.getItem("token"); // Token añadido
         const response = await fetch(`http://localhost:3000/api/customers/${customer.customer_id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({
             customer_first_name: customer.customer_first_name,
             customer_last_name: customer.customer_last_name,
