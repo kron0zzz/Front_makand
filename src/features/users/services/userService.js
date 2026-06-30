@@ -25,7 +25,7 @@ export const userService = {
     try {
       const payload = {
         user_email: datos.user_email,
-        password: datos.password,
+        user_password: datos.password,
         user_status: datos.user_status,
         role_id: datos.role_id,
         employee_id: datos.employee_id,
@@ -41,11 +41,13 @@ export const userService = {
     try {
       const payload = {
         user_email: datos.user_email,
-        password: datos.password,
+        user_password: datos.password,
         user_status: datos.user_status,
         role_id: datos.role_id,
         employee_id: datos.employee_id,
       };
+      console.log("Enviando payload al backend:", payload);
+
       return await apiClient.put(`/api/users/${id}`, payload);
     } catch (error) {
       console.error('Error al actualizar usuario:', error);

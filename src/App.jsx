@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Sidebar } from './shared/components/sidebar/SideBar';
 import { AuthProvider } from "./shared/context/AuthContext"; // Importación correcta
-
 import CustomerPage from './features/customers/pages/CustomerPage/CustomerPage';
 import SupplierPage from './features/suppliers/pages/SupplierPage';
 import VehiculosPage from './features/vehicles/pages/VehiculosPage';

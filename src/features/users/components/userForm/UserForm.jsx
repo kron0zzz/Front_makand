@@ -2,7 +2,16 @@ import { X } from 'lucide-react';
 import { userService } from "../../services/userService";
 import './UserForm.css';
 
-const UserForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarUsers }) => {
+const UserForm = ({ 
+  isOpen, 
+  onClose, 
+  formData, 
+  setFormData, 
+  isEditing, 
+  cargarUsers, 
+  employees = [], 
+  // roles = [] 
+}) => {
   if (!isOpen) return null;
 
   const handleChange = (e) => {
@@ -17,9 +26,14 @@ const UserForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarUse
       user_email: formData.user_email,
       password: formData.password,
       user_status: formData.user_status,
-      role_id: formData.role_id,
-      employee_id: formData.employee_id,
+      role_id: parseInt(formData.role_id),
+      employee_id: parseInt(formData.employee_id),
     };
+
+    // Solo agregamos la contraseña si el campo no está vacío
+    if (formData.password && formData.password.trim() !== "") {
+      dataToSend.password = formData.password;
+    }
 
     try {
       if (isEditing) {
@@ -30,12 +44,11 @@ const UserForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarUse
         alert('Usuario creado con éxito.');
       }
       
-      // Recargamos los datos y cerramos
       if (cargarUsers) await cargarUsers();
       onClose();
     } catch (error) {
       console.error("Error en la petición:", error);
-      alert("Error de conexión: Asegúrate de que el servidor esté corriendo.");
+      alert("Error de conexión o datos inválidos. Revisa la consola.");
     }
   };
 
@@ -51,6 +64,7 @@ const UserForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarUse
 
         <form onSubmit={handleSubmit} className="form-body">
           <div className="form-grid">
+            {/* Campo ID */}
             <div>
               <label className="form-label">ID</label>
               <input
@@ -61,6 +75,58 @@ const UserForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarUse
               />
             </div>
 
+            {/* Búsqueda Predictiva de Empleado */}
+            <div className="form-full-width">
+              <label className="form-label">Empleado *</label>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Escribe el nombre del empleado..."
+                list="employees-list"
+                required
+                value={employees.find(e => e.employee_id == formData.employee_id)?.employee_full_name || ''}
+                onChange={(e) => {
+                  const name = e.target.value;
+                  const found = employees.find(e => e.employee_full_name === name);
+                  if (found) {
+                    setFormData({ ...formData, employee_id: found.employee_id });
+                  }
+                }}
+              />
+              <datalist id="employees-list">
+                {employees.map(emp => (
+                  <option key={emp.employee_id} value={emp.employee_full_name} />
+                ))}
+              </datalist>
+            </div>
+
+        {/*  --------------------- Selector falso de Rol --------------------- */}
+            {/* Selector de Rol - MARCA PARA FUTURA INTEGRACIÓN */}
+            <div className="form-full-width">
+              <label className="form-label">Rol *</label>
+              <select 
+                name="role_id" 
+                className="form-input" 
+                value={formData.role_id || ''} 
+                onChange={handleChange} 
+                required
+              >
+                <option value="">Seleccione un rol</option>
+                {/*CAMBIAR ESTAS OPCIONES FIJAS POR UN MAPEO DE ROLES REAL */}
+                <option value="1">Administrador</option>
+                <option value="2">Empleado</option>
+                
+                {/* {roles.map(role => (
+                  <option key={role.role_id} value={role.role_id}>{role.role_name}</option>
+                ))} */}
+              </select>
+            </div>
+
+
+
+
+
+            {/* Email y Contraseña */}
             <div>
               <label className="form-label">Email *</label>
               <input
@@ -81,34 +147,12 @@ const UserForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarUse
                 className="form-input"
                 value={formData.password || ''}
                 onChange={handleChange}
+                placeholder={isEditing ? "Dejar vacío para no cambiar" : ""}
                 required={!isEditing}
               />
             </div>
 
-            <div>
-              <label className="form-label">Role ID *</label>
-              <input
-                name="role_id"
-                type="number"
-                className="form-input"
-                value={formData.role_id || ''}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div>
-              <label className="form-label">Employee ID *</label>
-              <input
-                name="employee_id"
-                type="number"
-                className="form-input"
-                value={formData.employee_id || ''}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
+            {/* Estado */}
             <div>
               <label className="form-label">Estado</label>
               <select
@@ -124,9 +168,7 @@ const UserForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarUse
           </div>
 
           <div className="form-footer">
-            <button type="button" onClick={onClose} className="btn-cancel">
-              Cancelar
-            </button>
+            <button type="button" onClick={onClose} className="btn-cancel">Cancelar</button>
             <button type="submit" className="btn-submit">
               {isEditing ? 'Guardar Cambios' : 'Registrar Usuario'}
             </button>
