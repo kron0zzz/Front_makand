@@ -17,6 +17,7 @@ import ChargeTypesPage from './features/charge-types/pages/ChargeTypesPage';
 import MaintenancesPage from './features/maintenances/pages/MaintenancesPage';
 import UsersPage from './features/users/pages/UsersPage';
 import OrderStatusPage from './features/order-status/pages/OrderStatusPage';
+import Dashboard from './features/dashboard/Dashboard'; // Importación del componente Dashboard
 
 import LoginPage from './features/login/pages/loginPage';
 import './App.css';
@@ -39,7 +40,7 @@ function AppContent() {
 
   const renderContent = () => {
     switch (currentView) {
-      case 'dashboard': return <div className="p-6"><h1>Dashboard</h1></div>;
+      case 'dashboard': return <Dashboard />;
       case 'clientes': return <CustomerPage />;
       case 'proveedores': return <SupplierPage />;
       case 'vehiculos': return <VehiculosPage />;
