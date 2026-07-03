@@ -17,7 +17,8 @@ import {
   Users,
   FileText,
   FolderKanban,
-  ReceiptText
+  ReceiptText,
+  UserCog,
 } from "lucide-react";
 
 const menuItems = [
@@ -43,10 +44,15 @@ const menuItems = [
         key: "cargos",
       },
       {
-      name: "Usuarios",
-      icon: Users,
-      key: "usuarios",
-    },
+        name: "Usuarios",
+        icon: Users,
+        key: "usuarios",
+      },
+      {
+        name: "Roles",
+        icon: UserCog,
+        key: "roles",
+      },
     ]
   },
   
@@ -187,10 +193,7 @@ export function Sidebar({
   collapsed,
   onToggleCollapse,
   onLogout,
-  user = {
-    name: "Usuario",
-    role: "Administrador",
-  },
+  user
 }) {
 
   const [expandedMenus, setExpandedMenus] = useState([]);
@@ -367,14 +370,16 @@ export function Sidebar({
           {!collapsed && (
             <div className="sidebar-user-info">
               <div className="sidebar-user-name">
-                {user.name}
+                {user?.user_email || "Cargando..."}
               </div>
               <div className="sidebar-user-role">
-                {user.role}
+                {/* Mapeo rápido basado en el ID recibido */}
+                {user?.role_id === 1 ? "Administrador" : 
+                user?.role_id === 2 ? "Asesor" : "Usuario"}
               </div>
             </div>
           )}
-        </div>
+      </div>
 
         <button className="sidebar-logout" onClick={onLogout} aria-label="Cerrar sesión">
           <LogOut size={18} />
