@@ -1,0 +1,25 @@
+.machinery-tab{
+
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+
+}
+
+.machinery-list{
+
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+
+}
+
+.empty-machinery{
+
+    padding:60px;
+    text-align:center;
+    color:#6b7280;
+    background:white;
+    border-radius:12px;
+
+}

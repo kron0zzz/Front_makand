@@ -27,6 +27,11 @@ export const useMaintenances = () => {
     load();
   }, [cargarMaintenances]);
 
+  //opcion mas directa:
+  // useEffect(() => {
+  //   cargarMaintenances();
+  // }, [cargarMaintenances]);
+
   const eliminarMaintenance = async (id) => {
     if (!window.confirm('¿Estás seguro de que deseas eliminar este mantenimiento?')) return false;
     try {
@@ -47,3 +52,5 @@ export const useMaintenances = () => {
     eliminarMaintenance
   };
 };
+
+

@@ -3,7 +3,7 @@ import { apiClient } from "../../../shared/services/api";
 export const projectService = {
   obtenerTodos: async () => {
     try {
-      const response = await apiClient.get('/api/projects/table');
+      const response = await apiClient.get('projects/table');
       return response.data || [];
     } catch (error) {
       console.error('Error al obtener proyectos:', error);
@@ -13,7 +13,7 @@ export const projectService = {
 
   obtenerPorId: async (id) => {
     try {
-      const response = await apiClient.get(`/api/projects/${id}`);
+      const response = await apiClient.get(`projects/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error al obtener proyecto por ID:', error);
@@ -31,7 +31,7 @@ export const projectService = {
         customer_id: datos.customer_id,
         project_status: datos.project_status !== undefined ? datos.project_status : true,
       };
-      return await apiClient.post('/api/projects', payload);
+      return await apiClient.post('projects', payload);
     } catch (error) {
       console.error('Error al crear proyecto:', error);
       throw error;
@@ -48,7 +48,7 @@ export const projectService = {
         customer_id: datos.customer_id,
         project_status: datos.project_status,
       };
-      return await apiClient.put(`/api/projects/${id}`, payload);
+      return await apiClient.put(`projects/${id}`, payload);
     } catch (error) {
       console.error('Error al actualizar proyecto:', error);
       throw error;
@@ -57,7 +57,7 @@ export const projectService = {
 
   eliminar: async (id) => {
     try {
-      return await apiClient.delete(`/api/projects/${id}`);
+      return await apiClient.delete(`projects/${id}`);
     } catch (error) {
       console.error('Error al eliminar proyecto:', error);
       throw error;

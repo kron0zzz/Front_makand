@@ -1,10 +1,79 @@
+// import { apiClient } from "../../../shared/services/api";
+
+// export const userService = {
+//   obtenerTodos: async () => {
+//     try {
+//       const response = await apiClient.get('/api/users');
+//       return response.data || [];
+//     } catch (error) {
+//       console.error('Error al obtener usuarios:', error);
+//       throw error;
+//     }
+//   },
+  
+//   obtenerPorId: async (id) => {
+//     try {
+//       const response = await apiClient.get(`/api/users/${id}`);
+//       return response.data;
+//     } catch (error) {
+//       console.error('Error al obtener usuario por ID:', error);
+//       throw error;
+//     }
+//   },
+  
+//   crear: async (datos) => {
+//     try {
+//       const payload = {
+//         user_email: datos.user_email,
+//         user_password: datos.password,
+//         user_status: datos.user_status,
+//         role_id: datos.role_id,
+//         employee_id: datos.employee_id,
+//       };
+//       return await apiClient.post('/api/users', payload);
+//     } catch (error) {
+//       console.error('Error al crear usuario:', error);
+//       throw error;
+//     }
+//   },
+  
+//   actualizar: async (id, datos) => {
+//     try {
+//       const payload = {
+//         user_email: datos.user_email,
+//         user_password: datos.password,
+//         user_status: datos.user_status,
+//         role_id: datos.role_id,
+//         employee_id: datos.employee_id,
+//       };
+//       console.log("Enviando payload al backend:", payload);
+
+//       return await apiClient.put(`/api/users/${id}`, payload);
+//     } catch (error) {
+//       console.error('Error al actualizar usuario:', error);
+//       throw error;
+//     }
+//   },
+  
+//   eliminar: async (id) => {
+//     try {
+//       return await apiClient.delete(`/api/users/${id}`);
+//     } catch (error) {
+//       console.error('Error al eliminar usuario:', error);
+//       throw error;
+//     }
+//   }
+// };
+
+
 import { apiClient } from "../../../shared/services/api";
 
 export const userService = {
   obtenerTodos: async () => {
     try {
-      const response = await apiClient.get('/api/users');
-      return response.data || [];
+      // Ruta corregida: sin /api
+      const { data } = await apiClient.get('/users');
+      return data || [];
     } catch (error) {
       console.error('Error al obtener usuarios:', error);
       throw error;
@@ -13,8 +82,9 @@ export const userService = {
   
   obtenerPorId: async (id) => {
     try {
-      const response = await apiClient.get(`/api/users/${id}`);
-      return response.data;
+      // Ruta corregida: sin /api
+      const { data } = await apiClient.get(`/users/${id}`);
+      return data;
     } catch (error) {
       console.error('Error al obtener usuario por ID:', error);
       throw error;
@@ -30,7 +100,8 @@ export const userService = {
         role_id: datos.role_id,
         employee_id: datos.employee_id,
       };
-      return await apiClient.post('/api/users', payload);
+      // Ruta corregida: sin /api
+      return await apiClient.post('/users', payload);
     } catch (error) {
       console.error('Error al crear usuario:', error);
       throw error;
@@ -46,9 +117,8 @@ export const userService = {
         role_id: datos.role_id,
         employee_id: datos.employee_id,
       };
-      console.log("Enviando payload al backend:", payload);
-
-      return await apiClient.put(`/api/users/${id}`, payload);
+      // Ruta corregida: sin /api
+      return await apiClient.put(`/users/${id}`, payload);
     } catch (error) {
       console.error('Error al actualizar usuario:', error);
       throw error;
@@ -57,7 +127,8 @@ export const userService = {
   
   eliminar: async (id) => {
     try {
-      return await apiClient.delete(`/api/users/${id}`);
+      // Ruta corregida: sin /api
+      return await apiClient.delete(`/users/${id}`);
     } catch (error) {
       console.error('Error al eliminar usuario:', error);
       throw error;

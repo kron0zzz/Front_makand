@@ -1,0 +1,53 @@
+.return-card{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#fafafa;
+    border:1px solid #ececec;
+    border-radius:10px;
+    padding:12px 14px;
+}
+
+.return-card strong{
+    display:block;
+    margin-bottom:4px;
+    color:#111827;
+    font-size:14px;
+}
+
+.return-card p{
+    margin:0;
+    font-size:13px;
+    color:#6b7280;
+}
+
+.return-actions{
+    display:flex;
+    gap:8px;
+}
+
+.return-actions button{
+    width:34px;
+    height:34px;
+    border:none;
+    border-radius:8px;
+    background:white;
+    cursor:pointer;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    transition:.2s;
+    border:1px solid #e5e7eb;
+}
+
+.return-actions button:hover{
+    background:#f3f4f6;
+}
+
+.return-actions button:first-child{
+    color:#2563eb;
+}
+
+.return-actions button:last-child{
+    color:#dc2626;
+}
