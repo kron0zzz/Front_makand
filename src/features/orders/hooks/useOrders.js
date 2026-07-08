@@ -447,5 +447,23 @@ export const useOrders = () => {
     }
   };
 
-  return { orders, loading, error, cargarPedidos, crearPedidoCompleto, eliminarPedido };
+  const obtenerPedidoCompleto = async (id) => {
+    try {
+      const { data } = await api.get(`/orders/${id}/full`);
+      return data;
+    } catch (err) {
+      handleError(err);
+    }
+  };
+
+  return { 
+    orders, 
+    loading, 
+    error, 
+    cargarPedidos, 
+    crearPedidoCompleto,
+    eliminarPedido,
+    obtenerPedidoCompleto, 
+ 
+  };
 };
