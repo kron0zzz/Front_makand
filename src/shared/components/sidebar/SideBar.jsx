@@ -1,397 +1,556 @@
-import { useState } from "react";
-import './SideBar.css'
+// // import { useState } from "react";
+// // import './SideBar.css'
 
-import {
-  Truck,
-  LayoutDashboard,
-  Menu,
-  X,
-  LogOut,
-  User,
-  Building,
-  Wrench,
-  ChevronDown,
-  ChevronUp,
-  ShoppingCart,
-  FolderOpen,
-  Users,
-  FileText,
-  FolderKanban,
-  ReceiptText,
-  UserCog,
-} from "lucide-react";
+// // import {
+// //   Truck,
+// //   LayoutDashboard,
+// //   Menu,
+// //   X,
+// //   LogOut,
+// //   User,
+// //   Building,
+// //   Wrench,
+// //   ChevronDown,
+// //   ChevronUp,
+// //   ShoppingCart,
+// //   FolderOpen,
+// //   Users,
+// //   FileText,
+// //   FolderKanban,
+// //   ReceiptText,
+// //   UserCog,
+// // } from "lucide-react";
 
-const menuItems = [
+// // const menuItems = [
 
-  //Dasboard
-  {
-    name: "Dashboard",
-    icon: LayoutDashboard,
-    key: "dashboard",
-  },
+// //   //Dasboard
+// //   {
+// //     name: "Dashboard",
+// //     icon: LayoutDashboard,
+// //     key: "dashboard",
+// //   },
 
 
-  //Usuarios
-  {
-    name: "Usuarios",
-    icon: Users,
-    key: "users-parent",
+// //   //Usuarios
+// //   {
+// //     name: "Usuarios",
+// //     icon: Users,
+// //     key: "users-parent",
 
-    submenu: [
-      {
-        name: "Cargos",
-        icon: Wrench,
-        key: "cargos",
-      },
-      {
-        name: "Usuarios",
-        icon: Users,
-        key: "usuarios",
-      },
-      {
-        name: "Roles",
-        icon: UserCog,
-        key: "roles",
-      },
-    ]
-  },
+// //     submenu: [
+// //       {
+// //         name: "Cargos",
+// //         icon: Wrench,
+// //         key: "cargos",
+// //       },
+// //       {
+// //         name: "Usuarios",
+// //         icon: Users,
+// //         key: "usuarios",
+// //       },
+// //       {
+// //         name: "Roles",
+// //         icon: UserCog,
+// //         key: "roles",
+// //       },
+// //     ]
+// //   },
   
 
-  // COMPRAS
-  {
-    name: "Compras",
-    icon: FolderOpen,
-    key: "compras-parent",
+// //   // COMPRAS
+// //   {
+// //     name: "Compras",
+// //     icon: FolderOpen,
+// //     key: "compras-parent",
 
-    submenu: [
-      {
-        name: "Proveedores",
-        icon: Building,
-        key: "proveedores",
-      },
-      {
-        name: "Facturas de Compra",
-        icon: FileText,
-        key: "facturas_compra",
-      },
-      {
-        name: "SubAlquileres",
-        icon: FileText,
-        key: "subalquileres",
-      },
+// //     submenu: [
+// //       {
+// //         name: "Proveedores",
+// //         icon: Building,
+// //         key: "proveedores",
+// //       },
+// //       {
+// //         name: "Facturas de Compra",
+// //         icon: FileText,
+// //         key: "facturas_compra",
+// //       },
+// //       {
+// //         name: "SubAlquileres",
+// //         icon: FileText,
+// //         key: "subalquileres",
+// //       },
 
-    ]
-  },
+// //     ]
+// //   },
 
  
   
 
-  // Proyectos
-  {
-    name: "Proyectos", 
-    icon: Building,
-    key: "projects-parent",
+// //   // Proyectos
+// //   {
+// //     name: "Proyectos", 
+// //     icon: Building,
+// //     key: "projects-parent",
 
-    submenu: [
+// //     submenu: [
 
-      {
-        name: "Proyectos",
-        icon: FolderKanban,
-        key: "proyectos",
-      },
+// //       {
+// //         name: "Proyectos",
+// //         icon: FolderKanban,
+// //         key: "proyectos",
+// //       },
 
-      {
+// //       {
         
 
-        name: "Maquinaria",
-        icon: Wrench,
-        key: "maquinaria-parent",
+// //         name: "Maquinaria",
+// //         icon: Wrench,
+// //         key: "maquinaria-parent",
 
+// //         submenu: [
+// //           {
+// //             name: "Maquinaria",
+// //             icon: Wrench,
+// //             key: "maquinaria",
+// //           },
+// //           {
+// //             name: "Vehículos",
+// //             icon: Truck,
+// //             key: "vehiculos",
+// //           },
+// //           {
+// //             name: "Estado Máquina",
+// //             icon: Wrench,
+// //             key: "estados_maquinaria",
+// //           },
+// //           {
+// //             name: "Categorías Máquina",
+// //             icon: FileText,
+// //             key: "categorias_maquinaria",
+// //           },
+// //           {
+// //             name: "Mantenimientos",
+// //             icon: Wrench,
+// //             key: "mantenimientos",
+// //           },
+// //         ]
+// //       },
+// //       {
+// //         name: "Pedidos",
+// //         icon: FileText,
+// //         key: "pedido-parent",
+
+// //         submenu: [
+// //           {
+// //             name: "Pedidos",
+// //             icon: FileText,
+// //             key: "pedidos",
+// //           },
+// //           {
+// //             name: "Estados de Pedido",
+// //             icon: ShoppingCart,
+// //             key: "estados-pedido",
+// //           },
+// //         ]
+// //       },
+// //     ]
+
+    
+// //   },
+
+
+
+// //   //Ventas
+// //   {
+// //     name: "Ventas",
+// //     icon: ShoppingCart,
+// //     key: "ventas-parent",
+
+// //     submenu: [
+// //       {
+// //         name: "Clientes",
+// //         icon: Users,
+// //         key: "clientes",
+// //       },
+// //       {
+// //         name: "Empleados",
+// //         icon: Users,
+// //         key: "empleados",
+// //       },
+// //       {
+// //         name: "Tipos de Cobro",
+// //         icon: ReceiptText,
+// //         key: "tipos-cobro",
+// //       },
+      
+// //     ]
+// //   },
+// // ];
+
+// // export function Sidebar({
+// //   currentView,
+// //   onViewChange,
+// //   collapsed,
+// //   onToggleCollapse,
+// //   onLogout,
+// //   user
+// // }) {
+
+// //   const [expandedMenus, setExpandedMenus] = useState([]);
+
+// //   const toggleMenu = (menuKey) => {
+
+// //     if (expandedMenus.includes(menuKey)) {
+
+// //       setExpandedMenus(
+// //         expandedMenus.filter((m) => m !== menuKey)
+// //       );
+
+// //     } else {
+
+// //       setExpandedMenus([
+// //         ...expandedMenus,
+// //         menuKey
+// //       ]);
+
+// //     }
+
+// //   };
+
+// //   const isMenuExpanded = (menuKey) => {
+// //     return expandedMenus.includes(menuKey);
+// //   };
+
+// //   const isMenuActive = (item) => {
+
+// //     if (item.key === currentView) return true;
+
+// //     if (item.submenu) {
+// //       return item.submenu.some((sub) =>
+// //         isMenuActive(sub)
+// //       );
+// //     }
+
+// //     return false;
+// //   };
+
+// //   const renderMenuItem = (item, level = 0) => {
+
+// //     const Icon = item.icon;
+
+// //     const hasSubmenu =
+// //       item.submenu && item.submenu.length > 0;
+
+// //     const isExpanded = isMenuExpanded(item.key);
+
+// //     const isActive = isMenuActive(item);
+
+// //     return (
+
+// //       <div key={item.key}>
+// //         <button
+// //           onClick={() => {
+// //             if (hasSubmenu) {
+// //               toggleMenu(item.key);
+// //             } else {
+// //               onViewChange(item.key);
+// //             }
+// //           }}
+
+// //           className={`
+// //             sidebar-link
+// //             ${
+// //               hasSubmenu && isExpanded
+// //                 ? "menu-expanded"
+// //                 : ""
+// //             }
+// //             ${
+// //               !hasSubmenu && isActive
+// //                 ? "active-page"
+// //                 : ""
+// //             }
+// //           `}
+
+        
+// //         >
+
+// //           <span className="sidebar-icon">
+// //             <Icon size={20} />
+// //           </span>
+
+// //           {!collapsed && (
+// //             <>
+// //               <span className="sidebar-label">
+// //                 {item.name}
+// //               </span>
+
+// //               {hasSubmenu && (
+// //                 <span style={{ marginLeft: "auto" }}>
+// //                   {isExpanded ? (
+// //                     <ChevronUp size={16} />
+// //                   ) : (
+// //                     <ChevronDown size={16} />
+// //                   )}
+// //                 </span>
+// //               )}
+// //             </>
+// //           )}
+
+// //         </button>
+
+// //         {/* SUBMENU */}
+// //         {hasSubmenu && !collapsed && isExpanded && (
+
+// //           <div className="sidebar-submenu">
+// //             {item.submenu.map((subItem) =>
+// //               renderMenuItem(subItem, level + 1)
+// //             )}
+// //           </div>
+
+// //         )}
+
+// //       </div>
+
+// //     );
+
+// //   };
+
+// //   return (
+
+// //     <aside
+// //       className={`sidebar ${
+// //         collapsed
+// //           ? "sidebar-closed"
+// //           : "sidebar-open"
+// //       }`}
+// //     >
+
+// //       {/* HEADER */}
+// //       <div className="sidebar-top">
+// //         <div className="brand-wrapper">
+// //           <div className="brand-logo">
+// //             MK
+// //           </div>
+
+// //           {!collapsed && (
+// //             <div>
+// //               <p className="brand-title">
+// //                 Makand
+// //               </p>
+
+// //               <p className="brand-subtitle">
+// //                 Control
+// //               </p>
+// //             </div>
+// //           )}
+// //         </div>
+
+// //         <button className="sidebar-toggle" onClick={onToggleCollapse} aria-label={collapsed ? "Expandir menú": "Colapsar menú"}>
+// //           {collapsed
+// //             ? <Menu size={20} />
+// //             : <X size={20} />
+// //           }
+// //         </button>
+
+// //       </div>
+
+// //       {/* NAV */}
+// //       <nav className="sidebar-nav">
+
+// //         {menuItems.map((item) =>
+// //           renderMenuItem(item)
+// //         )}
+
+// //       </nav>
+
+// //       {/* FOOTER */}
+// //       <div className="sidebar-footer">
+// //         <div className="sidebar-user">
+// //           <User size={18} />
+// //           {!collapsed && (
+// //             <div className="sidebar-user-info">
+// //               <div className="sidebar-user-name">
+// //                 {user?.user_email || "Cargando..."}
+// //               </div>
+// //               <div className="sidebar-user-role">
+// //                 {/* Mapeo rápido basado en el ID recibido */}
+// //                 {user?.role_id === 1 ? "Administrador" : 
+// //                 user?.role_id === 2 ? "Asesor" : "Usuario"}
+// //               </div>
+// //             </div>
+// //           )}
+// //       </div>
+
+// //         <button className="sidebar-logout" onClick={onLogout} aria-label="Cerrar sesión">
+// //           <LogOut size={18} />
+// //           {!collapsed && (
+// //             <span>Cerrar sesión</span>
+// //           )}
+// //         </button>
+
+// //       </div>
+
+// //     </aside>
+
+// //   );
+
+// // }
+
+
+
+import { useState } from "react";
+import './SideBar.css';
+import { useAuth } from '../../context/AuthContext';
+import { 
+  Truck, LayoutDashboard, Menu, X, LogOut, User, Building, Wrench, 
+  ChevronDown, ChevronUp, ShoppingCart, FolderOpen, Users, FileText, 
+  FolderKanban, ReceiptText, UserCog 
+} from "lucide-react";
+
+const menuItems = [
+  { name: "Dashboard", icon: LayoutDashboard, key: "dashboard" },
+  {
+    name: "Usuarios", icon: Users, key: "users-parent",
+    submenu: [
+      { name: "Cargos", icon: Wrench, key: "cargos" },
+      { name: "Usuarios", icon: Users, key: "usuarios" },
+      { name: "Roles", icon: UserCog, key: "roles" },
+    ]
+  },
+  {
+    name: "Compras", icon: FolderOpen, key: "compras-parent",
+    submenu: [
+      { name: "Proveedores", icon: Building, key: "proveedores" },
+      { name: "Facturas de Compra", icon: FileText, key: "facturas_compra" },
+      { name: "SubAlquileres", icon: FileText, key: "subalquileres" },
+    ]
+  },
+  {
+    name: "Proyectos", icon: Building, key: "projects-parent",
+    submenu: [
+      { name: "Proyectos", icon: FolderKanban, key: "proyectos" },
+      {
+        name: "Maquinaria", icon: Wrench, key: "maquinaria-parent",
         submenu: [
-          {
-            name: "Maquinaria",
-            icon: Wrench,
-            key: "maquinaria",
-          },
-          {
-            name: "Vehículos",
-            icon: Truck,
-            key: "vehiculos",
-          },
-          {
-            name: "Estado Máquina",
-            icon: Wrench,
-            key: "estados_maquinaria",
-          },
-          {
-            name: "Categorías Máquina",
-            icon: FileText,
-            key: "categorias_maquinaria",
-          },
-          {
-            name: "Mantenimientos",
-            icon: Wrench,
-            key: "mantenimientos",
-          },
+          { name: "Maquinaria", icon: Wrench, key: "maquinaria" },
+          { name: "Vehículos", icon: Truck, key: "vehiculos" },
+          { name: "Estado Máquina", icon: Wrench, key: "estados_maquinaria" },
+          { name: "Categorías Máquina", icon: FileText, key: "categorias_maquinaria" },
+          { name: "Mantenimientos", icon: Wrench, key: "mantenimientos" },
         ]
       },
       {
-        name: "Pedidos",
-        icon: FileText,
-        key: "pedido-parent",
-
+        name: "Pedidos", icon: FileText, key: "pedido-parent",
         submenu: [
-          {
-            name: "Pedidos",
-            icon: FileText,
-            key: "pedidos",
-          },
-          {
-            name: "Estados de Pedido",
-            icon: ShoppingCart,
-            key: "estados-pedido",
-          },
+          { name: "Pedidos", icon: FileText, key: "pedidos" },
+          { name: "Estados de Pedido", icon: ShoppingCart, key: "estados-pedido" },
         ]
       },
     ]
-
-    
   },
-
-
-
-  //Ventas
   {
-    name: "Ventas",
-    icon: ShoppingCart,
-    key: "ventas-parent",
-
+    name: "Ventas", icon: ShoppingCart, key: "ventas-parent",
     submenu: [
-      {
-        name: "Clientes",
-        icon: Users,
-        key: "clientes",
-      },
-      {
-        name: "Empleados",
-        icon: Users,
-        key: "empleados",
-      },
-      {
-        name: "Tipos de Cobro",
-        icon: ReceiptText,
-        key: "tipos-cobro",
-      },
-      
+      { name: "Clientes", icon: Users, key: "clientes" },
+      { name: "Empleados", icon: Users, key: "empleados" },
+      { name: "Tipos de Cobro", icon: ReceiptText, key: "tipos-cobro" },
     ]
   },
 ];
 
-export function Sidebar({
-  currentView,
-  onViewChange,
-  collapsed,
-  onToggleCollapse,
-  onLogout,
-  user
-}) {
-
+export function Sidebar({ currentView, onViewChange, collapsed, onToggleCollapse, onLogout, user }) {
   const [expandedMenus, setExpandedMenus] = useState([]);
+  const { hasPermission } = useAuth();
+
+  const permissionMap = {
+    'usuarios': 'Listar Usuario',
+    'cargos': 'Listar Cargo',
+    'roles': 'Listar Rol',
+    'proveedores': 'Listar Proveedor',
+    'facturas_compra': 'Listar Factura de Compra',
+    'subalquileres': 'Listar Subalquiler',
+    'proyectos': 'Listar Proyecto',
+    'maquinaria': 'Listar Maquinaria',
+    'vehiculos': 'Listar Vehículo',
+    'estados_maquinaria': 'Listar Estado de Maquinaria',
+    'categorias_maquinaria': 'Listar Categoría de Maquinaria',
+    'mantenimientos': 'Listar Mantenimiento',
+    'pedidos': 'Listar Orden',
+    'estados-pedido': 'Listar Estado de Orden',
+    'clientes': 'Listar Cliente',
+    'empleados': 'Listar Empleado',
+    'tipos-cobro': 'Listar Tipo de Cargo'
+  };
+
+  const canAccess = (item) => {
+    if (!user) return false;
+    if (item.submenu) return item.submenu.some(sub => canAccess(sub));
+    if (item.key === 'dashboard') return user.role_id === 1;
+    
+    const requiredPermission = permissionMap[item.key];
+    return requiredPermission ? hasPermission(requiredPermission) : false;
+  };
 
   const toggleMenu = (menuKey) => {
-
-    if (expandedMenus.includes(menuKey)) {
-
-      setExpandedMenus(
-        expandedMenus.filter((m) => m !== menuKey)
-      );
-
-    } else {
-
-      setExpandedMenus([
-        ...expandedMenus,
-        menuKey
-      ]);
-
-    }
-
+    setExpandedMenus(prev => prev.includes(menuKey) ? prev.filter(m => m !== menuKey) : [...prev, menuKey]);
   };
 
-  const isMenuExpanded = (menuKey) => {
-    return expandedMenus.includes(menuKey);
-  };
-
-  const isMenuActive = (item) => {
-
-    if (item.key === currentView) return true;
-
-    if (item.submenu) {
-      return item.submenu.some((sub) =>
-        isMenuActive(sub)
-      );
-    }
-
-    return false;
-  };
+  const isMenuExpanded = (menuKey) => expandedMenus.includes(menuKey);
+  const isMenuActive = (item) => item.key === currentView || (item.submenu?.some(sub => isMenuActive(sub)));
 
   const renderMenuItem = (item, level = 0) => {
-
     const Icon = item.icon;
-
-    const hasSubmenu =
-      item.submenu && item.submenu.length > 0;
-
+    const hasSubmenu = item.submenu && item.submenu.length > 0;
     const isExpanded = isMenuExpanded(item.key);
-
     const isActive = isMenuActive(item);
 
     return (
-
       <div key={item.key}>
         <button
-          onClick={() => {
-            if (hasSubmenu) {
-              toggleMenu(item.key);
-            } else {
-              onViewChange(item.key);
-            }
-          }}
-
-          className={`
-            sidebar-link
-            ${
-              hasSubmenu && isExpanded
-                ? "menu-expanded"
-                : ""
-            }
-            ${
-              !hasSubmenu && isActive
-                ? "active-page"
-                : ""
-            }
-          `}
-
-        
+          onClick={() => hasSubmenu ? toggleMenu(item.key) : onViewChange(item.key)}
+          className={`sidebar-link ${hasSubmenu && isExpanded ? "menu-expanded" : ""} ${!hasSubmenu && isActive ? "active-page" : ""}`}
         >
-
-          <span className="sidebar-icon">
-            <Icon size={20} />
-          </span>
-
+          <span className="sidebar-icon"><Icon size={20} /></span>
           {!collapsed && (
             <>
-              <span className="sidebar-label">
-                {item.name}
-              </span>
-
-              {hasSubmenu && (
-                <span style={{ marginLeft: "auto" }}>
-                  {isExpanded ? (
-                    <ChevronUp size={16} />
-                  ) : (
-                    <ChevronDown size={16} />
-                  )}
-                </span>
-              )}
+              <span className="sidebar-label">{item.name}</span>
+              {hasSubmenu && <span style={{ marginLeft: "auto" }}>{isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}</span>}
             </>
           )}
-
         </button>
-
-        {/* SUBMENU */}
         {hasSubmenu && !collapsed && isExpanded && (
-
           <div className="sidebar-submenu">
-            {item.submenu.map((subItem) =>
-              renderMenuItem(subItem, level + 1)
-            )}
+            {item.submenu.filter(canAccess).map(subItem => renderMenuItem(subItem, level + 1))}
           </div>
-
         )}
-
       </div>
-
     );
-
   };
 
   return (
-
-    <aside
-      className={`sidebar ${
-        collapsed
-          ? "sidebar-closed"
-          : "sidebar-open"
-      }`}
-    >
-
-      {/* HEADER */}
+    <aside className={`sidebar ${collapsed ? "sidebar-closed" : "sidebar-open"}`}>
       <div className="sidebar-top">
         <div className="brand-wrapper">
-          <div className="brand-logo">
-            MK
-          </div>
-
-          {!collapsed && (
-            <div>
-              <p className="brand-title">
-                Makand
-              </p>
-
-              <p className="brand-subtitle">
-                Control
-              </p>
-            </div>
-          )}
+          <div className="brand-logo">MK</div>
+          {!collapsed && <div><p className="brand-title">Makand</p><p className="brand-subtitle">Control</p></div>}
         </div>
-
-        <button className="sidebar-toggle" onClick={onToggleCollapse} aria-label={collapsed ? "Expandir menú": "Colapsar menú"}>
-          {collapsed
-            ? <Menu size={20} />
-            : <X size={20} />
-          }
-        </button>
-
+        <button className="sidebar-toggle" onClick={onToggleCollapse}>{collapsed ? <Menu size={20} /> : <X size={20} />}</button>
       </div>
-
-      {/* NAV */}
       <nav className="sidebar-nav">
-
-        {menuItems.map((item) =>
-          renderMenuItem(item)
-        )}
-
+        {menuItems.filter(canAccess).map(item => renderMenuItem(item))}
       </nav>
-
-      {/* FOOTER */}
       <div className="sidebar-footer">
         <div className="sidebar-user">
           <User size={18} />
           {!collapsed && (
             <div className="sidebar-user-info">
-              <div className="sidebar-user-name">
-                {user?.user_email || "Cargando..."}
-              </div>
-              <div className="sidebar-user-role">
-                {/* Mapeo rápido basado en el ID recibido */}
-                {user?.role_id === 1 ? "Administrador" : 
-                user?.role_id === 2 ? "Asesor" : "Usuario"}
-              </div>
+              <div className="sidebar-user-name">{user?.user_email || "Cargando..."}</div>
+              <div className="sidebar-user-role">{user?.role_id === 1 ? "Administrador" : "Asesor"}</div>
             </div>
           )}
+        </div>
+        <button className="sidebar-logout" onClick={onLogout}><LogOut size={18} />{!collapsed && <span>Cerrar sesión</span>}</button>
       </div>
-
-        <button className="sidebar-logout" onClick={onLogout} aria-label="Cerrar sesión">
-          <LogOut size={18} />
-          {!collapsed && (
-            <span>Cerrar sesión</span>
-          )}
-        </button>
-
-      </div>
-
     </aside>
-
   );
-
 }
