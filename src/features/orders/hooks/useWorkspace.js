@@ -3,12 +3,16 @@ import { useState,useCallback } from "react";
 import {
 
     getWorkspace,
+
     createReturn,
     updateReturn,
     deleteReturn,
 
     getCutsByOrder,
-    createCut
+    createCut,
+
+    getPaymentsByOrder,
+    createPayment
 
 } from "../services/workspaceService";
 
@@ -18,6 +22,7 @@ export const useWorkspace = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [cuts, setCuts] = useState([]);
+    const [paymentsData, setPaymentsData] = useState([]);
 
 
 //------------------------
@@ -117,6 +122,43 @@ export const useWorkspace = () => {
         await createCut(data);
         //await cargarWorkspace(orderId);
         await cargarCortes(orderId);
+        await cargarAbonos(orderId);
+    };
+
+
+//--------------------
+// Payments
+//------------------------
+
+
+
+    const cargarAbonos = useCallback(async (orderId) => {
+
+        try{
+
+            setLoading(true);
+            setError(null);
+            const data = await getPaymentsByOrder(orderId);
+            setPaymentsData(data);
+
+        }
+        catch(err){
+            console.error(err);
+            setError(err.message);
+        }
+        finally{
+            setLoading(false);
+        }
+
+    },[]);
+
+
+
+
+    const registrarAbono = async (orderId,data) => {
+        await createPayment(data);
+        //await cargarWorkspace(orderId);
+        await cargarAbonos(orderId);
     };
 
 
@@ -134,7 +176,11 @@ export const useWorkspace = () => {
 
         cuts,
         cargarCortes,
-        registrarCorte
+        registrarCorte,
+
+        paymentsData,
+        cargarAbonos,
+        registrarAbono
 
     };
 

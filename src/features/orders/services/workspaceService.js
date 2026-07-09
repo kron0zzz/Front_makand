@@ -249,3 +249,18 @@ export const getCutsByOrder = async (orderId) => {
     const { data } = await apiClient.get(`/rental-cuts/order/${orderId}`);
     return data;
 };
+
+
+//--------------------------
+// Payments
+//--------------------------
+
+export const getPaymentsByOrder = async (orderId) => {
+    const {data} = await apiClient.get(`/payments/order/${orderId}`);
+    return data;
+}
+
+export const createPayment = async (data) => {
+    const {data:response} = await apiClient.post(`/payments`, data);
+    return response;
+}

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import OrderWorkspaceTabs from "./tabs/OrderWorkspaceTabs";
 import MachineryTab from "./tabs/MachineryTab/MachineryTab";
 import CutsTab from "./tabs/CutsTab/CutsTab"
+import PaymentsTab from "./tabs/PaymentsTab/PaymentsTab"
 
 import { useWorkspace } from "../../hooks/useWorkspace";
 
@@ -13,14 +14,18 @@ const OrderWorkspace = ({ orderId, onBack }) => {
     const {
 
         workspace,
-        cuts,
         loading,
         error,
         cargarWorkspace,
         registrarDevolucion,
         
+        cuts,
         cargarCortes,
-        registrarCorte
+        registrarCorte,
+
+        paymentsData,
+        cargarAbonos,
+        registrarAbono
 
     } = useWorkspace();
 
@@ -31,13 +36,15 @@ const OrderWorkspace = ({ orderId, onBack }) => {
 
             cargarWorkspace(orderId);
             cargarCortes(orderId);
+            cargarAbonos(orderId);
 
         }
 
     }, [
         orderId,
         cargarWorkspace,
-        cargarCortes
+        cargarCortes,
+        cargarAbonos
     ]);
 
 
@@ -127,7 +134,6 @@ const OrderWorkspace = ({ orderId, onBack }) => {
 
                         <CutsTab
                             cuts = {cuts}
-                            //orderId = {workspace.order_id}
                             order={workspace}
                             onCreateCut = {registrarCorte}
                         />
@@ -142,7 +148,11 @@ const OrderWorkspace = ({ orderId, onBack }) => {
 
                     <div>
 
-                        <p>Pagos en construcción.</p>
+                        <PaymentsTab
+                            paymentsData = {paymentsData}
+                            order={workspace}
+                            onCreatePayment = {registrarAbono}
+                        />
 
                     </div>
 
