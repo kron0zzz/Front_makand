@@ -1,9 +1,9 @@
 const API_URL = 'http://localhost:3000/api/roles';
 
 export const roleService = {
-  obtenerTodos: async () => {
+  obtenerTodos: async (page = 1, limit = 9, search="") => {
     const token = localStorage.getItem("token");
-    const response = await fetch(`${API_URL}/table`, {
+    const response = await fetch(`${API_URL}/table?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     return response.ok ? await response.json() : [];

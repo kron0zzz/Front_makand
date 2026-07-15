@@ -1,53 +1,3 @@
-// import { useState, useEffect, useCallback } from 'react';
-// import { apiClient } from "../../../shared/services/api";
-
-// export const usePositions = () => {
-//   const [positions, setPositions] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null);
-
-//   const cargarCargos = useCallback(async () => {
-//     setLoading(true);
-//     setError(null);
-//     try {
-//       const response = await apiClient.get('/api/positions');
-//       setPositions(response.data);
-//     } catch (err) {
-//       setError(err.response?.status === 403 ? "Sin permisos." : "Error al cargar.");
-//       console.error("Error:", err);
-//     } finally {
-//       setLoading(false);
-//     }
-//   }, []);
-
-//   // AGREGAMOS ESTA FUNCIÓN: Lógica para eliminar
-//   const eliminarCargo = async (id) => {
-//     if (!window.confirm("¿Estás seguro de que deseas eliminar este cargo?")) {
-//       return;
-//     }
-
-//     try {
-//       await apiClient.delete(`/api/positions/${id}`);
-//       alert("Cargo eliminado correctamente");
-//       // Recargamos la lista después de borrar
-//       await cargarCargos();
-//     } catch (err) {
-//       console.error("Error al eliminar:", err);
-//       alert(err.response?.data?.message || "Error al intentar eliminar el cargo.");
-//     }
-//   };
-
-//   useEffect(() => {
-//     cargarCargos();
-//   }, [cargarCargos]); 
-
-//   // RETORNAMOS LA FUNCIÓN REAL
-//   return { positions, loading, error, cargarCargos, eliminarCargo };
-// };
-
-
-
-// src/features/positions/hooks/usePositions.js
 import { useState, useEffect, useCallback } from 'react';
 import { PositionService } from '../services/PositionsService';
 
@@ -56,18 +6,52 @@ export const usePositions = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [page, setPage] = useState(1);
+  const [limit] = useState(9);
+  const [search, setSearch] = useState("");
+
+  const [pagination, setPagination] = useState({
+      page: 1,
+      totalPages: 1,
+      total: 0
+  });
+
+
   const cargarCargos = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await PositionService.obtenerTodos();
-      setPositions(data);
+      const datos = await PositionService.obtenerTodos(page, limit, search);
+      setPositions(datos.data);
+      setPagination(datos.pagination);
     } catch (err) {
       setError(err.response?.status === 403 ? "Sin permisos." : "Error al cargar cargos.");
     } finally {
       setLoading(false);
     }
+  }, [page, limit, search]);
+
+
+
+  //función para cambiar de página
+  const cambiarPagina = (nuevaPagina) => {
+    if (
+        nuevaPagina !== page &&
+        nuevaPagina >= 1 &&
+        nuevaPagina <= pagination.totalPages
+    ) {
+        setPage(nuevaPagina);
+    }
+  };
+
+
+
+  const cambiarBusqueda = useCallback((texto) => {
+    setSearch(texto);
+    setPage(1);
   }, []);
+
+
 
   const eliminarCargo = async (id) => {
     if (!window.confirm("¿Estás seguro de que deseas eliminar este cargo?")) return;
@@ -85,5 +69,16 @@ export const usePositions = () => {
     cargarCargos();
   }, [cargarCargos]);
 
-  return { positions, loading, error, cargarCargos, eliminarCargo };
+  return { 
+    positions, 
+    loading, 
+    error, 
+    cargarCargos, 
+    eliminarCargo,
+  
+    page,
+    cambiarPagina,
+    cambiarBusqueda,
+    pagination
+  };
 };
