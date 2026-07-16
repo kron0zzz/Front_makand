@@ -1,37 +1,36 @@
-const API_URL = 'http://localhost:3000/api/roles';
+import { apiClient } from "../../../shared/services/api";
 
 export const roleService = {
   obtenerTodos: async () => {
-    const token = localStorage.getItem("token");
-    const response = await fetch(`${API_URL}/table`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    return response.ok ? await response.json() : [];
+    // Al usar apiClient, el interceptor inyecta el token automáticamente
+    const response = await apiClient.get('/roles/table');
+    return response.data;
   },
+  
   crear: async (data) => {
-    const token = localStorage.getItem("token");
-    const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-      body: JSON.stringify(data)
-    });
-    return response.ok;
+    const response = await apiClient.post('/roles', data);
+    return response.status === 201 || response.status === 200;
   },
+
   actualizar: async (id, data) => {
-    const token = localStorage.getItem("token");
-    const response = await fetch(`${API_URL}/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-      body: JSON.stringify(data)
-    });
-    return response.ok;
+    const response = await apiClient.put(`/roles/${id}`, data);
+    return response.status === 200;
   },
+
   eliminar: async (id) => {
-    const token = localStorage.getItem("token");
-    const response = await fetch(`${API_URL}/${id}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
+    const response = await apiClient.delete(`/roles/${id}`);
+    return response.status === 200;
+  },
+
+  obtenerPermisos: async () => {
+    const response = await apiClient.get('/permissions');
+    return response.data;
+  },
+
+  actualizarPermisosRol: async (roleId, permissionIds) => {
+    const response = await apiClient.put(`/roles/${roleId}/permissions`, { 
+      permissions: permissionIds 
     });
-    return response.ok;
+    return response.status === 200;
   }
 };
