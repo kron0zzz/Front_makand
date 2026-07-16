@@ -1,5 +1,5 @@
 // src/features/sub_rentals/hooks/useSubRentals.js
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect} from 'react';
 import { subRentalService } from '../services/subRentalService';
 
 export const useSubRentals = () => {
@@ -7,18 +7,50 @@ export const useSubRentals = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // asignar estados para paginación
+  const [page, setPage] = useState(1);
+  const [limit] = useState(9);
+  const [search, setSearch] = useState("");
+
+  const [pagination, setPagination] = useState({
+      page: 1,
+      totalPages: 1,
+      total: 0
+  });
+
   const cargarSubalquileres = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const datos = await subRentalService.obtenerTabla();
-      setSubRentals(datos);
+      //ahora se carga con los datos requeridos para paginación
+      const datos = await subRentalService.obtenerTabla(page, limit, search);
+      setSubRentals(datos.data);
+      setPagination(datos.pagination);
     } catch (err) {
       setError(err.message || 'Error al cargar los registros de subalquiler');
     } finally {
       setLoading(false);
     }
+  }, [page, limit, search]);
+
+
+  //función para cambiar de página
+  const cambiarPagina = (nuevaPagina) => {
+    if (
+        nuevaPagina !== page &&
+        nuevaPagina >= 1 &&
+        nuevaPagina <= pagination.totalPages
+    ) {
+        setPage(nuevaPagina);
+    }
+  };
+
+
+  const cambiarBusqueda = useCallback((texto) => {
+    setSearch(texto);
+    setPage(1);
   }, []);
+
 
   const eliminarSubalquiler = useCallback(async (id) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este registro de subalquiler?')) {
@@ -32,11 +64,20 @@ export const useSubRentals = () => {
     }
   }, []);
 
+  useEffect(() => {
+    cargarSubalquileres();
+  }, [cargarSubalquileres]);
+
   return {
     subRentals,
     loading,
     error,
     cargarSubalquileres,
-    eliminarSubalquiler
+    eliminarSubalquiler,
+
+    page,
+    cambiarPagina,
+    cambiarBusqueda,
+    pagination
   };
 };

@@ -38,3 +38,6 @@ aparte de hacer los ajustes de arriba, falta entonces el editar pedido y anular
 
 ### clientes
 - no funciona el switch de cambio de estado (se está ejecutando una vuelta ahí dentro del customerPage en lugar de importarlo del hook y sara puso para que requiera permisos)
+
+### proveedores
+- no se traen algunos datos, por lo que no se muestran ni en detalle ni en formulario de edición (es porque se estan importando los datos de forma distinta ahora que se implementó la paginacion)
