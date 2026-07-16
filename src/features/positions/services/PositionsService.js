@@ -3,7 +3,7 @@ import { apiClient } from "../../../shared/services/api";
 export const PositionService = {
   obtenerTodos: async (page = 1, limit = 9, search="") => {
     const { data } = await apiClient.get(
-      `/positions?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`
+      `/positions/table?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`
     );
     return data;
   },
