@@ -28,3 +28,13 @@ Este archivo es pa borrar luego, son cosas que deberíamos tener en cuenta.
 ### next
 
 aparte de hacer los ajustes de arriba, falta entonces el editar pedido y anular
+
+
+### users 
+- los campos que se renderizan deben ser otros más, en el back también se debe hacer el llamado
+
+### tipos de cobro
+- no funciona el eliminar
+
+### clientes
+- no funciona el switch de cambio de estado (se está ejecutando una vuelta ahí dentro del customerPage en lugar de importarlo del hook y sara puso para que requiera permisos)
