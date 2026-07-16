@@ -1,5 +1,3 @@
-// 
-
 import { X } from 'lucide-react';
 import { apiClient } from "../../../../shared/services/api"; 
 import PermissionsSelector from '../roleDetail/PermissionsSelector'; 
@@ -38,7 +36,8 @@ const RoleForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarRol
       alert('Error del servidor: ' + (error.response?.data?.message || 'Revisa los campos'));
     }
   };
-
+  console.log("DEBUG RoleForm - Valor de formData:", formData);
+  console.log("DEBUG: ID que estoy enviando al selector:", formData.role_id);
   return (
     <div className="form-modal-overlay">
       <div className="form-modal-container">
