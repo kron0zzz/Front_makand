@@ -14,6 +14,7 @@ const EmployeePage = () => {
     employees, 
     cargarEmpleados, 
     eliminarEmpleado,
+    toggleEmpleadoEstado,
 
     page,
     cambiarPagina,
@@ -36,27 +37,6 @@ const EmployeePage = () => {
     setFormData({ ...emp }); 
     setMostrarModalForm(true);
     setMostrarModalDetalle(false);
-  };
-
-
-  //esta cosa se tiene que ir y se debe importar la función desde el hook, el cual yá la está exportando
-  const handleToggleEstado = async (employee) => {
-    const nuevoEstado = !employee.employee_status;
-    if (window.confirm(`¿Deseas ${nuevoEstado ? 'activar' : 'desactivar'} a ${employee.employee_full_name}?`)) {
-      try {
-        const response = await fetch(`http://localhost:3000/api/employees/${employee.employee_id}`, {
-          method: 'PUT',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${getToken()}` 
-          },
-          body: JSON.stringify({ ...employee, employee_status: nuevoEstado })
-        });
-        if (response.ok) await cargarEmpleados();
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    }
   };
 
   
@@ -123,8 +103,7 @@ const EmployeePage = () => {
                       <input 
                         type="checkbox" 
                         checked={emp.employee_status} 
-                        disabled={!hasPermission('Editar Empleado')}
-                        onChange={() => handleToggleEstado(emp)} 
+                        onChange={() => toggleEmpleadoEstado(emp.employee_id, emp.employee_status)}  
                       />
                       <span className="slider round"></span>
                     </label>

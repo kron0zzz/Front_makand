@@ -33,11 +33,28 @@ export const useEmployees = () => {
   }, [page, limit, search]);
 
   const toggleEmpleadoEstado = async (id, estadoActual) => {
+    if (
+      !window.confirm(
+        `¿Estás seguro de que deseas ${
+          estadoActual ? "desactivar" : "activar"
+        } este empleado?`
+      )
+    ) {
+      return;
+    }
+  
     try {
-      await employeeService.actualizar(id, { employee_status: !estadoActual });
+      const empleado = await employeeService.obtenerPorId(id);
+  
+      empleado.employee_status = !estadoActual;
+  
+      await employeeService.actualizar(id, empleado);
+  
       await cargarEmpleados();
+  
     } catch (err) {
-      console.error("Error al actualizar estado del empleado:", err);
+      console.error(err);
+      alert("No se pudo actualizar el estado.");
     }
   };
 

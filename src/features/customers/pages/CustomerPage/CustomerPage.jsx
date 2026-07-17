@@ -2,6 +2,8 @@ import { useState, useMemo, useEffect } from 'react';
 import { Plus, Search, Eye, Edit, Trash2 } from 'lucide-react';
 import { useCustomers } from '../../hooks/useCustomers'; 
 import { useAuth } from '../../../../shared/context/AuthContext'
+import { customerService } from '../../services/customerService';
+
 import CustomerForm from '../../components/CustomerForm/CustomerForm';
 import CustomerDetail from '../../components/CustomerDetail/CustomerDetail';
 import './CustomerPage.css';
@@ -14,6 +16,7 @@ const CustomerPage = () => {
     customers, 
     cargarClientes, 
     eliminarCliente,
+    toggleCustomerEstado,
 
     page,
     cambiarPagina,
@@ -30,34 +33,27 @@ const CustomerPage = () => {
   const [customerSeleccionado, setCustomerSeleccionado] = useState(null);
 
 
-  const handleToggleEstado = async (customer) => {
-    const nuevoEstado = !customer.customer_status;
-    const accion = nuevoEstado ? 'ACTIVAR' : 'DESACTIVAR';
-    const mensaje = `¿Estás seguro de que deseas ${accion} al cliente ${customer.customer_first_name} ${customer.customer_last_name}?`;
-    
-    if (window.confirm(mensaje)) {
+  const cargarCliente = async (id, accion) => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`http://localhost:3000/api/customers/${customer.customer_id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({
-            ...customer,
-            customer_status: nuevoEstado 
-          })
-        });
-
-        if (response.ok) {
-          await cargarClientes();
-        } else {
-          alert("No se pudo actualizar el estado del cliente.");
+        const cliente = await customerService.obtenerPorId(id);
+  
+        if (accion === "detalle") {
+          setCustomerSeleccionado(cliente);
+          setMostrarModalDetalle(true);
         }
+  
+        if (accion === "editar") {
+          setFormData(cliente);
+          setIsEditing(true);
+          setMostrarModalForm(true);
+        }
+  
       } catch (error) {
-        console.error("Error al cambiar estado:", error);
-        alert("Error de conexión con el servidor.");
+        console.error(error);
+        alert("No se pudo cargar la información del cliente.");
       }
-    }
-  };
+    };
+
 
   const prepararEdicion = (customer) => {
     setIsEditing(true);
@@ -143,17 +139,17 @@ const CustomerPage = () => {
                         type="checkbox" 
                         checked={customer.customer_status} 
                         disabled={!hasPermission('Editar Cliente')}
-                        onChange={() => handleToggleEstado(customer)} 
+                        onChange={() => toggleCustomerEstado(customer.customer_id, customer.customer_status)}  
                       />
                       <span className="slider round"></span>
                     </label>
                   </td>
                   <td className="actions-cell">
                     {hasPermission('Ver Detalle de Cliente') && (
-                      <button className="action-btn view" title="Ver" onClick={() => { setCustomerSeleccionado(customer); setMostrarModalDetalle(true); }}><Eye size={18} /></button>
+                      <button className="action-btn view" title="Ver" onClick={() => cargarCliente(customer.customer_id, "detalle")}><Eye size={18} /></button>
                     )}
                     {hasPermission('Editar Cliente') && (
-                      <button className="action-btn edit" title="Editar" onClick={() => prepararEdicion(customer)}><Edit size={18} /></button>
+                      <button className="action-btn edit" title="Editar" onClick={() => cargarCliente(customer.customer_id, "editar")}><Edit size={18} /></button>
                     )}
                     {hasPermission('Eliminar Cliente') && (
                       <button className="action-btn delete" title="Eliminar" onClick={() => eliminarCliente(customer.customer_id)}><Trash2 size={18} /></button>

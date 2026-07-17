@@ -33,13 +33,29 @@ export const useCustomers = () => {
       }
   }, [page, limit, search]);
 
-  const toggleClienteEstado = async (id, estadoActual) => {
+
+
+  const toggleCustomerEstado = async (id, estadoActual) => {
+    if (
+      !window.confirm(
+        `¿Estás seguro de que deseas ${
+          estadoActual ? "desactivar" : "activar"
+        } este cliente?`
+      )
+    ) {
+      return;
+    }
+  
     try {
-      // Usamos el servicio en lugar de fetch
-      await customerService.actualizar(id, { client_status: !estadoActual });
-      await cargarClientes(); // Recargamos la lista tras actualizar
+      const cliente = await customerService.obtenerPorId(id);
+  
+      cliente.customer_status = !estadoActual;
+  
+      await customerService.actualizar(id, cliente);
+  
+      await cargarClientes();
     } catch (err) {
-      console.error("Error al actualizar estado:", err);
+      console.error(err);
       alert("No se pudo actualizar el estado.");
     }
   };
@@ -85,7 +101,7 @@ export const useCustomers = () => {
     loading, 
     error, 
     cargarClientes, 
-    toggleClienteEstado, 
+    toggleCustomerEstado, 
     eliminarCliente, 
 
     page,
