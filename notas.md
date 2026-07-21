@@ -37,7 +37,10 @@ aparte de hacer los ajustes de arriba, falta entonces el editar pedido y anular
 - no funciona el eliminar
 
 ### clientes
-- no funciona el switch de cambio de estado (se está ejecutando una vuelta ahí dentro del customerPage en lugar de importarlo del hook y sara puso para que requiera permisos)
+- todo melo ya, creo
 
 ### proveedores
-- no se traen algunos datos, por lo que no se muestran ni en detalle ni en formulario de edición (es porque se estan importando los datos de forma distinta ahora que se implementó la paginacion)
+- todo melo ya, creo
+
+### proyectos
+- hay un error de lógica, pues el formulario de edición espera un dato de "departamento" que no existe en la base de datos(porque así lo definimos). entonces tenemos dos opciones: 1= incluir el dato de departamento en la db, 2= modificar el formulario para que cargue el departamento según la ciudad seleccionada

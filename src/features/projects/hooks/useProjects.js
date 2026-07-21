@@ -4,23 +4,35 @@ import { useCustomers } from '../../customers/hooks/useCustomers';
 
 export const useProjects = () => {
   const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { customers } = useCustomers();
 
-  const cargarProyectos = useCallback(async () => {
-    setLoading(true);
+
+  // asignar estados para paginación
+  const [page, setPage] = useState(1);
+  const [limit] = useState(9);
+  const [search, setSearch] = useState("");
+
+  const [pagination, setPagination] = useState({
+      page: 1,
+      totalPages: 1,
+      total: 0
+  });
+
+  const cargarProyectos = useCallback(async() => {
+    setLoading(true); 
     setError(null);
-    try {
-      const datos = await projectService.obtenerTodos();
-      setProjects(datos);
-    } catch (err) {
-      setError(err.message);
-      console.error("Error al cargar proyectos:", err);
-    } finally {
+
+    try{
+      const datos = await projectService.obtenerTabla(page, limit, search);
+      setProjects(datos.data);
+      setPagination(datos.pagination);
+    }catch{
+      setError(err.message || 'Error al cargar los proyectos');
+    }finally{
       setLoading(false);
     }
-  }, []);
+  },[page,limit, search])
 
   const eliminarProyecto = useCallback(async (id) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este proyecto?')) {
@@ -35,29 +47,43 @@ export const useProjects = () => {
     }
   }, []);
 
-  const projectsEnriquecidos = useMemo(() => {
-    return projects.map(proyecto => {
-      const cliente = customers.find(c => c.customer_id === proyecto.customer_id);
-      return {
-        ...proyecto,
-        customer_first_name: cliente ? cliente.customer_first_name : '',
-        customer_last_name: cliente ? cliente.customer_last_name : '',
-      };
-    });
-  }, [projects, customers]);
+
+
+  //función para cambiar de página
+  const cambiarPagina = (nuevaPagina) => {
+    if (
+        nuevaPagina !== page &&
+        nuevaPagina >= 1 &&
+        nuevaPagina <= pagination.totalPages
+    ) {
+        setPage(nuevaPagina);
+    }
+  };
+
+
+
+  const cambiarBusqueda = useCallback((texto) => {
+    setSearch(texto);
+    setPage(1);
+  }, []);
+
 
   useEffect(() => {
-    const load = async () => {
-      await cargarProyectos();
-    };
-    load();
+    cargarProyectos();
   }, [cargarProyectos]);
 
+
+
   return {
-    projects: projectsEnriquecidos,
+    projects,
     loading,
     error,
     cargarProyectos,
-    eliminarProyecto
+    eliminarProyecto,
+
+    page,
+    cambiarPagina,
+    cambiarBusqueda,
+    pagination
   };
 };

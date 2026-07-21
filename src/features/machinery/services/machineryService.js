@@ -1,22 +1,12 @@
-// // Capa de servicios para interactuar con el endpoint de maquinaria en el backend.
-
-// export const machineryService = {
-//   obtenerTodos: async () => {
-//     return []; 
-//   },
-//   crear: async (data) => console.log("Creando Maquinaria:", data),
-//   actualizar: async (id, data) => console.log("Actualizando Maquinaria:", id, data),
-//   eliminar: async (id) => console.log("Eliminando Maquinaria:", id),
-// };
-
-// export default machineryService;
-
 import { apiClient } from "../../../shared/services/api";
 
 export const machineryService = {
-  obtenerTabla: async () => {
-    const { data } = await apiClient.get('/machines/table');
-    return data || [];
+  obtenerTabla: async (page = 1, limit = 9, search="") => {
+    const { data } = await apiClient.get(
+      `/machines/table?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`
+    );
+
+    return data;
   },
 
   crear: async (datos) => {

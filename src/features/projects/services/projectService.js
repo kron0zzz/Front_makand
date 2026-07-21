@@ -3,7 +3,7 @@ import { apiClient } from "../../../shared/services/api";
 export const projectService = {
   obtenerTodos: async () => {
     try {
-      const response = await apiClient.get('projects/table');
+      const response = await apiClient.get('projects');
       return response.data || [];
     } catch (error) {
       console.error('Error al obtener proyectos:', error);
@@ -63,4 +63,12 @@ export const projectService = {
       throw error;
     }
   },
+
+  obtenerTabla: async (page = 1, limit = 9, search="") => {
+    const { data } = await apiClient.get(
+      `/projects/table?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`
+    );
+
+    return data;
+  }
 };
