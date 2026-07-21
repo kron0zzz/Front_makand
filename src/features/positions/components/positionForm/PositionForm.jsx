@@ -1,5 +1,6 @@
 import { X } from 'lucide-react';
 import { apiClient } from "../../../../shared/services/api"; 
+import {PositionService} from '../../services/PositionsService';
 import './PositionForm.css';
 
 const PositionForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarCargos }) => {
@@ -18,10 +19,11 @@ const PositionForm = ({ isOpen, onClose, formData, setFormData, isEditing, carga
 
     try {
       if (isEditing) {
+        //aqui tambièn deberìa consumir el service
         await apiClient.put(`/api/positions/${formData.position_id}`, dataToSend);
         alert('¡Cargo actualizado con éxito!');
       } else {
-        await apiClient.post('/api/positions', dataToSend);
+        await PositionService.crear(dataToSend);
         alert('¡Cargo creado con éxito!');
       }
       

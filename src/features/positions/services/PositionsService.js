@@ -9,7 +9,7 @@ export const PositionService = {
   },
 
   crear: async (data) => {
-    const { data: responseData } = await apiClient.post('/positions', data);
+    const { responseData } = await apiClient.post('/positions', data);
     return responseData;
   },
 
