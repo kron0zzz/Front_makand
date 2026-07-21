@@ -30,7 +30,6 @@ export const RolePage = () => {
   // Estados para el modal y el formulario
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentRole, setCurrentRole] = useState(null);
-  const [formData, setFormData] = useState({ role_name: '' });
   const [busqueda, setBusqueda] = useState('');
 
 
