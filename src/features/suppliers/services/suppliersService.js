@@ -1,25 +1,17 @@
-// //Las llamadas a la API/Mocks
-
-
-
-// export const supplierService = {
-//   obtenerTodos: async () => {
-//     // Por ahora, devolvemos un array vacío para que no falle al cargar
-//     return []; 
-//   },
-//   crear: async (data) => console.log("Creando:", data),
-//   actualizar: async (id, data) => console.log("Actualizando:", id, data),
-//   eliminar: async (id) => console.log("Eliminando:", id),
-// };
-
-
-
 import { apiClient } from "../../../shared/services/api";
 
 export const supplierService = {
-  obtenerTodos: async () => {
-    const { data } = await apiClient.get('/suppliers');
-    return data || [];
+  
+  obtenerTabla: async (page=1, limit=10, search="") => {
+    const { data } = await apiClient.get(
+      `/suppliers/table?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`
+    );
+    return data;
+  },
+
+  obtenerPorId: async (id) => {
+    const { data } = await apiClient.get(`/suppliers/${id}`);
+    return data;
   },
 
   crear: async (datos) => {

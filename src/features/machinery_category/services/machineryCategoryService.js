@@ -1,22 +1,14 @@
-// //Las llamadas a la API/Mocks
-
-// export const machineryCategoryService = {
-//   obtenerTodos: async () => {
-//     // Por ahora, devolvemos un array vacío para que no falle al cargar
-//     return []; 
-//   },
-//   crear: async (data) => console.log("Creando:", data),
-//   actualizar: async (id, data) => console.log("Actualizando:", id, data),
-//   eliminar: async (id) => console.log("Eliminando:", id),
-// };
-
-
 import { apiClient } from "../../../shared/services/api";
 
 export const machineryCategoryService = {
-  obtenerTabla: async () => {
-    const { data } = await apiClient.get('/machine-categories/table');
-    return data || [];
+
+  // implementando paginación
+  obtenerTabla: async (page = 1, limit = 9, search="") => {
+    const { data } = await apiClient.get(
+      `/machine-categories/table?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`
+    );
+
+    return data;
   },
 
   crear: async (datos) => {

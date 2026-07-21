@@ -1,25 +1,10 @@
-// //Las llamadas a la API/Mocks
-
-
-
-// export const PositionService = {
-//   obtenerTodos: async () => {
-//     // Por ahora, devolvemos un array vacío para que no falle al cargar
-//     return []; 
-//   },
-//   crear: async (data) => console.log("Creando:", data),
-//   actualizar: async (id, data) => console.log("Actualizando:", id, data),
-//   eliminar: async (id) => console.log("Eliminando:", id),
-// };
-
-
-// src/features/positions/services/PositionService.js
 import { apiClient } from "../../../shared/services/api";
 
 export const PositionService = {
-  obtenerTodos: async () => {
-    // La URL resultante será: http://localhost:3000/api/positions
-    const { data } = await apiClient.get('/positions');
+  obtenerTodos: async (page = 1, limit = 9, search="") => {
+    const { data } = await apiClient.get(
+      `/positions/table?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`
+    );
     return data;
   },
 

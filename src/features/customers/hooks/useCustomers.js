@@ -1,94 +1,3 @@
-// import { useState, useEffect, useCallback } from 'react';
-
-// export const useCustomers = () => {
-//   const [customers, setCustomers] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null);
-
-//   const cargarClientes = useCallback(async () => { 
-//       setLoading(true);
-//       setError(null);
-//       try {
-//         const token = localStorage.getItem("token");
-//         const response = await fetch('http://localhost:3000/api/customers/table', {
-//           headers: {
-//             'Authorization': `Bearer ${token}`
-//           }
-//         });
-        
-//         if (!response.ok) {
-//           throw new Error('No se pudo conectar con el servidor');
-//         }
-        
-//         const datos = await response.json();
-//         setCustomers(datos); 
-//       } catch (err) {
-//         setError(err.message);
-//         console.error("Error al cargar clientes:", err);
-//       } finally {
-//         setLoading(false);
-//       }
-//   }, []);
-
-//   const toggleClienteEstado = async (id, estadoActual) => {
-//     try {
-//       const token = localStorage.getItem("token");
-//       const response = await fetch(`http://localhost:3000/api/customers/${id}`, {
-//         method: 'PUT',
-//         headers: { 
-//           'Content-Type': 'application/json',
-//           'Authorization': `Bearer ${token}` 
-//         },
-//         body: JSON.stringify({ 
-//           client_status: !estadoActual 
-//         })
-//       });
-
-//       if (response.ok) {
-//         await cargarClientes();
-//       }
-//     } catch (err) {
-//       console.error("Error al actualizar estado:", err);
-//     }
-//   };
-
-//   const eliminarCliente = async (id) => {
-//     if (window.confirm('¿Estás seguro de que deseas eliminar este cliente?')) {
-//       try {
-//         const token = localStorage.getItem("token");
-//         const response = await fetch(`http://localhost:3000/api/customers/${id}`, {
-//           method: 'DELETE',
-//           headers: {
-//             'Authorization': `Bearer ${token}`
-//           }
-//         });
-
-//         if (response.ok) {
-//           setCustomers(prev => prev.filter(c => c.customer_id !== id));
-//         } else {
-//           alert("No se pudo eliminar el cliente.");
-//         }
-//       } catch (err) {
-//         console.error("Error al eliminar:", err);
-//       }
-//     }
-//   };
-
-//   useEffect(() => {
-//     cargarClientes();
-//   }, [cargarClientes]);
-
-//   return { 
-//     customers, 
-//     loading, 
-//     error, 
-//     cargarClientes, 
-//     toggleClienteEstado, 
-//     eliminarCliente 
-//   };
-// };
-
-
 import { useState, useEffect, useCallback } from 'react';
 import { customerService } from '../services/customerService'; // Importamos el servicio
 
@@ -97,31 +6,78 @@ export const useCustomers = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // asignar estados para paginación
+  const [page, setPage] = useState(1);
+  const [limit] = useState(9);
+  const [search, setSearch] = useState("");
+
+  const [pagination, setPagination] = useState({
+      page: 1,
+      totalPages: 1,
+      total: 0
+  });
+
   const cargarClientes = useCallback(async () => { 
       setLoading(true);
       setError(null);
       try {
         // Usamos el servicio en lugar de fetch
-        const datos = await customerService.obtenerTodos();
-        setCustomers(datos); 
+        const datos = await customerService.obtenerTodos(page, limit, search);
+        setCustomers(datos.data);
+        setPagination(datos.pagination); 
       } catch (err) {
         setError(err.message || 'Error al cargar clientes');
         console.error("Error al cargar clientes:", err);
       } finally {
         setLoading(false);
       }
-  }, []);
+  }, [page, limit, search]);
 
-  const toggleClienteEstado = async (id, estadoActual) => {
+
+
+  const toggleCustomerEstado = async (id, estadoActual) => {
+    if (
+      !window.confirm(
+        `¿Estás seguro de que deseas ${
+          estadoActual ? "desactivar" : "activar"
+        } este cliente?`
+      )
+    ) {
+      return;
+    }
+  
     try {
-      // Usamos el servicio en lugar de fetch
-      await customerService.actualizar(id, { client_status: !estadoActual });
-      await cargarClientes(); // Recargamos la lista tras actualizar
+      const cliente = await customerService.obtenerPorId(id);
+  
+      cliente.customer_status = !estadoActual;
+  
+      await customerService.actualizar(id, cliente);
+  
+      await cargarClientes();
     } catch (err) {
-      console.error("Error al actualizar estado:", err);
+      console.error(err);
       alert("No se pudo actualizar el estado.");
     }
   };
+
+
+  //función para cambiar de página
+  const cambiarPagina = (nuevaPagina) => {
+    if (
+        nuevaPagina !== page &&
+        nuevaPagina >= 1 &&
+        nuevaPagina <= pagination.totalPages
+    ) {
+        setPage(nuevaPagina);
+    }
+  };
+
+
+
+  const cambiarBusqueda = useCallback((texto) => {
+    setSearch(texto);
+    setPage(1);
+  }, []);
 
   const eliminarCliente = async (id) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este cliente?')) {
@@ -145,7 +101,12 @@ export const useCustomers = () => {
     loading, 
     error, 
     cargarClientes, 
-    toggleClienteEstado, 
-    eliminarCliente 
+    toggleCustomerEstado, 
+    eliminarCliente, 
+
+    page,
+    cambiarPagina,
+    cambiarBusqueda,
+    pagination
   };
 };

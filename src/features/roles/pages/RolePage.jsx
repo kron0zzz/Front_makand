@@ -6,13 +6,33 @@ import RoleForm from '../components/roleForm/roleForm';
 import { RoleDetail } from '../components/roleDetail/roleDetail';
 import './RolePage.css';
 
+import Pagination from '../../../shared/components/pagination/Pagination';
+import useDebounce from "../../../shared/hooks/useDebounce";
+
 export const RolePage = () => {
-  const { roles, cargarRoles, eliminarRol } = useRoles();
+  const { 
+    roles, 
+    cargarRoles, 
+    eliminarRol,
+  
+    page,
+    cambiarPagina,
+    cambiarBusqueda,
+    pagination
+  } = useRoles();
   const { hasPermission } = useAuth();
   
+
   const [detailModal, setDetailModal] = useState(null);
   const [editModal, setEditModal] = useState(null); 
   const [formData, setFormData] = useState({ role_name: '', role_status: true });
+
+  // Estados para el modal y el formulario
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentRole, setCurrentRole] = useState(null);
+  const [formData, setFormData] = useState({ role_name: '' });
+  const [busqueda, setBusqueda] = useState('');
+
 
   useEffect(() => {
     cargarRoles();
@@ -30,6 +50,14 @@ export const RolePage = () => {
     });
     setEditModal(rol);
   };
+
+
+
+  const busquedaDebounce = useDebounce(busqueda, 300);
+  useEffect(() => {
+    cambiarBusqueda(busquedaDebounce);
+  }, [busquedaDebounce]);
+
 
   return (
     <div className="page-container">
@@ -53,7 +81,8 @@ export const RolePage = () => {
             </tr>
           </thead>
           <tbody>
-            {roles && roles.map((rol) => (
+            {roles.length > 0 ? (
+              roles.map((rol) => (
               <tr key={rol.role_id}>
                 <td>#{rol.role_id}</td>
                 <td>{rol.role_name}</td>
@@ -74,10 +103,22 @@ export const RolePage = () => {
                   )}
                 </td>
               </tr>
-            ))}
+            ))):(
+              <tr>
+                <td>ola</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
+
+      <Pagination
+        page={page}
+        totalPages={pagination.totalPages}
+        total={pagination.total}
+        onPageChange={cambiarPagina}
+      />
+      
 
       {detailModal && (
         <RoleDetail 

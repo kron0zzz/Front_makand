@@ -28,3 +28,19 @@ Este archivo es pa borrar luego, son cosas que deberíamos tener en cuenta.
 ### next
 
 aparte de hacer los ajustes de arriba, falta entonces el editar pedido y anular
+
+
+### users 
+- los campos que se renderizan deben ser otros más, en el back también se debe hacer el llamado
+
+### tipos de cobro
+- no funciona el eliminar
+
+### clientes
+- todo melo ya, creo
+
+### proveedores
+- todo melo ya, creo
+
+### proyectos
+- hay un error de lógica, pues el formulario de edición espera un dato de "departamento" que no existe en la base de datos(porque así lo definimos). entonces tenemos dos opciones: 1= incluir el dato de departamento en la db, 2= modificar el formulario para que cargue el departamento según la ciudad seleccionada

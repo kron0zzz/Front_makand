@@ -16,15 +16,18 @@ const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
     e.preventDefault();
     const token = localStorage.getItem("token"); 
     const dataToSend = {
-      customer_first_name: formData.firstName,
-      customer_last_name: formData.lastName,
-      customer_document_type: formData.tipoDocumento || 'CC', 
-      customer_document_number: formData.documento,
-      organization_type: formData.tipoOrganizacion || 'Natural',
-      customer_phone: formData.telefono,
-      customer_email: formData.email,
-      customer_address: formData.direccion,
-      customer_status: formData.estado !== undefined ? formData.estado : true
+      customer_first_name: formData.customer_first_name,
+      customer_last_name: formData.customer_last_name,
+      customer_document_type: formData.customer_document_type,
+      customer_document_number: formData.customer_document_number,
+      organization_type: formData.organization_type,
+      customer_phone: formData.customer_phone,
+      customer_email: formData.customer_email,
+      customer_address: formData.customer_address,
+      customer_status:
+        formData.customer_status !== undefined
+          ? formData.customer_status
+          : true
     };
 
     const url = isEditing 
@@ -87,9 +90,9 @@ const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
             <div>
               <label className="form-label">Tipo de Persona *</label>
               <select 
-                name="tipoOrganizacion" 
+                name="organization_type" 
                 className="form-input"
-                value={formData.tipoOrganizacion || 'Natural'} 
+                value={formData.organization_type || 'Natural'} 
                 onChange={handleChange}
               >
                 <option value="Natural">Persona Natural</option>
@@ -100,19 +103,19 @@ const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
             {/* Nombres */}
             <div>
               <label className="form-label">Nombres *</label>
-              <input name="firstName" type="text" className="form-input" value={formData.firstName || ''} onChange={handleChange} required />
+              <input name="customer_first_name" type="text" className="form-input" value={formData.customer_first_name || ''} onChange={handleChange} required />
             </div>
 
             {/* Apellidos */}
             <div>
               <label className="form-label">Apellidos *</label>
-              <input name="lastName" type="text" className="form-input" value={formData.lastName || ''} onChange={handleChange} required />
+              <input name="customer_last_name" type="text" className="form-input" value={formData.customer_last_name || ''} onChange={handleChange} required />
             </div>
 
             {/* Tipo de Identificación */}
             <div>
               <label className="form-label">Tipo Documento *</label>
-              <select name="tipoDocumento" className="form-input" value={formData.tipoDocumento || 'CC'} onChange={handleChange}>
+              <select name="customer_document_type" className="form-input" value={formData.customer_document_type || 'CC'} onChange={handleChange}>
                 <option value="CC">Cédula de Ciudadanía</option>
                 <option value="NIT">NIT</option>
                 <option value="CE">Cédula de Extranjería</option>
@@ -122,25 +125,25 @@ const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
             {/* Número de Identificación */}
             <div>
               <label className="form-label">Número de Documento *</label>
-              <input name="documento" type="text" className="form-input" value={formData.documento || ''} onChange={handleChange} required />
+              <input name="customer_document_number" type="text" className="form-input" value={formData.customer_document_number || ''} onChange={handleChange} required />
             </div>
 
             {/* Teléfono de Contacto */}
             <div>
               <label className="form-label">Teléfono / Celular *</label>
-              <input name="telefono" type="text" className="form-input" value={formData.telefono || ''} onChange={handleChange} required />
+              <input name="customer_phone" type="text" className="form-input" value={formData.customer_phone || ''} onChange={handleChange} required />
             </div>
 
             {/* Correo Electrónico */}
             <div>
               <label className="form-label">Correo Electrónico</label>
-              <input name="email" type="email" className="form-input" value={formData.email || ''} onChange={handleChange} />
+              <input name="customer_email" type="email" className="form-input" value={formData.customer_email || ''} onChange={handleChange} />
             </div>
 
             {/* Dirección de Residencia/Oficina */}
             <div className="form-full-width">
               <label className="form-label">Dirección Completa</label>
-              <input name="direccion" type="text" className="form-input" value={formData.direccion || ''} onChange={handleChange} />
+              <input name="customer_address" type="text" className="form-input" value={formData.customer_address || ''} onChange={handleChange} />
             </div>
 
             {/* --- NUEVO CAMPO: ESTADO (Solo visible al editar) --- */}
@@ -152,13 +155,13 @@ const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
                     <input 
                       type="checkbox" 
                       name="estado"
-                      checked={formData.estado} 
+                      checked={formData.customer_status} 
                       onChange={(e) => setFormData({...formData, estado: e.target.checked})} 
                     />
                     <span className="slider round"></span>
                   </label>
                   <span className={formData.estado ? "text-active" : "text-inactive"}>
-                    {formData.estado ? 'Activo' : 'Inactivo'}
+                    {formData.customer_status ? 'Activo' : 'Inactivo'}
                   </span>
                 </div>
               </div>
