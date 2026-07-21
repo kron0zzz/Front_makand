@@ -3,7 +3,7 @@ import { apiClient } from "../../../shared/services/api";
 export const roleService = {
   obtenerTodos: async (page =1, limit=10, search="") => {
     // Al usar apiClient, el interceptor inyecta el token automáticamente
-    const response = await apiClient.get('/roles/table?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}');
+    const response = await apiClient.get(`/roles/table?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`);
     return response.data;
   },
   
