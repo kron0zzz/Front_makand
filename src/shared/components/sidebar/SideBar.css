@@ -3,19 +3,16 @@
 .sidebar {
   width: 280px;
   height: 100vh;
-
   background: #ffffff;
-
   border-right: 1px solid #e5e7eb;
-
   display: flex;
   flex-direction: column;
-
   transition: width 0.25s ease;
 
-  position: relative;
+  position: sticky;
+  top: 0;
 
-  overflow: hidden;
+  overflow: auto;
 
   box-shadow:
     0 4px 12px rgba(0,0,0,0.04);
