@@ -20,7 +20,7 @@ const PositionForm = ({ isOpen, onClose, formData, setFormData, isEditing, carga
     try {
       if (isEditing) {
         //aqui tambièn deberìa consumir el service
-        await apiClient.put(`/api/positions/${formData.position_id}`, dataToSend);
+        await PositionService.actualizar(formData.position_id, dataToSend);
         alert('¡Cargo actualizado con éxito!');
       } else {
         await PositionService.crear(dataToSend);
