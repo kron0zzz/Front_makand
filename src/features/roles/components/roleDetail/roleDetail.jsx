@@ -1,8 +1,30 @@
+import { useState, useEffect } from 'react';
 import { X, Shield, Activity, ListChecks } from 'lucide-react';
+import { apiClient } from "../../../../shared/services/api";
 import PermissionsSelector from './PermissionsSelector';
 import './roleDetail.css';
 
 export const RoleDetail = ({ role, onClose, onEdit }) => {
+  const [rolePermissions, setRolePermissions] = useState([]);
+
+  useEffect(() => {
+    const fetchRolePermissions = async () => {
+      if (role && role.role_id) {
+        try {
+          // Consultamos los permisos asignados a este rol específico
+          const res = await apiClient.get(`roles/${role.role_id}/permissions`);
+          // Extraemos solo los IDs para que el selector los reconozca
+          setRolePermissions(res.data.map(p => p.id));
+        } catch (error) {
+          console.error("Error al cargar los permisos del rol:", error);
+          setRolePermissions([]);
+        }
+      }
+    };
+
+    fetchRolePermissions();
+  }, [role]);
+
   if (!role) return null;
 
   return (
@@ -43,13 +65,17 @@ export const RoleDetail = ({ role, onClose, onEdit }) => {
                 <p className="label-text">Permisos Asignados</p>
               </div>
               <div className="permissions-container-view">
-                <PermissionsSelector roleId={role.role_id} isEditable={false} />
+                {/* Pasamos los permisos obtenidos y una función vacía para onChange ya que es modo lectura */}
+                <PermissionsSelector 
+                  selected={rolePermissions} 
+                  onChange={() => {}} 
+                  isEditable={false} 
+                />
               </div>
             </div>
           </div>
 
           <div className="action-buttons">
-            {/* Se ejecuta onEdit pasando el objeto role */}
             <button onClick={() => onEdit(role)} className="btn-primary">Editar</button>
             <button onClick={onClose} className="btn-secondary">Cerrar</button>
           </div>

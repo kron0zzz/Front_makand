@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { apiClient } from "../../../../shared/services/api";
 
-const PermissionsSelector = ({ selected, onChange, isEditable = true }) => {
+const PermissionsSelector = ({ selected = [], onChange, isEditable = true }) => {
   const [allPermissions, setAllPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -24,19 +24,37 @@ const PermissionsSelector = ({ selected, onChange, isEditable = true }) => {
   const handleToggle = (id) => {
     if (!isEditable) return;
 
-    // Calculamos el nuevo array de permisos
     const newSelection = selected.includes(id) 
       ? selected.filter(i => i !== id) 
       : [...selected, id];
     
-    // Notificamos al formulario padre
     onChange(newSelection);
   };
 
   if (loading) return <div>Cargando permisos...</div>;
 
+  //(Vista de Detalle): lista con viñetas
+  if (!isEditable) {
+    const assignedPermissions = allPermissions.filter(p => selected.includes(p.id));
+
+    if (assignedPermissions.length === 0) {
+      return <p className="text-gray-500 italic">No tiene permisos asignados.</p>;
+    }
+
+    return (
+      <ul className="permissions-bullet-list" style={{ paddingLeft: '20px', listStyleType: 'disc' }}>
+        {assignedPermissions.map(p => (
+          <li key={p.id} style={{ marginBottom: '6px', color: '#374151' }}>
+            {p.name}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  // (Crear / Editar) con checkboxes
   return (
-    <div className={`permissions-grid ${!isEditable ? 'view-only' : ''}`}>
+    <div className="permissions-grid">
       {allPermissions.map(p => (
         <label key={p.id} className="permission-item">
           <input 
