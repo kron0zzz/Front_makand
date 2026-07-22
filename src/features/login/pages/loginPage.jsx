@@ -367,7 +367,7 @@ function LoginPage({ onLogin }) {
             <>
               <h2>Recuperar Contraseña</h2>
               <p style={{ fontSize: "14px", color: "#666", marginBottom: "20px" }}>
-                Ingresa tu correo electrónico registrado y te enviaremos un enlace para restablecer tu contraseña.
+                Ingresa el <strong>correo electrónico con el que estás registrado como usuario</strong> y te enviaremos un enlace para restablecer tu contraseña.
               </p>
               
               <form onSubmit={handleForgotSubmit}>
