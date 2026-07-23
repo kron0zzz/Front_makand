@@ -33,17 +33,16 @@ const ChargeTypeForm = ({ isOpen, onClose, formData, setFormData, isEditing }) =
       await cargarTiposCobro();
       onClose();
     } catch (error) {
-      // MEJORA: Identificar si es permiso (403) o sesión (401)
       const status = error.response?.status;
       if (status === 401) {
         alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
-        // Opcional: window.location.href = '/login';
       } else if (status === 403) {
         alert("No tienes permiso para realizar esta acción. Contacta al administrador.");
       } else {
-        alert("Error de conexión con el servidor. Revisa la consola.");
+        // Muestra el mensaje limpio que lanza el servicio (ej. "Ya existe un tipo de cobro...")
+        alert(error.message || "Error de conexión con el servidor.");
       }
-      console.error("Detalle del error:", error.response || error);
+      console.error("Detalle del error:", error);
     }
   };
 
