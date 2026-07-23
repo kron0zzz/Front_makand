@@ -34,6 +34,7 @@ export const useChargeTypes = () => {
   useEffect(() => {
     cargarTiposCobro();
   }, [cargarTiposCobro]);
+  
 
 
   //función para cambiar de página
@@ -48,6 +49,17 @@ export const useChargeTypes = () => {
   };
 
 
+  const eliminarTipoCobro = useCallback(async (id) => {
+    try {
+      await chargeTypeService.eliminar(id);
+      // Actualizamos el estado localmente filtrando el elemento eliminado
+      setChargeTypes(prev => prev.filter(item => item.charge_type_id !== id));
+    } catch (err) {
+      alert(err.message || 'Error al intentar eliminar el tipo de cobro');
+    }
+  }, []);
+
+
 
   const cambiarBusqueda = useCallback((texto) => {
     setSearch(texto);
@@ -59,6 +71,7 @@ export const useChargeTypes = () => {
     loading, 
     error, 
     cargarTiposCobro,
+    eliminarTipoCobro,
     
     page,
     cambiarPagina,
