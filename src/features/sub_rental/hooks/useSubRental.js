@@ -51,6 +51,35 @@ export const useSubRentals = () => {
     setPage(1);
   }, []);
 
+  // NUEVA FUNCIÓN PARA CAMBIAR EL ESTADO CON SWITCH
+  const cambiarEstadoSubalquiler = useCallback(async (subRental) => {
+    const nuevoEstado = !subRental.sub_rental_status;
+    const mensajeAccion = nuevoEstado ? 'activar' : 'finalizar';
+
+    if (window.confirm(`¿Estás seguro de que deseas ${mensajeAccion} este subalquiler?`)) {
+      try {
+        const datosActualizados = {
+          machinery_id: subRental.machinery_id,
+          supplier_id: subRental.supplier_id,
+          supplier_cost: subRental.supplier_cost,
+          sub_rental_status: nuevoEstado
+        };
+
+        await subRentalService.actualizar(subRental.sub_rental_id, datosActualizados);
+        
+        // Actualizamos el estado localmente de forma inmediata
+        setSubRentals(prev =>
+          prev.map(item =>
+            item.sub_rental_id === subRental.sub_rental_id
+              ? { ...item, sub_rental_status: nuevoEstado }
+              : item
+          )
+        );
+      } catch (err) {
+        alert(err.message || 'Error al cambiar el estado del subalquiler');
+      }
+    }
+  }, []);
 
   const eliminarSubalquiler = useCallback(async (id) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este registro de subalquiler?')) {
@@ -74,6 +103,7 @@ export const useSubRentals = () => {
     error,
     cargarSubalquileres,
     eliminarSubalquiler,
+    cambiarEstadoSubalquiler,
 
     page,
     cambiarPagina,
