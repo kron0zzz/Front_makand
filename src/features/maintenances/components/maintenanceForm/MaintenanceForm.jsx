@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import Select from 'react-select'; // RECUERDA: npm install react-select
+import Select from 'react-select';
 import { useMaintenances } from "../../hooks/useMaintenances";
 import { maintenanceService } from "../../services/maintenanceService";
 import './MaintenanceForm.css';
@@ -9,7 +9,6 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
   const { cargarMaintenances } = useMaintenances();
   const [maquinarias, setMaquinarias] = useState([]);
 
-  // Carga de máquinas para los selectores
   useEffect(() => {
     if (isOpen) {
       fetch('http://localhost:3000/api/machines', {
@@ -48,6 +47,11 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
     }
   };
 
+  // 🛠️ Limpiamos la fecha si viene con hora (ej: "2026-07-22T00:00:00.000Z") para que el input type="date" no falle
+  const fechaLimpia = formData.maintenance_date 
+    ? formData.maintenance_date.split('T')[0] 
+    : '';
+
   return (
     <div className="form-modal-overlay">
       <div className="form-modal-container">
@@ -58,18 +62,14 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
 
         <form onSubmit={handleSubmit} className="form-body">
           <div className="form-grid">
-            {/* ID */}
             <div>
               <label className="form-label">ID</label>
               <input type="text" className="form-input form-input-disabled" 
                      value={isEditing ? `ID: ${formData.maintenance_id}` : 'Asignado automáticamente'} disabled />
             </div>
 
-            {/* --- AQUÍ DEBES ELEGIR UNA DE LAS DOS OPCIONES ABAJO Y PEGARLA --- */}
-            
             <div>
               <label className="form-label">Maquinaria *</label>
-              
               <Select
                 options={maquinarias.map(m => ({ value: m.machinery_id, label: m.machinery_name }))}
                 value={maquinarias.find(m => m.machinery_id == formData.machinery_id) 
@@ -81,7 +81,7 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
                 styles={{
                   control: (base) => ({
                     ...base,
-                    height: '42px', // Ajusta esto al alto de tu clase .form-input
+                    height: '42px',
                     borderRadius: '8px',
                     borderColor: '#d1d5db',
                     boxShadow: 'none',
@@ -95,15 +95,12 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
                   })
                 }}
               />
-              
             </div>
-
-            {/* --- FIN DE LAS OPCIONES --- */}
 
             <div>
               <label className="form-label">Fecha de Mantenimiento *</label>
               <input name="maintenance_date" type="date" className="form-input" 
-                     value={formData.maintenance_date || ''} onChange={handleChange} required />
+                     value={fechaLimpia} onChange={handleChange} required />
             </div>
 
             <div>

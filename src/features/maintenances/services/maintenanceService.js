@@ -64,7 +64,6 @@ import { apiClient } from "../../../shared/services/api";
 export const maintenanceService = {
   obtenerTodos: async () => {
     try {
-      // Ruta relativa limpia: sin el /api
       const { data } = await apiClient.get('/maintenances');
       return data || [];
     } catch (error) {
