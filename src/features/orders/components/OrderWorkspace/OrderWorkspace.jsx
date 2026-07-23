@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 
 import OrderWorkspaceTabs from "./tabs/OrderWorkspaceTabs";
+
+import InfoTab from "./tabs/InfoTab/InfoTab";
 import MachineryTab from "./tabs/MachineryTab/MachineryTab";
 import CutsTab from "./tabs/CutsTab/CutsTab"
 import PaymentsTab from "./tabs/PaymentsTab/PaymentsTab"
@@ -70,23 +72,15 @@ const OrderWorkspace = ({ orderId, onBack }) => {
             <div className="page-container">
 
                 <button
-
                     className="btn-secondary"
-
                     onClick={onBack}
-
                 >
-
                     Volver a pedidos
-
                 </button>
 
                 <p>
-
                     {error}
-
                 </p>
-
             </div>
 
         );
@@ -107,7 +101,9 @@ const OrderWorkspace = ({ orderId, onBack }) => {
 
                     <div>
 
-                        <p>Info en construccion</p>
+                        <InfoTab
+                            order={workspace}
+                        />
 
                     </div>
 
