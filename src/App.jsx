@@ -242,6 +242,7 @@ import OrderWorkspace from "./features/orders/components/OrderWorkspace/OrderWor
 import Dashboard from './features/dashboard/Dashboard'; 
 import RolePage from './features/roles/pages/RolePage'; 
 import LoginPage from './features/login/pages/loginPage';
+import ResetPasswordPage from "./features/login/pages/ResetPasswordPage";
 import './App.css';
 
 function AppContent() {
@@ -341,9 +342,18 @@ function AppContent() {
 }
 
 function App() {
+  // Verificamos si la URL actual trae un token de recuperación de contraseña
+  const queryParams = new URLSearchParams(window.location.search);
+  const hasResetToken = queryParams.has("token");
   return (
     <AuthProvider>
-      <AppContent />
+      {hasResetToken ? (
+        // Si el usuario abrió el enlace del correo, mostramos la vista para cambiar contraseña
+        <ResetPasswordPage />
+      ) : (
+        // De lo contrario, se muestra tu flujo normal de la app
+        <AppContent />
+      )}
     </AuthProvider>
   );
 }
