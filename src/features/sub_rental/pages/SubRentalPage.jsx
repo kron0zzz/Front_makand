@@ -14,6 +14,7 @@ const SubRentalPage = () => {
     error, 
     cargarSubalquileres, 
     eliminarSubalquiler, 
+    cambiarEstadoSubalquiler,
 
     page,
     cambiarPagina,
@@ -114,9 +115,21 @@ const SubRentalPage = () => {
                     </td>
                     <td>${parseFloat(sr.supplier_cost).toLocaleString('es-CO')}</td>
                     <td>
-                      <span className={`status-badge ${sr.sub_rental_status ? 'active' : 'inactive'}`}>
-                        {sr.sub_rental_status ? 'Activo' : 'Finalizado'}
-                      </span>
+                      {/* CAMBIO A SWITCH */}
+                      <div className="status-toggle-container" style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: '110px' }}>
+                        <label className="switch">
+                          <input 
+                            type="checkbox" 
+                            checked={sr.sub_rental_status} 
+                            onChange={() => cambiarEstadoSubalquiler(sr)}
+                            disabled={!hasPermission('Editar Subalquiler')}
+                          />
+                          <span className="slider round"></span>
+                        </label>
+                        <span className={`status-text ${sr.sub_rental_status ? 'active' : 'inactive'}`} style={{ minWidth: '65px', display: 'inline-block' }}>
+                          {sr.sub_rental_status ? 'Activo' : 'Finalizado'}
+                        </span>
+                      </div>
                     </td>
                     <td className="actions-cell">
                       {hasPermission('Editar Subalquiler') && (

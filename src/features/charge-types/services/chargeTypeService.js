@@ -6,7 +6,7 @@ export const chargeTypeService = {
       const { data } = await apiClient.get(
         `/charge-types/table?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`
       );
-      return data ;
+      return data;
     } catch (error) {
       console.error('Error al obtener tipos de cobro:', error);
       throw error;
@@ -28,10 +28,12 @@ export const chargeTypeService = {
       const payload = {
         charge_type_name: datos.charge_type_name,
       };
-      return await apiClient.post('/charge-types', payload);
+      const { data } = await apiClient.post('/charge-types', payload);
+      return data;
     } catch (error) {
-      console.error('Error al crear tipo de cobro:', error);
-      throw error;
+      const mensajeError = error.response?.data?.message || error.response?.data?.error || error.message || 'Error al crear tipo de cobro';
+      console.error('Error al crear tipo de cobro:', mensajeError);
+      throw new Error(mensajeError);
     }
   },
   
@@ -40,10 +42,12 @@ export const chargeTypeService = {
       const payload = {
         charge_type_name: datos.charge_type_name,
       };
-      return await apiClient.put(`/charge-types/${id}`, payload);
+      const { data } = await apiClient.put(`/charge-types/${id}`, payload);
+      return data;
     } catch (error) {
-      console.error('Error al actualizar tipo de cobro:', error);
-      throw error;
+      const mensajeError = error.response?.data?.message || error.response?.data?.error || error.message || 'Error al actualizar tipo de cobro';
+      console.error('Error al actualizar tipo de cobro:', mensajeError);
+      throw new Error(mensajeError);
     }
   },
   
