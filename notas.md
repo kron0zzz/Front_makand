@@ -23,6 +23,7 @@ Este archivo es pa borrar luego, son cosas que deberíamos tener en cuenta.
 - entonces que se va a hacer con el precio dentro de detallles? se puede modificar completamente?
 - para el front, ese descuento está muy raro
 - en los detalles debe aparecer el peso total
+- al crear un pedido, se debe validar que solo se puedan seleccionar maquinas disponibles, no que estén en mantenimiento
 
 !!! IMPORTANTE: esta mierda de orders tiene mucha más lógica de la que creí, en especial con anular un pedido
 

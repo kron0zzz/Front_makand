@@ -90,6 +90,40 @@ export const useOrders = () => {
   };
 
 
+  const anularPedido = async (id) => {
+    if (!window.confirm(`¿Está seguro de que desea anular este pedido?
+
+      Esta acción no se puede deshacer.
+
+      • Toda la maquinaria será devuelta automáticamente al inventario.
+      • El pedido quedará bloqueado y no podrá modificarse.
+      • No será posible registrar devoluciones, cortes ni pagos.
+
+      ¿Desea continuar?`)) return;
+    try {
+      await orderService.anular(id);
+
+      await cargarPedidos(
+        pagination.page,
+        pagination.limit,
+        search
+      );
+
+      return {
+        success: true,
+        message: "Pedido anulado correctamente."
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message:
+          error.response?.data?.message ||
+          "Error al anular el pedido."
+      };
+    }
+  };
+
+
   useEffect(() => {
   cargarPedidos();
 }, [cargarPedidos]);
@@ -102,6 +136,7 @@ export const useOrders = () => {
     crearPedidoCompleto,
     eliminarPedido,
     obtenerPedidoCompleto, 
+    anularPedido,
 
     page,
     cambiarPagina,
