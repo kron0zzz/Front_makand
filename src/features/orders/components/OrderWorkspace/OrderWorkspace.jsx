@@ -101,7 +101,9 @@ const OrderWorkspace = ({ orderId, onBack }) => {
 
                     <div>
 
-                        <InfoTab/>
+                        <InfoTab
+                            order={workspace}
+                        />
 
                     </div>
 
