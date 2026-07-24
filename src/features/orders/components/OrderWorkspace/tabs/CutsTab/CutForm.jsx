@@ -50,23 +50,33 @@ const CutForm = ({
 
         }
 
-        await onSubmit(
+        try {
 
-            order.order_id,
+            await onSubmit(
 
-            {
+                order.order_id,
 
-                order_id: order.order_id,
+                {
 
-                period_start_date: periodStartDate,
+                    order_id: order.order_id,
 
-                period_end_date: periodEndDate
+                    period_start_date: periodStartDate,
 
-            }
+                    period_end_date: periodEndDate
 
-        );
+                }
 
-        onClose();
+            );
+
+            onClose();
+
+            alert("Corte registrado correctamente");
+
+        } catch (err) {
+
+            alert(`Error al registrar corte: ${err.message}`);
+
+        }
 
     };
 

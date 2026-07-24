@@ -106,6 +106,11 @@ export const orderService = {
     }
 
     return true;
-  }
+  },
 
+
+  anular: async(id) => {
+    const {data} = await apiClient.put(`/orders/${id}/cancel`);
+    return data;
+  }
 };

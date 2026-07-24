@@ -36,25 +36,35 @@ const PaymentForm = ({
 
         e.preventDefault();
 
-        await onSubmit(
+        try {
 
-            order.order_id,
+            await onSubmit(
 
-            {
+                order.order_id,
 
-                order_id: order.order_id,
+                {
 
-                payment_date: paymentDate,
+                    order_id: order.order_id,
 
-                payment_amount: Number(paymentAmount.replace(/\./g,"")),
+                    payment_date: paymentDate,
 
-                payment_in_cash: paymentInCash
+                    payment_amount: Number(paymentAmount.replace(/\./g,"")),
 
-            }
+                    payment_in_cash: paymentInCash
 
-        );
+                }
 
-        onClose();
+            );
+
+            onClose();
+
+            alert("Abono registrado correctamente");
+
+        } catch (err) {
+
+            alert(`Error al registrar abono: ${err.message}`);
+
+        }
 
     };
 

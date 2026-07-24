@@ -67,20 +67,30 @@ const ReturnForm = ({
 
         e.preventDefault();
 
-        await onSubmit({
+        try {
 
-            order_detail_id:
-                orderDetail.order_detail_id,
+            await onSubmit({
 
-            return_date:
-                returnDate,
+                order_detail_id:
+                    orderDetail.order_detail_id,
 
-            returned_quantity:
-                Number(quantity)
+                return_date:
+                    returnDate,
 
-        });
+                returned_quantity:
+                    Number(quantity)
 
-        onClose();
+            });
+
+            onClose();
+
+            alert("Devolución registrada correctamente");
+
+        } catch (err) {
+
+            alert(`Error al registrar devolución: ${err.message}`);
+
+        }
 
     };
 

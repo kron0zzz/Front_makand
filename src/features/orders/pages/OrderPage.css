@@ -173,6 +173,34 @@
     font-style: italic;
 }
 
+.row-cancelled{
+
+    opacity:.55;
+    background:#fafafa;
+
+}
+
+.row-cancelled td{
+
+    color:#6b7280;
+
+}
+
+.row-cancelled .action-btn{
+
+    cursor:not-allowed;
+    opacity:.45;
+
+}
+
+.action-btn:disabled{
+
+    pointer-events:none;
+    opacity:.45;
+    cursor:not-allowed;
+
+}
+
 
 
 

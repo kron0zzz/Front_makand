@@ -12,7 +12,8 @@ import {
     createCut,
 
     getPaymentsByOrder,
-    createPayment
+    createPayment,
+    closeOrder
 
 } from "../services/workspaceService";
 
@@ -56,15 +57,85 @@ export const useWorkspace = () => {
     }, []);
 
 
+    const cerrarPedido = async (orderId) => {
+
+            if (!window.confirm(
+        `¿Está seguro de cerrar este pedido?
+
+        Esta acción no se puede deshacer.
+
+        • El pedido quedará finalizado.
+        • No será posible registrar devoluciones.
+        • No será posible registrar cortes.
+        • No será posible registrar pagos.
+
+        ¿Desea continuar?`
+            )) return;
+
+            try {
+
+                await closeOrder(orderId);
+                await cargarWorkspace(orderId);
+
+                return {
+                    success: true,
+                    message: "Pedido cerrado correctamente."
+                };
+
+            } catch (error) {
+
+                return {
+                    success: false,
+                    message:
+                        error.response?.data?.message ||
+                        "No fue posible cerrar el pedido."
+                };
+
+            }
+
+        };
+
+
+
+//------------------------
+//  Helpers de refresh silencioso
+//-------------------------
+    const refreshWorkspaceSilent = async (orderId) => {
+        try {
+            const data = await getWorkspace(orderId);
+            setWorkspace(data);
+        } catch (err) {
+            console.error("No se pudo refrescar workspace:", err);
+            // No establecer error global ni lanzar: la creación ya existió
+        }
+    };
+
+    const refreshCutsSilent = async (orderId) => {
+        try {
+            const data = await getCutsByOrder(orderId);
+            setCuts(data);
+        } catch (err) {
+            console.error("No se pudo refrescar cortes:", err);
+        }
+    };
+
+    const refreshPaymentsSilent = async (orderId) => {
+        try {
+            const data = await getPaymentsByOrder(orderId);
+            setPaymentsData(data);
+        } catch (err) {
+            console.error("No se pudo refrescar pagos:", err);
+        }
+    };
+
 
 //------------------------
 //  Returns
 //-------------------------
 
-
-    const registrarDevolucion = async (orderId,data) => {
+    const registrarDevolucion = async (orderId, data) => {
         await createReturn(data);
-        await cargarWorkspace(orderId);
+        await refreshWorkspaceSilent(orderId);
     };
 
 
@@ -118,11 +189,10 @@ export const useWorkspace = () => {
 
 
 
-    const registrarCorte = async (orderId,data) => {
+    const registrarCorte = async (orderId, data) => {
         await createCut(data);
-        //await cargarWorkspace(orderId);
-        await cargarCortes(orderId);
-        await cargarAbonos(orderId);
+        await refreshCutsSilent(orderId);
+        await refreshPaymentsSilent(orderId);
     };
 
 
@@ -155,10 +225,9 @@ export const useWorkspace = () => {
 
 
 
-    const registrarAbono = async (orderId,data) => {
+    const registrarAbono = async (orderId, data) => {
         await createPayment(data);
-        //await cargarWorkspace(orderId);
-        await cargarAbonos(orderId);
+        await refreshPaymentsSilent(orderId);
     };
 
 
@@ -169,6 +238,7 @@ export const useWorkspace = () => {
         loading,
         error,
         cargarWorkspace,
+        cerrarPedido,
 
         registrarDevolucion,
         editarDevolucion,
