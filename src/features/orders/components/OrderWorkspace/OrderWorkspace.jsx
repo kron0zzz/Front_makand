@@ -20,6 +20,7 @@ const OrderWorkspace = ({ orderId, onBack }) => {
         error,
         cargarWorkspace,
         registrarDevolucion,
+        cerrarPedido,
         
         cuts,
         cargarCortes,
@@ -103,6 +104,7 @@ const OrderWorkspace = ({ orderId, onBack }) => {
 
                         <InfoTab
                             order={workspace}
+                            onCloseOrder={cerrarPedido}
                         />
 
                     </div>

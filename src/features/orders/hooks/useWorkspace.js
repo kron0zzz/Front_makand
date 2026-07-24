@@ -12,7 +12,8 @@ import {
     createCut,
 
     getPaymentsByOrder,
-    createPayment
+    createPayment,
+    closeOrder
 
 } from "../services/workspaceService";
 
@@ -54,6 +55,45 @@ export const useWorkspace = () => {
         }
 
     }, []);
+
+
+    const cerrarPedido = async (orderId) => {
+
+            if (!window.confirm(
+        `¿Está seguro de cerrar este pedido?
+
+        Esta acción no se puede deshacer.
+
+        • El pedido quedará finalizado.
+        • No será posible registrar devoluciones.
+        • No será posible registrar cortes.
+        • No será posible registrar pagos.
+
+        ¿Desea continuar?`
+            )) return;
+
+            try {
+
+                await closeOrder(orderId);
+                await cargarWorkspace(orderId);
+
+                return {
+                    success: true,
+                    message: "Pedido cerrado correctamente."
+                };
+
+            } catch (error) {
+
+                return {
+                    success: false,
+                    message:
+                        error.response?.data?.message ||
+                        "No fue posible cerrar el pedido."
+                };
+
+            }
+
+        };
 
 
 
@@ -198,6 +238,7 @@ export const useWorkspace = () => {
         loading,
         error,
         cargarWorkspace,
+        cerrarPedido,
 
         registrarDevolucion,
         editarDevolucion,

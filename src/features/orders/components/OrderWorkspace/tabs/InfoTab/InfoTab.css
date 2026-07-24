@@ -265,3 +265,47 @@
     margin-left:auto;
 
 }
+
+
+.actions-description{
+
+    color:#6b7280;
+    margin-bottom:20px;
+    line-height:1.5;
+
+}
+
+.btn-close-order{
+
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#f97316;
+    color:white;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s;
+
+}
+
+.btn-close-order:hover{
+
+    background:#ea580c;
+
+}
+
+.btn-close-order.disabled{
+
+    background:#d1d5db;
+    color:#6b7280;
+    cursor:not-allowed;
+
+}
+
+.btn-close-order:disabled{
+
+    pointer-events:none;
+
+}

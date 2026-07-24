@@ -10,6 +10,11 @@ export const getWorkspace = async (orderId) => {
     return data;
 };
 
+export const closeOrder = async (orderId) => {
+    const { data: response } = await apiClient.put(`/orders/${orderId}/close`);
+    return response;
+};
+
 //--------------------------
 // Returns
 //--------------------------

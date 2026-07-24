@@ -10,7 +10,7 @@ import {
 
 import { formatDate } from "../../../../../../shared/utils/dateUtils";
 
-const InfoTab = ({ order }) => {
+const InfoTab = ({ order, onCloseOrder}) => {
 
     const totalPedido =
         order.details?.reduce(
@@ -47,6 +47,28 @@ const InfoTab = ({ order }) => {
         "Cerrado"
     ];
     const currentStep = order.order_status_id;
+
+
+
+    const handleCloseOrder = async () => {
+
+        const result = await onCloseOrder(order.order_id);
+
+        if (!result) return;
+
+        if (result.success) {
+
+            alert(result.message);
+
+        } else {
+
+            alert(
+                `No fue posible cerrar el pedido.\n\n${result.message}`
+            );
+
+        }
+
+    };
 
     return (
 
@@ -316,6 +338,38 @@ const InfoTab = ({ order }) => {
                     </div>
 
                 </div>
+
+            </section>
+
+            <section className="info-card">
+
+                <div className="info-title">
+
+                    <Package size={18} />
+
+                    <h3>Acciones del pedido</h3>
+
+                </div>
+
+                <p className="actions-description">
+                    Una vez cerrado, el pedido quedará finalizado y no será posible registrar nuevas devoluciones, cortes o pagos.
+                </p>
+
+                <button
+                    className={
+                        order.order_status_id === 4
+                            ? "btn-close-order disabled"
+                            : "btn-close-order"
+                    }
+                    disabled={order.order_status_id === 4}
+                    onClick={handleCloseOrder}
+                >
+                    {
+                        order.order_status_id === 4
+                            ? "Pedido cerrado"
+                            : "Cerrar pedido"
+                    }
+                </button>
 
             </section>
 
