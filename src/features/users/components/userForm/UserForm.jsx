@@ -1,5 +1,7 @@
+// // import { useEffect } from 'react';
 // // import { X } from 'lucide-react';
 // // import { userService } from "../../services/userService";
+// // import { useRoles } from "../../../roles/hooks/useRoles"
 // // import './UserForm.css';
 
 // // const UserForm = ({ 
@@ -10,8 +12,17 @@
 // //   isEditing, 
 // //   cargarUsers, 
 // //   employees = [], 
-// //   // roles = [] 
 // // }) => {
+// //   // Inicializamos el hook de roles
+// //   const { roles, cargarRoles } = useRoles();
+
+// //   // Cargamos los roles cuando se abre el modal
+// //   useEffect(() => {
+// //     if (isOpen) {
+// //       cargarRoles();
+// //     }
+// //   }, [isOpen, cargarRoles]);
+
 // //   if (!isOpen) return null;
 
 // //   const handleChange = (e) => {
@@ -30,7 +41,6 @@
 // //       employee_id: parseInt(formData.employee_id),
 // //     };
 
-// //     // Solo agregamos la contraseña si el campo no está vacío
 // //     if (formData.password && formData.password.trim() !== "") {
 // //       dataToSend.password = formData.password;
 // //     }
@@ -90,15 +100,12 @@
 // //                   const found = employees.find(e => e.employee_full_name === name);
                   
 // //                   if (found) {
-// //                     // Actualizamos el ID y el EMAIL simultáneamente
 // //                     setFormData({ 
 // //                       ...formData, 
 // //                       employee_id: found.employee_id,
-// //                       // Rellenamos el email con el dato del empleado seleccionado
 // //                       user_email: found.employee_email || formData.user_email 
 // //                     });
 // //                   } else {
-// //                     // Si no se encuentra, solo actualizamos el nombre temporalmente si fuera necesario
 // //                     setFormData({ ...formData, employee_id: '' });
 // //                   }
 // //                 }}
@@ -108,13 +115,9 @@
 // //                   <option key={emp.employee_id} value={emp.employee_full_name} />
 // //                 ))}
 // //               </datalist>
-// //           </div>
+// //             </div>
 
-
-
-
-// //         {/*  --------------------- Selector falso de Rol --------------------- */}
-// //             {/* Selector de Rol - MARCA PARA FUTURA INTEGRACIÓN */}
+// //             {/* Selector de Rol Dinámico */}
 // //             <div className="form-full-width">
 // //               <label className="form-label">Rol *</label>
 // //               <select 
@@ -125,19 +128,13 @@
 // //                 required
 // //               >
 // //                 <option value="">Seleccione un rol</option>
-// //                 {/*CAMBIAR ESTAS OPCIONES FIJAS POR UN MAPEO DE ROLES REAL */}
-// //                 <option value="1">Administrador</option>
-// //                 <option value="2">Empleado</option>
-                
-// //                 {/* {roles.map(role => (
-// //                   <option key={role.role_id} value={role.role_id}>{role.role_name}</option>
-// //                 ))} */}
+// //                 {roles.map(role => (
+// //                   <option key={role.role_id} value={role.role_id}>
+// //                     {role.role_name}
+// //                   </option>
+// //                 ))}
 // //               </select>
 // //             </div>
-
-
-
-
 
 // //             {/* Email y Contraseña */}
 // //             <div>
@@ -196,8 +193,9 @@
 
 
 
+// import { useEffect } from 'react';
 // import { X } from 'lucide-react';
-// import { userService } from "../../services/userService";
+// import { useRoles } from "../../../roles/hooks/useRoles";
 // import './UserForm.css';
 
 // const UserForm = ({ 
@@ -208,8 +206,15 @@
 //   isEditing, 
 //   cargarUsers, 
 //   employees = [], 
-//   // roles = [] 
 // }) => {
+//   const { roles, cargarRoles } = useRoles();
+
+//   useEffect(() => {
+//     if (isOpen) {
+//       cargarRoles();
+//     }
+//   }, [isOpen, cargarRoles]);
+
 //   if (!isOpen) return null;
 
 //   const handleChange = (e) => {
@@ -223,15 +228,10 @@
 //     const dataToSend = {
 //       user_email: formData.user_email,
 //       password: formData.password,
-//       user_status: formData.user_status,
+//       user_status: formData.user_status ?? true,
 //       role_id: parseInt(formData.role_id),
 //       employee_id: parseInt(formData.employee_id),
 //     };
-
-//     // Solo agregamos la contraseña si el campo no está vacío
-//     if (formData.password && formData.password.trim() !== "") {
-//       dataToSend.password = formData.password;
-//     }
 
 //     try {
 //       if (isEditing) {
@@ -288,15 +288,12 @@
 //                   const found = employees.find(e => e.employee_full_name === name);
                   
 //                   if (found) {
-//                     // Actualizamos el ID y el EMAIL simultáneamente
 //                     setFormData({ 
 //                       ...formData, 
 //                       employee_id: found.employee_id,
-//                       // Rellenamos el email con el dato del empleado seleccionado
 //                       user_email: found.employee_email || formData.user_email 
 //                     });
 //                   } else {
-//                     // Si no se encuentra, solo actualizamos el nombre temporalmente si fuera necesario
 //                     setFormData({ ...formData, employee_id: '' });
 //                   }
 //                 }}
@@ -306,13 +303,9 @@
 //                   <option key={emp.employee_id} value={emp.employee_full_name} />
 //                 ))}
 //               </datalist>
-//           </div>
+//             </div>
 
-
-
-
-//         {/*  --------------------- Selector falso de Rol --------------------- */}
-//             {/* Selector de Rol - MARCA PARA FUTURA INTEGRACIÓN */}
+//             {/* Selector de Rol Dinámico */}
 //             <div className="form-full-width">
 //               <label className="form-label">Rol *</label>
 //               <select 
@@ -323,19 +316,13 @@
 //                 required
 //               >
 //                 <option value="">Seleccione un rol</option>
-//                 {/*CAMBIAR ESTAS OPCIONES FIJAS POR UN MAPEO DE ROLES REAL */}
-//                 <option value="1">Administrador</option>
-//                 <option value="2">Empleado</option>
-                
-//                 {/* {roles.map(role => (
-//                   <option key={role.role_id} value={role.role_id}>{role.role_name}</option>
-//                 ))} */}
+//                 {roles.map(role => (
+//                   <option key={role.role_id} value={role.role_id}>
+//                     {role.role_name}
+//                   </option>
+//                 ))}
 //               </select>
 //             </div>
-
-
-
-
 
 //             {/* Email y Contraseña */}
 //             <div>
@@ -363,18 +350,17 @@
 //               />
 //             </div>
 
-//             {/* Estado */}
-//             <div>
-//               <label className="form-label">Estado</label>
-//               <select
-//                 name="user_status"
-//                 className="form-input"
-//                 value={formData.user_status ? 'true' : 'false'}
-//                 onChange={(e) => setFormData({ ...formData, user_status: e.target.value === 'true' })}
-//               >
-//                 <option value="true">Activo</option>
-//                 <option value="false">Inactivo</option>
-//               </select>
+//             {/* Estado Switch */}
+//             <div className="form-full-width" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '10px' }}>
+//               <label className="form-label" style={{ margin: 0 }}>Estado ({formData.user_status ? 'Activo' : 'Inactivo'})</label>
+//               <label className="switch">
+//                 <input
+//                   type="checkbox"
+//                   checked={formData.user_status ?? true}
+//                   onChange={(e) => setFormData({ ...formData, user_status: e.target.checked })}
+//                 />
+//                 <span className="slider round"></span>
+//               </label>
 //             </div>
 //           </div>
 
@@ -394,11 +380,10 @@
 
 
 
-
 import { useEffect } from 'react';
 import { X } from 'lucide-react';
-import { userService } from "../../services/userService";
-import { useRoles } from "../../../roles/hooks/useRoles"
+import { useRoles } from "../../../roles/hooks/useRoles";
+import { userService } from '../../services/userService'; // 🌟 Asegúrate de tener esta importación
 import './UserForm.css';
 
 const UserForm = ({ 
@@ -410,10 +395,8 @@ const UserForm = ({
   cargarUsers, 
   employees = [], 
 }) => {
-  // Inicializamos el hook de roles
   const { roles, cargarRoles } = useRoles();
 
-  // Cargamos los roles cuando se abre el modal
   useEffect(() => {
     if (isOpen) {
       cargarRoles();
@@ -432,18 +415,15 @@ const UserForm = ({
 
     const dataToSend = {
       user_email: formData.user_email,
-      password: formData.password,
-      user_status: formData.user_status,
+      password: formData.password || "", // Si está vacío, se envía vacío para que el backend lo respete
+      user_status: formData.user_status ?? true,
       role_id: parseInt(formData.role_id),
       employee_id: parseInt(formData.employee_id),
     };
 
-    if (formData.password && formData.password.trim() !== "") {
-      dataToSend.password = formData.password;
-    }
-
     try {
       if (isEditing) {
+        // 🌟 Usamos formData.user_id para asegurarnos de enviar el ID correcto al actualizar
         await userService.actualizar(formData.user_id, dataToSend);
         alert('Usuario actualizado con éxito.');
       } else {
@@ -559,18 +539,17 @@ const UserForm = ({
               />
             </div>
 
-            {/* Estado */}
-            <div>
-              <label className="form-label">Estado</label>
-              <select
-                name="user_status"
-                className="form-input"
-                value={formData.user_status ? 'true' : 'false'}
-                onChange={(e) => setFormData({ ...formData, user_status: e.target.value === 'true' })}
-              >
-                <option value="true">Activo</option>
-                <option value="false">Inactivo</option>
-              </select>
+            {/* Estado Switch */}
+            <div className="form-full-width" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '10px' }}>
+              <label className="form-label" style={{ margin: 0 }}>Estado ({formData.user_status ? 'Activo' : 'Inactivo'})</label>
+              <label className="switch">
+                <input
+                  type="checkbox"
+                  checked={formData.user_status ?? true}
+                  onChange={(e) => setFormData({ ...formData, user_status: e.target.checked })}
+                />
+                <span className="slider round"></span>
+              </label>
             </div>
           </div>
 
