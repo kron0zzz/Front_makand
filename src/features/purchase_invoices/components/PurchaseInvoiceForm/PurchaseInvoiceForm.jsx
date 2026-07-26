@@ -1,12 +1,14 @@
 // src/features/purchase_invoices/components/PurchaseInvoiceForm/PurchaseInvoiceForm.jsx
 import { useState, useEffect } from 'react';
 import { purchaseInvoiceService } from '../../services/purchaseInvoiceService';
+import { useAlertModal } from "../../../../shared/alertModal";
 import './PurchaseInvoiceForm.css';
 
 const PurchaseInvoiceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
   const [suppliers, setSuppliers] = useState([]);
   const [error, setError] = useState('');
   const [cargando, setCargando] = useState(false);
+  const { showAlert } = useAlertModal();
 
   // 🌟 Cargar proveedores enviando el token de autenticación
   useEffect(() => {
@@ -76,9 +78,12 @@ const PurchaseInvoiceForm = ({ isOpen, onClose, formData, setFormData, isEditing
         await purchaseInvoiceService.crear(formData);
       }
       onClose();
+      await showAlert(isEditing ? '¡Factura actualizada con éxito!' : '¡Factura registrada con éxito!');
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.error || 'Error al procesar la solicitud.');
+      const msg = err.response?.data?.error || 'Error al procesar la solicitud.';
+      setError(msg);
+      await showAlert(msg);
     } finally {
       setCargando(false);
     }

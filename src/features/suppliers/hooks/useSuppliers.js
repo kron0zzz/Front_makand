@@ -55,7 +55,7 @@ export const useSuppliers = () => {
     await supplierService.actualizar(id, proveedor);
 
     await cargarProveedores();
-
+    await showAlert("Estado del proveedor actualizado correctamente.");
   } catch (err) {
     console.error(err);
     await showAlert("No se pudo actualizar el estado.");

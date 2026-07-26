@@ -47,13 +47,13 @@ export const useEmployees = () => {
   
     try {
       const empleado = await employeeService.obtenerPorId(id);
-  
+
       empleado.employee_status = !estadoActual;
-  
+
       await employeeService.actualizar(id, empleado);
-  
+
       await cargarEmpleados();
-  
+      await showAlert("Estado del empleado actualizado correctamente.");
     } catch (err) {
       console.error(err);
       await showAlert("No se pudo actualizar el estado.");

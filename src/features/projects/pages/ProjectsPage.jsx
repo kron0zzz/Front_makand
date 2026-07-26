@@ -60,6 +60,7 @@ const ProjectsPage = () => {
 
         if (response.ok) {
           await cargarProyectos();
+          await showAlert("Estado del proyecto actualizado correctamente.");
         } else {
           await showAlert("No se pudo actualizar el estado del Proyecto.");
         }

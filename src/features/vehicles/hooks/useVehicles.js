@@ -37,6 +37,7 @@ export const useVehicles = () => {
           estado: nuevoEstado
         });
         await cargarVehiculos();
+        await showAlert("Estado del vehículo actualizado correctamente.");
       } catch (err) {
         console.error("Error al actualizar estado:", err);
         await showAlert("Error al actualizar el estado del vehículo.");

@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import { useAlertModal } from "../../../../shared/alertModal";
 import './EmployeeForm.css';
 
 const EmployeeForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarEmpleados }) => {
   const [positions, setPositions] = useState([]);
   const [error, setError] = useState('');
   const [cargando, setCargando] = useState(false);
+  const { showAlert } = useAlertModal();
   const getToken = () => localStorage.getItem("token");
 
   // 1. Cargar cargos al abrir el modal
@@ -82,13 +84,17 @@ const EmployeeForm = ({ isOpen, onClose, formData, setFormData, isEditing, carga
       if (response.ok) {
         if (cargarEmpleados) await cargarEmpleados();
         onClose();
+        await showAlert(isEditing ? '¡Empleado actualizado con éxito!' : '¡Empleado registrado con éxito!');
       } else {
         const resData = await response.json();
-        setError(resData.message || 'Error al guardar los datos');
+        const msg = resData.message || 'Error al guardar los datos';
+        setError(msg);
+        await showAlert(msg);
       }
     } catch (err) {
       console.error(err);
       setError('Error de conexión con el servidor.');
+      await showAlert('Error de conexión con el servidor.');
     }
   };
 

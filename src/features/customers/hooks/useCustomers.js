@@ -48,14 +48,15 @@ export const useCustomers = () => {
       return;
     }
   
-    try {
+try {
       const cliente = await customerService.obtenerPorId(id);
-  
+   
       cliente.customer_status = !estadoActual;
-  
+   
       await customerService.actualizar(id, cliente);
-  
+   
       await cargarClientes();
+      await showAlert("Estado del cliente actualizado correctamente.");
     } catch (err) {
       console.error(err);
       await showAlert("No se pudo actualizar el estado.");

@@ -77,6 +77,7 @@ export const useSubRentals = () => {
               : item
           )
         );
+        await showAlert("Estado del subalquiler actualizado correctamente.");
       } catch (err) {
         await showAlert(err.message || 'Error al cambiar el estado del subalquiler');
       }
