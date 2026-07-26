@@ -3,8 +3,10 @@ import { X } from 'lucide-react';
 import { apiClient } from "../../../../shared/services/api"; 
 import PermissionsSelector from '../roleDetail/PermissionsSelector'; 
 import './roleForm.css';
+import { useAlertModal } from "../../../../shared/alertModal";
 
 const RoleForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarRoles }) => {
+  const { showAlert, showConfirm } = useAlertModal();
   const [currentPermissions, setCurrentPermissions] = useState([]);
   // Nuevo estado para guardar la lista completa de todos los permisos disponibles en el sistema
   const [allPermissions, setAllPermissions] = useState([]);
@@ -64,17 +66,17 @@ const RoleForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarRol
     try {
       if (isEditing) {
         await apiClient.put(`roles/${formData.role_id}`, dataToSend);
-        alert('¡Rol actualizado con éxito!');
+        await showAlert('¡Rol actualizado con éxito!');
       } else {
         await apiClient.post('roles', dataToSend);
-        alert('¡Rol creado con éxito!');
+        await showAlert('¡Rol creado con éxito!');
       }
       
       if (typeof cargarRoles === 'function') await cargarRoles();
       onClose();
     } catch (error) {
       console.error("Error en la petición:", error);
-      alert('Error: ' + (error.response?.data?.error || 'No se pudo guardar'));
+      await showAlert('Error: ' + (error.response?.data?.error || 'No se pudo guardar'));
     }
   };
 

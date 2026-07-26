@@ -1,7 +1,9 @@
 import { useState, useCallback, useEffect} from 'react';
 import { supplierService } from '../services/suppliersService';
+import { useAlertModal } from "../../../shared/alertModal";
 
 export const useSuppliers = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -36,7 +38,7 @@ export const useSuppliers = () => {
 
   const toggleProveedorEstado = async (id, estadoActual) => {
   if (
-    !window.confirm(
+    !await showConfirm(
       `¿Estás seguro de que deseas ${
         estadoActual ? "desactivar" : "activar"
       } este proveedor?`
@@ -56,7 +58,7 @@ export const useSuppliers = () => {
 
   } catch (err) {
     console.error(err);
-    alert("No se pudo actualizar el estado.");
+    await showAlert("No se pudo actualizar el estado.");
   }
 };
 
@@ -82,7 +84,7 @@ export const useSuppliers = () => {
 
 
   const eliminarProveedor = async (id) => {
-    if (window.confirm('¿Seguro que deseas eliminar este proveedor?')) {
+    if (await showConfirm('¿Seguro que deseas eliminar este proveedor?')) {
       try {
         await supplierService.eliminar(id);
         setSuppliers(prev => prev.filter(s => s.supplier_id !== id));

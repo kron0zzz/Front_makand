@@ -180,8 +180,10 @@ import { vehiculosService } from '../services/vehiculosService';
 import VehiculoForm from '../components/vehiculoForm/VehiculoForm';
 import VehiculoDetail from '../components/vehiculoDetail/VehiculoDetail';
 import './VehiculosPage.css';
+import { useAlertModal } from "../../../shared/alertModal";
 
 const VehiculosPage = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const { vehiculos, cargarVehiculos, eliminarVehiculo } = useVehicles();
   const { hasPermission } = useAuth();
   const [busqueda, setBusqueda] = useState('');
@@ -200,7 +202,7 @@ const VehiculosPage = () => {
     const accion = nuevoEstado ? 'ACTIVAR' : 'DESACTIVAR';
     const mensaje = `¿Estás seguro de que deseas ${accion} el vehículo ${vehiculo.placa}?`;
 
-    if (window.confirm(mensaje)) {
+    if (await showConfirm(mensaje)) {
       try {
         await vehiculosService.actualizar(vehiculo.id, {
           marca: vehiculo.marca,
@@ -212,7 +214,7 @@ const VehiculosPage = () => {
         await cargarVehiculos();
       } catch (error) {
         console.error("Error al cambiar estado:", error);
-        alert("Error de conexión con el servidor.");
+        await showAlert("Error de conexión con el servidor.");
       }
     }
   };

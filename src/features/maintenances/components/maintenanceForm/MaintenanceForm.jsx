@@ -4,8 +4,10 @@ import Select from 'react-select';
 import { useMaintenances } from "../../hooks/useMaintenances";
 import { maintenanceService } from "../../services/maintenanceService";
 import './MaintenanceForm.css';
+import { useAlertModal } from "../../../../shared/alertModal";
 
 const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
+  const { showAlert, showConfirm } = useAlertModal();
   const { cargarMaintenances } = useMaintenances();
   const [maquinarias, setMaquinarias] = useState([]);
 
@@ -43,7 +45,7 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
       await cargarMaintenances();
       onClose();
     } catch {
-      alert("Error en la petición.");
+      await showAlert("Error en la petición.");
     }
   };
 

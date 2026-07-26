@@ -3,8 +3,10 @@ import { X } from 'lucide-react';
 import { useProjects } from '../../hooks/useProjects';
 import { projectService } from '../../services/projectService';
 import './ProjectForm.css';
+import { useAlertModal } from "../../../../shared/alertModal";
 
 const ProjectForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
+  const { showAlert, showConfirm } = useAlertModal();
   const { cargarProyectos } = useProjects();
   const [customers, setCustomers] = useState([]);
   const [departamentos, setDepartamentos] = useState([]);
@@ -89,16 +91,16 @@ const ProjectForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
     try {
       if (isEditing) {
         await projectService.actualizar(formData.project_id, dataToSend);
-        alert('¡Proyecto actualizado con éxito!');
+        await showAlert('¡Proyecto actualizado con éxito!');
       } else {
         await projectService.crear(dataToSend);
-        alert('¡Proyecto creado con éxito!');
+        await showAlert('¡Proyecto creado con éxito!');
       }
       await cargarProyectos();
       onClose();
     } catch (error) {
       console.error("Error en la petición:", error);
-      alert("Error al guardar. Verifica la conexión.");
+      await showAlert("Error al guardar. Verifica la conexión.");
     }
   };
 
@@ -136,8 +138,8 @@ const ProjectForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
             </div>
 
             <div>
-              <label className="form-label">Departamento *</label>
-              <select name="project_state" className="form-input" value={formData.project_state || ''} onChange={handleChange} required>
+              <label className="form-label">Departamento <br/> (este campo solo sirve como filtro)</label>
+              <select name="project_state" className="form-input" value={formData.project_state || ''} onChange={handleChange}>
                 <option value="">Seleccione un departamento...</option>
                 {departamentos.map(dep => <option key={dep.id} value={dep.name}>{dep.name}</option>)}
               </select>

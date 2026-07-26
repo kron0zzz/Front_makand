@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { chargeTypeService } from '../services/chargeTypeService';
+import { useAlertModal } from "../../../shared/alertModal";
 
 export const useChargeTypes = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const [chargeTypes, setChargeTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -55,7 +57,7 @@ export const useChargeTypes = () => {
       // Actualizamos el estado localmente filtrando el elemento eliminado
       setChargeTypes(prev => prev.filter(item => item.charge_type_id !== id));
     } catch (err) {
-      alert(err.message || 'Error al intentar eliminar el tipo de cobro');
+      await showAlert(err.message || 'Error al intentar eliminar el tipo de cobro');
     }
   }, []);
 

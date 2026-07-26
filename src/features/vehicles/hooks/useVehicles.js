@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { vehiculosService } from '../services/vehiculosService';
+import { useAlertModal } from "../../../shared/alertModal";
 
 export const useVehicles = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const [vehiculos, setVehiculos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,7 +27,7 @@ export const useVehicles = () => {
     const accion = nuevoEstado ? 'ACTIVAR' : 'DESACTIVAR';
     const mensaje = `¿Estás seguro de que deseas ${accion} el vehículo ${vehiculo.placa}?`;
 
-    if (window.confirm(mensaje)) {
+    if (await showConfirm(mensaje)) {
       try {
         await vehiculosService.actualizar(vehiculo.id, {
           marca: vehiculo.marca,
@@ -37,13 +39,13 @@ export const useVehicles = () => {
         await cargarVehiculos();
       } catch (err) {
         console.error("Error al actualizar estado:", err);
-        alert("Error al actualizar el estado del vehículo.");
+        await showAlert("Error al actualizar el estado del vehículo.");
       }
     }
   };
 
   const eliminarVehiculo = async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este vehículo?')) {
+    if (await showConfirm('¿Estás seguro de que deseas eliminar este vehículo?')) {
       try {
         await vehiculosService.eliminar(id);
         setVehiculos(prev => prev.filter(v => v.id !== id));

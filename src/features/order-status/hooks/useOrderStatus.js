@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { orderStatusService } from '../services/orderStatusService';
+import { useAlertModal } from "../../../shared/alertModal";
 
 export const useOrderStatus = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const [orderStatus, setOrderStatus] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -21,7 +23,7 @@ export const useOrderStatus = () => {
   }, []);
 
   const eliminarOrderStatus = async (id) => {
-    if (!window.confirm('¿Estás seguro de que deseas eliminar este estado de pedido?')) return false;
+    if (!await showConfirm('¿Estás seguro de que deseas eliminar este estado de pedido?')) return false;
     try {
       await orderStatusService.eliminar(id);
       setOrderStatus(prev => prev.filter(c => c.order_status_id !== id));

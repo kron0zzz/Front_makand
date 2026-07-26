@@ -1,7 +1,7 @@
 import { useState,useCallback } from "react";
+import { useAlertModal } from "../../../shared/alertModal";
 
 import {
-
     getWorkspace,
 
     createReturn,
@@ -18,6 +18,7 @@ import {
 } from "../services/workspaceService";
 
 export const useWorkspace = () => {
+  const { showAlert, showConfirm } = useAlertModal();
 
     const [workspace, setWorkspace] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -59,7 +60,7 @@ export const useWorkspace = () => {
 
     const cerrarPedido = async (orderId) => {
 
-            if (!window.confirm(
+            if (!await showConfirm(
         `¿Está seguro de cerrar este pedido?
 
         Esta acción no se puede deshacer.

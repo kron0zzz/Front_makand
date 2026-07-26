@@ -10,8 +10,10 @@ import './PurchaseInvoicePage.css';
 
 import Pagination from '../../../shared/components/pagination/Pagination';
 import useDebounce from "../../../shared/hooks/useDebounce";
+import { useAlertModal } from "../../../shared/alertModal";
 
 const PurchaseInvoicePage = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const { 
     invoices, 
     loading, 
@@ -65,7 +67,7 @@ const PurchaseInvoicePage = () => {
   
       } catch (error) {
         console.error(error);
-        alert("No se pudo cargar la información de la compra.");
+        await showAlert("No se pudo cargar la información de la compra.");
       }
     };
 

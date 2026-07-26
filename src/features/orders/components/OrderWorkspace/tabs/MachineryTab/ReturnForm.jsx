@@ -2,13 +2,15 @@ import { useEffect, useMemo, useState } from "react";
 import { X } from "lucide-react";
 
 import "./ReturnForm.css";
+import { useAlertModal } from "../../../../../../shared/alertModal";
 
 const ReturnForm = ({
-    isOpen,
+  isOpen,
     onClose,
     orderDetail,
     onSubmit
 }) => {
+  const { showAlert, showConfirm } = useAlertModal();
 
     const [returnDate, setReturnDate] = useState("");
     const [quantity, setQuantity] = useState(1);
@@ -84,11 +86,11 @@ const ReturnForm = ({
 
             onClose();
 
-            alert("Devolución registrada correctamente");
+            await showAlert("Devolución registrada correctamente");
 
         } catch (err) {
 
-            alert(`Error al registrar devolución: ${err.message}`);
+            await showAlert(`Error al registrar devolución: ${err.message}`);
 
         }
 

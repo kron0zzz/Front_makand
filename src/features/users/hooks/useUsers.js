@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { userService } from '../services/userService';
+import { useAlertModal } from "../../../shared/alertModal";
 
 export const useUsers = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -57,7 +59,7 @@ export const useUsers = () => {
 
 
   const eliminarUser = async (id) => {
-    if (!window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) return false;
+    if (!await showConfirm('¿Estás seguro de que deseas eliminar este usuario?')) return false;
     try {
       await userService.eliminar(id);
       setUsers(prev => prev.filter(c => c.user_id !== id));

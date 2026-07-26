@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { PositionService } from '../services/PositionsService';
+import { useAlertModal } from "../../../shared/alertModal";
 
 export const usePositions = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const [positions, setPositions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -54,14 +56,14 @@ export const usePositions = () => {
 
 
   const eliminarCargo = async (id) => {
-    if (!window.confirm("¿Estás seguro de que deseas eliminar este cargo?")) return;
+    if (!await showConfirm("¿Estás seguro de que deseas eliminar este cargo?")) return;
 
     try {
       await PositionService.eliminar(id);
-      alert("Cargo eliminado correctamente");
+      await showAlert("Cargo eliminado correctamente");
       await cargarCargos();
     } catch (err) {
-      alert(err.response?.data?.message || "Error al intentar eliminar.");
+      await showAlert(err.response?.data?.message || "Error al intentar eliminar.");
     }
   };
 

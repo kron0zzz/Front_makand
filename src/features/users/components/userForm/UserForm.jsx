@@ -385,9 +385,10 @@ import { X } from 'lucide-react';
 import { useRoles } from "../../../roles/hooks/useRoles";
 import { userService } from '../../services/userService'; // 🌟 Asegúrate de tener esta importación
 import './UserForm.css';
+import { useAlertModal } from "../../../../shared/alertModal";
 
-const UserForm = ({ 
-  isOpen, 
+const UserForm = ({
+  isOpen,
   onClose, 
   formData, 
   setFormData, 
@@ -395,6 +396,7 @@ const UserForm = ({
   cargarUsers, 
   employees = [], 
 }) => {
+  const { showAlert, showConfirm } = useAlertModal();
   const { roles, cargarRoles } = useRoles();
 
   useEffect(() => {
@@ -425,17 +427,17 @@ const UserForm = ({
       if (isEditing) {
         // 🌟 Usamos formData.user_id para asegurarnos de enviar el ID correcto al actualizar
         await userService.actualizar(formData.user_id, dataToSend);
-        alert('Usuario actualizado con éxito.');
+        await showAlert('Usuario actualizado con éxito.');
       } else {
         await userService.crear(dataToSend);
-        alert('Usuario creado con éxito.');
+        await showAlert('Usuario creado con éxito.');
       }
       
       if (cargarUsers) await cargarUsers();
       onClose();
     } catch (error) {
       console.error("Error en la petición:", error);
-      alert("Error de conexión o datos inválidos. Revisa la consola.");
+      await showAlert("Error de conexión o datos inválidos. Revisa la consola.");
     }
   };
 

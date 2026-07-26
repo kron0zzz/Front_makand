@@ -1,8 +1,10 @@
 import { useState, useCallback, useEffect} from "react";
 import api from "../../../shared/services/api";  //ojoooooo, que maldita mierda hice aquí
 import { orderService } from "../services/orderService";
+import { useAlertModal } from "../../../shared/alertModal";
 
 export const useOrders = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -70,7 +72,7 @@ export const useOrders = () => {
   };
 
   const eliminarPedido = async (id) => {
-    if (!window.confirm("¿Deseas eliminar este pedido?")) return;
+    if (!await showConfirm("¿Deseas eliminar este pedido?")) return;
     try {
       // baseURL es /api + esta ruta = /api/orders/:id
       await api.delete(`/orders/${id}`);
@@ -91,7 +93,7 @@ export const useOrders = () => {
 
 
   const anularPedido = async (id) => {
-    if (!window.confirm(`¿Está seguro de que desea anular este pedido?
+    if (!await showConfirm(`¿Está seguro de que desea anular este pedido?
 
       Esta acción no se puede deshacer.
 

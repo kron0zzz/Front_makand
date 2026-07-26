@@ -1,7 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
 import { machineryService } from '../services/machineryService';
+import { useAlertModal } from "../../../shared/alertModal";
 
 export const useMachinery = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const [machineries, setMachineries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -52,12 +54,12 @@ export const useMachinery = () => {
   }, []);
 
   const eliminarMaquinaria = async (id) => {
-    if (!window.confirm('¿Estás seguro de que deseas eliminar esta maquinaria?')) return;
+    if (!await showConfirm('¿Estás seguro de que deseas eliminar esta maquinaria?')) return;
     try {
       await machineryService.eliminar(id);
       setMachineries(prev => prev.filter(item => item.machinery_id !== id));
     } catch (err) {
-      alert("No se pudo eliminar la maquinaria.");
+      await showAlert("No se pudo eliminar la maquinaria.");
     }
   };
 
@@ -67,7 +69,7 @@ export const useMachinery = () => {
       await cargarMaquinarias();
       return true;
     } catch (err) {
-      alert(err.message);
+      await showAlert(err.message);
       return false;
     }
   };
@@ -78,7 +80,7 @@ export const useMachinery = () => {
       await cargarMaquinarias();
       return true;
     } catch (err) {
-      alert(err.message);
+      await showAlert(err.message);
       return false;
     }
   };

@@ -1,8 +1,10 @@
 // src/features/sub_rentals/hooks/useSubRentals.js
 import { useState, useCallback, useEffect} from 'react';
 import { subRentalService } from '../services/subRentalService';
+import { useAlertModal } from "../../../shared/alertModal";
 
 export const useSubRentals = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const [subRentals, setSubRentals] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -56,7 +58,7 @@ export const useSubRentals = () => {
     const nuevoEstado = !subRental.sub_rental_status;
     const mensajeAccion = nuevoEstado ? 'activar' : 'finalizar';
 
-    if (window.confirm(`¿Estás seguro de que deseas ${mensajeAccion} este subalquiler?`)) {
+    if (await showConfirm(`¿Estás seguro de que deseas ${mensajeAccion} este subalquiler?`)) {
       try {
         const datosActualizados = {
           machinery_id: subRental.machinery_id,
@@ -76,13 +78,13 @@ export const useSubRentals = () => {
           )
         );
       } catch (err) {
-        alert(err.message || 'Error al cambiar el estado del subalquiler');
+        await showAlert(err.message || 'Error al cambiar el estado del subalquiler');
       }
     }
   }, []);
 
   const eliminarSubalquiler = useCallback(async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este registro de subalquiler?')) {
+    if (await showConfirm('¿Estás seguro de que deseas eliminar este registro de subalquiler?')) {
       try {
         await subRentalService.eliminar(id);
         // Filtramos usando sub_rental_id para actualizar el estado instantáneamente

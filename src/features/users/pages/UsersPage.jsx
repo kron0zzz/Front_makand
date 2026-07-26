@@ -534,8 +534,10 @@ import './UsersPage.css';
 
 import Pagination from '../../../shared/components/pagination/Pagination';
 import useDebounce from "../../../shared/hooks/useDebounce";
+import { useAlertModal } from "../../../shared/alertModal";
 
 export const UsersPage = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const { 
     users, 
     cargarUsers, 
@@ -597,7 +599,7 @@ export const UsersPage = () => {
     const nuevoEstado = !user.user_status;
     const accionTexto = nuevoEstado ? "activar" : "inactivar";
     
-    const confirmacion = window.confirm(`¿Estás seguro de que deseas ${accionTexto} al usuario ${user.user_email}?`);
+    const confirmacion = await showConfirm(`¿Estás seguro de que deseas ${accionTexto} al usuario ${user.user_email}?`);
     
     if (!confirmacion) {
       return; 
@@ -614,7 +616,7 @@ export const UsersPage = () => {
       await cargarUsers();
     } catch (error) {
       console.error("Error al cambiar el estado del usuario:", error);
-      alert("No se pudo actualizar el estado.");
+      await showAlert("No se pudo actualizar el estado.");
     }
   };
 

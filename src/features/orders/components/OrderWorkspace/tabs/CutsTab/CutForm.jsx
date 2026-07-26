@@ -3,13 +3,15 @@ import { X } from "lucide-react";
 
 import { formatDate } from "../../../../../../shared/utils/dateUtils";
 import "./CutForm.css";
+import { useAlertModal } from "../../../../../../shared/alertModal";
 
 const CutForm = ({
-    isOpen,
+  isOpen,
     onClose,
     order,
     onSubmit
 }) => {
+  const { showAlert, showConfirm } = useAlertModal();
 
     const [periodStartDate, setPeriodStartDate] = useState("");
     const [periodEndDate, setPeriodEndDate] = useState("");
@@ -42,7 +44,7 @@ const CutForm = ({
 
         if (periodEndDate < periodStartDate) {
 
-            alert(
+            await showAlert(
                 "La fecha final debe ser posterior a la fecha inicial."
             );
 
@@ -70,11 +72,11 @@ const CutForm = ({
 
             onClose();
 
-            alert("Corte registrado correctamente");
+            await showAlert("Corte registrado correctamente");
 
         } catch (err) {
 
-            alert(`Error al registrar corte: ${err.message}`);
+            await showAlert(`Error al registrar corte: ${err.message}`);
 
         }
 

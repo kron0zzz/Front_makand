@@ -1,8 +1,10 @@
 import { X } from 'lucide-react';
 import { useCustomers } from "../../hooks/useCustomers";
 import './CustomerForm.css';
+import { useAlertModal } from "../../../../shared/alertModal";
 
 const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
+  const { showAlert, showConfirm } = useAlertModal();
   const { cargarClientes } = useCustomers();
 
   if (!isOpen) return null;
@@ -44,16 +46,16 @@ const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
       });
 
       if (response.ok) {
-        alert(isEditing ? '¡Cliente actualizado con éxito!' : '¡Cliente creado con éxito!');
+        await showAlert(isEditing ? '¡Cliente actualizado con éxito!' : '¡Cliente creado con éxito!');
         await cargarClientes();
         onClose();
       } else {
         const errorData = await response.json();
-        alert(`Error del servidor: ${errorData.error || 'No se pudo procesar la solicitud'}`);
+        await showAlert(`Error del servidor: ${errorData.error || 'No se pudo procesar la solicitud'}`);
       }
     } catch (error) {
       console.error("Error en la petición:", error);
-      alert("Error de conexión: Asegúrate de que el servidor de Makand esté corriendo.");
+      await showAlert("Error de conexión: Asegúrate de que el servidor de Makand esté corriendo.");
     }
   };
 

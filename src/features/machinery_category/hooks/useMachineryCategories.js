@@ -1,7 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
 import { machineryCategoryService } from '../services/machineryCategoryService';
+import { useAlertModal } from "../../../shared/alertModal";
 
 export const useMachineryCategories = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -59,14 +61,14 @@ export const useMachineryCategories = () => {
 
 
   const eliminarCategoria = async (id) => {
-    if (!window.confirm('¿Estás seguro de que deseas eliminar esta categoría?')) return;
+    if (!await showConfirm('¿Estás seguro de que deseas eliminar esta categoría?')) return;
     
     try {
       await machineryCategoryService.eliminar(id);
       setCategories(prev => prev.filter(cat => cat.category_id !== id));
       await cargarCategorias();
     } catch (err) {
-      alert("No se pudo eliminar: la categoría podría estar en uso.");
+      await showAlert("No se pudo eliminar: la categoría podría estar en uso.");
       console.error("Error al eliminar categoría:", err);
     }
   };

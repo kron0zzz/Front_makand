@@ -1,8 +1,10 @@
 import { X } from 'lucide-react';
 import { useMachineryCategories } from "../hooks/useMachineryCategories";
 import './MachineryCategoryForm.css'
+import { useAlertModal } from "../../../shared/alertModal";
 
 const MachineryCategoryForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
+  const { showAlert, showConfirm } = useAlertModal();
   const { cargarCategorias } = useMachineryCategories();
 
   if (!isOpen) return null;
@@ -34,16 +36,16 @@ const MachineryCategoryForm = ({ isOpen, onClose, formData, setFormData, isEditi
       });
 
       if (response.ok) {
-        alert(isEditing ? '¡Categoría actualizada con éxito!' : '¡Categoría creada con éxito!');
+        await showAlert(isEditing ? '¡Categoría actualizada con éxito!' : '¡Categoría creada con éxito!');
         await cargarCategorias();
         onClose();
       } else {
         const errorData = await response.json();
-        alert(`Error: ${errorData.error || 'No se pudo procesar la solicitud'}`);
+        await showAlert(`Error: ${errorData.error || 'No se pudo procesar la solicitud'}`);
       }
     } catch (error) {
       console.error("Error en la petición:", error);
-      alert("Error de conexión con el servidor de Makand.");
+      await showAlert("Error de conexión con el servidor de Makand.");
     }
   };
 

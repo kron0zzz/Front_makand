@@ -2,8 +2,10 @@ import { X } from 'lucide-react';
 import { useVehicles } from "../../hooks/useVehicles";
 import { vehiculosService } from "../../services/vehiculosService";
 import './VehiculoForm.css';
+import { useAlertModal } from "../../../../shared/alertModal";
 
 const VehiculoForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
+  const { showAlert } = useAlertModal();
   const { cargarVehiculos } = useVehicles();
 
   if (!isOpen) return null;
@@ -31,17 +33,17 @@ const VehiculoForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
       if (isEditing) {
         const response = await vehiculosService.actualizar(formData.id, dataToSend);
         console.log('Respuesta actualizar:', response);
-        alert('¡Vehículo actualizado con éxito!');
+        await showAlert('¡Vehículo actualizado con éxito!');
       } else {
         const response = await vehiculosService.crear(dataToSend);
         console.log('Respuesta crear:', response);
-        alert('¡Vehículo creado con éxito!');
+        await showAlert('¡Vehículo creado con éxito!');
       }
       await cargarVehiculos();
       onClose();
     } catch (error) {
       console.error("Error al guardar vehículo:", error.response?.data || error.message);
-      alert(`Error al guardar el vehículo: ${error.response?.data?.message || error.message}`);
+      await showAlert(`Error al guardar el vehículo: ${error.response?.data?.message || error.message}`);
     }
   };
 

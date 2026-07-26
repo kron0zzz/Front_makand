@@ -1,7 +1,9 @@
 import { useState, useCallback, useEffect} from 'react';
 import { purchaseInvoiceService } from '../services/purchaseInvoiceService';
+import { useAlertModal } from "../../../shared/alertModal";
 
 export const usePurchaseInvoices = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -52,7 +54,7 @@ export const usePurchaseInvoices = () => {
   }, []);
 
   const eliminarFactura = useCallback(async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar esta factura de compra?')) {
+    if (await showConfirm('¿Estás seguro de que deseas eliminar esta factura de compra?')) {
       try {
         await purchaseInvoiceService.eliminar(id);
         setInvoices(prev => prev.filter(invoice => invoice.invoice_id !== id));

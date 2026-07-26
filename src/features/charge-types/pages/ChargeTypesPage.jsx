@@ -7,8 +7,10 @@ import './ChargeTypesPage.css';
 
 import Pagination from '../../../shared/components/pagination/Pagination';
 import useDebounce from "../../../shared/hooks/useDebounce";
+import { useAlertModal } from "../../../shared/alertModal";
 
 const ChargeTypesPage = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const { 
     chargeTypes, 
     eliminarTipoCobro, 
@@ -38,7 +40,7 @@ const ChargeTypesPage = () => {
   };
 
   const handleEliminar = async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este tipo de cobro?')) {
+    if (await showConfirm('¿Estás seguro de que deseas eliminar este tipo de cobro?')) {
       await eliminarTipoCobro(id);
     }
   };

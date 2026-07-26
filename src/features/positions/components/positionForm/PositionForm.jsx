@@ -2,8 +2,10 @@ import { X } from 'lucide-react';
 import { apiClient } from "../../../../shared/services/api"; 
 import {PositionService} from '../../services/PositionsService';
 import './PositionForm.css';
+import { useAlertModal } from "../../../../shared/alertModal";
 
 const PositionForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarCargos }) => {
+  const { showAlert, showConfirm } = useAlertModal();
   
   if (!isOpen) return null;
 
@@ -21,10 +23,10 @@ const PositionForm = ({ isOpen, onClose, formData, setFormData, isEditing, carga
       if (isEditing) {
         //aqui tambièn deberìa consumir el service
         await PositionService.actualizar(formData.position_id, dataToSend);
-        alert('¡Cargo actualizado con éxito!');
+        await showAlert('¡Cargo actualizado con éxito!');
       } else {
         await PositionService.crear(dataToSend);
-        alert('¡Cargo creado con éxito!');
+        await showAlert('¡Cargo creado con éxito!');
       }
       
       // Validación segura: solo ejecuta si la función existe
@@ -37,7 +39,7 @@ const PositionForm = ({ isOpen, onClose, formData, setFormData, isEditing, carga
     } catch (error) {
       console.error("Error en la petición:", error);
       const mensajeError = error.response?.data?.message || 'No se pudo procesar la solicitud';
-      alert(`Error del servidor: ${mensajeError}`);
+      await showAlert(`Error del servidor: ${mensajeError}`);
     }
   };
 

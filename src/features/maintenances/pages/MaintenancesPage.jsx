@@ -268,8 +268,10 @@ import MaintenanceForm from '../components/maintenanceForm/MaintenanceForm';
 import MaintenanceDetail from '../components/MaintenanceDetail/MaintenanceDetail'; // 🌟 Importamos el detalle
 import { formatDate } from '../../../shared/utils/dateUtils'; // 🌟 Importamos la utilidad de fecha
 import './MaintenancesPage.css';
+import { useAlertModal } from "../../../shared/alertModal";
 
 const MaintenancesPage = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const { maintenances, cargarMaintenances, eliminarMaintenance } = useMaintenances();
   const { hasPermission } = useAuth();
   const [busqueda, setBusqueda] = useState('');
@@ -312,7 +314,7 @@ const MaintenancesPage = () => {
   };
 
   const handleEliminar = async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este mantenimiento?')) {
+    if (await showConfirm('¿Estás seguro de que deseas eliminar este mantenimiento?')) {
       await eliminarMaintenance(id);
     }
   };

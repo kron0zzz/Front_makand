@@ -10,8 +10,10 @@ import './SupplierPage.css';
 
 import Pagination from '../../../shared/components/pagination/Pagination';
 import useDebounce from "../../../shared/hooks/useDebounce";
+import { useAlertModal } from "../../../shared/alertModal";
 
 const SupplierPage = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const { 
     suppliers, 
     cargarProveedores, 
@@ -50,7 +52,7 @@ const SupplierPage = () => {
 
     } catch (error) {
       console.error(error);
-      alert("No se pudo cargar la información del proveedor.");
+      await showAlert("No se pudo cargar la información del proveedor.");
     }
   };
 

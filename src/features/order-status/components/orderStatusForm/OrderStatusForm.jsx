@@ -1,8 +1,10 @@
 import { X } from 'lucide-react';
 import { orderStatusService } from "../../services/orderStatusService";
 import './OrderStatusForm.css';
+import { useAlertModal } from "../../../../shared/alertModal";
 
 const OrderStatusForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarOrderStatus }) => {
+  const { showAlert, showConfirm } = useAlertModal();
   if (!isOpen) return null;
 
   const handleChange = (e) => {
@@ -15,16 +17,16 @@ const OrderStatusForm = ({ isOpen, onClose, formData, setFormData, isEditing, ca
     try {
       if (isEditing) {
         await orderStatusService.actualizar(formData.order_status_id, { order_status_name: formData.order_status_name });
-        alert('Estado de pedido actualizado.');
+        await showAlert('Estado de pedido actualizado.');
       } else {
         await orderStatusService.crear({ order_status_name: formData.order_status_name });
-        alert('Estado de pedido creado.');
+        await showAlert('Estado de pedido creado.');
       }
       await cargarOrderStatus();
       onClose();
     } catch (error) {
       console.error("Error:", error);
-      alert(error.message || "Error al procesar la solicitud.");
+      await showAlert(error.message || "Error al procesar la solicitud.");
     }
   };
   

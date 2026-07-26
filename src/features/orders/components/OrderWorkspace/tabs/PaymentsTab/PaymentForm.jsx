@@ -2,15 +2,17 @@ import { useEffect, useState } from "react";
 import { X, Banknote, CreditCard  } from "lucide-react";
 
 import "./PaymentForm.css";
+import { useAlertModal } from "../../../../../../shared/alertModal";
 
 const PaymentForm = ({
-    isOpen,
+  isOpen,
     onClose,
     order,
     onSubmit
 }) => {
+  const { showAlert, showConfirm } = useAlertModal();
 
-    const [paymentDate, setPaymentDate] = useState("");
+  const [paymentDate, setPaymentDate] = useState("");
     const [paymentAmount, setPaymentAmount] = useState("");
     const [paymentInCash, setPaymentInCash] = useState(true);
 
@@ -58,11 +60,11 @@ const PaymentForm = ({
 
             onClose();
 
-            alert("Abono registrado correctamente");
+            await showAlert("Abono registrado correctamente");
 
         } catch (err) {
 
-            alert(`Error al registrar abono: ${err.message}`);
+            await showAlert(`Error al registrar abono: ${err.message}`);
 
         }
 

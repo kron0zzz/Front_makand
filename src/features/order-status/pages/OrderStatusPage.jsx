@@ -239,8 +239,10 @@ import { useOrderStatus } from '../hooks/useOrderStatus';
 import { useAuth } from '../../../shared/context/AuthContext'; // Ajusta la ruta según tu estructura
 import OrderStatusForm from '../components/orderStatusForm/OrderStatusForm';
 import './OrderStatusPage.css';
+import { useAlertModal } from "../../../shared/alertModal";
 
 const OrderStatusPage = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const { orderStatus, cargarOrderStatus, eliminarOrderStatus } = useOrderStatus();
   const { hasPermission } = useAuth();
   
@@ -268,7 +270,7 @@ const OrderStatusPage = () => {
   };
 
   const handleEliminar = async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este estado de pedido?')) {
+    if (await showConfirm('¿Estás seguro de que deseas eliminar este estado de pedido?')) {
       await eliminarOrderStatus(id);
     }
   };

@@ -1,3 +1,7 @@
+import { useState, useCallback } from 'react';
+import { roleService } from '../services/roleService';
+import { useAlertModal } from "../../../shared/alertModal";
+
 // import { useState, useCallback } from 'react';
 // import { roleService } from '../services/roleService';
 
@@ -67,10 +71,8 @@
 // };
 
 
-import { useState, useCallback } from 'react';
-import { roleService } from '../services/roleService';
-
 export const useRoles = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const [roles, setRoles] = useState([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(9);
@@ -108,7 +110,7 @@ export const useRoles = () => {
   }, []);
 
   const eliminarRol = async (id) => {
-    if (window.confirm('¿Seguro que deseas eliminar este rol?')) {
+    if (await showConfirm('¿Seguro que deseas eliminar este rol?')) {
       const exito = await roleService.eliminar(id);
       if (exito) cargarRoles();
     }
@@ -119,7 +121,7 @@ export const useRoles = () => {
     const nuevoEstado = !rol.role_status;
     const accionTexto = nuevoEstado ? "activar" : "desactivar";
 
-    if (window.confirm(`¿Estás seguro de que deseas ${accionTexto} este rol?`)) {
+    if (await showConfirm(`¿Estás seguro de que deseas ${accionTexto} este rol?`)) {
       try {
         await roleService.actualizar(rol.role_id, { 
           role_name: rol.role_name, 
@@ -129,7 +131,7 @@ export const useRoles = () => {
         cargarRoles();
       } catch (err) {
         console.error("Error al cambiar estado del rol:", err);
-        alert("No se pudo cambiar el estado del rol. Verifica que tengas permisos de edición.");
+        await showAlert("No se pudo cambiar el estado del rol. Verifica que tengas permisos de edición.");
       }
     }
   };

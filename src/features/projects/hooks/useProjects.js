@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { projectService } from '../services/projectService';
 import { useCustomers } from '../../customers/hooks/useCustomers';
+import { useAlertModal } from "../../../shared/alertModal";
 
 export const useProjects = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -35,7 +37,7 @@ export const useProjects = () => {
   },[page,limit, search])
 
   const eliminarProyecto = useCallback(async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este proyecto?')) {
+    if (await showConfirm('¿Estás seguro de que deseas eliminar este proyecto?')) {
       try {
         setError(null);
         await projectService.eliminar(id);

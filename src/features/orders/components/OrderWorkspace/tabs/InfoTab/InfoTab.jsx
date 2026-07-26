@@ -9,8 +9,10 @@ import {
 } from "lucide-react";
 
 import { formatDate } from "../../../../../../shared/utils/dateUtils";
+import { useAlertModal } from "../../../../../../shared/alertModal";
 
 const InfoTab = ({ order, onCloseOrder}) => {
+  const { showAlert, showConfirm } = useAlertModal();
 
     const totalPedido =
         order.details?.reduce(
@@ -58,11 +60,11 @@ const InfoTab = ({ order, onCloseOrder}) => {
 
         if (result.success) {
 
-            alert(result.message);
+            await showAlert(result.message);
 
         } else {
 
-            alert(
+            await showAlert(
                 `No fue posible cerrar el pedido.\n\n${result.message}`
             );
 

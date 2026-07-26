@@ -4,6 +4,7 @@ import { X, Plus, Trash2 } from "lucide-react";
 import { useOrders } from "../../hooks/useOrders";
 
 import "./OrderForm.css";
+import { useAlertModal } from "../../../../shared/alertModal";
 
 const OrderForm = ({
   isOpen,
@@ -11,6 +12,7 @@ const OrderForm = ({
   formData,
   setFormData
 }) => {
+  const { showAlert, showConfirm } = useAlertModal();
 
   const { crearPedidoCompleto } = useOrders();
 
@@ -137,7 +139,7 @@ const OrderForm = ({
     setDetails(nuevosDetalles);
   };
 
-  const actualizarDetalle = (index, campo, valor) => {
+  const actualizarDetalle = async (index, campo, valor) => {
     const nuevosDetalles = [...details];
 
     if (campo === "quantity_to_dispatch") {
@@ -150,7 +152,7 @@ const OrderForm = ({
         const cantidadIngresada = Number(valor) || 0;
 
         if (cantidadIngresada > stockDisponible) {
-          alert(`La cantidad no puede superar el stock disponible (${stockDisponible})`);
+          await showAlert(`La cantidad no puede superar el stock disponible (${stockDisponible})`);
           return;
         }
       }
@@ -189,7 +191,7 @@ const OrderForm = ({
         const stock = Number(maquina.stock_quantity) || 0;
         const cantidad = Number(item.quantity_to_dispatch) || 0;
         if (cantidad > stock) {
-          alert(`La cantidad para la máquina "${maquina.machinery_name}" supera el stock disponible (${stock}).`);
+          await showAlert(`La cantidad para la máquina "${maquina.machinery_name}" supera el stock disponible (${stock}).`);
           return;
         }
       }
@@ -210,10 +212,10 @@ const OrderForm = ({
 
       await crearPedidoCompleto(payload);
 
-      alert("Pedido creado correctamente");
+      await showAlert("Pedido creado correctamente");
       onClose();
     } catch (error) {
-      alert(error.message);
+      await showAlert(error.message);
     }
   };
 

@@ -10,8 +10,10 @@ import './CustomerPage.css';
 
 import Pagination from '../../../../shared/components/pagination/Pagination';
 import useDebounce from "../../../../shared/hooks/useDebounce";
+import { useAlertModal } from "../../../../shared/alertModal";
 
 const CustomerPage = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const { 
     customers, 
     cargarClientes, 
@@ -50,7 +52,7 @@ const CustomerPage = () => {
   
       } catch (error) {
         console.error(error);
-        alert("No se pudo cargar la información del cliente.");
+        await showAlert("No se pudo cargar la información del cliente.");
       }
     };
 

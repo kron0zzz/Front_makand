@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import './MachineryForm.css'; 
+import { useAlertModal } from "../../../../shared/alertModal";
 
 // 🛠️ ACTUALIZADO: Ahora recibe crearMaquinaria y actualizarMaquinaria por props desde el padre
 const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crearMaquinaria, actualizarMaquinaria }) => {
+  const { showAlert, showConfirm } = useAlertModal();
 
   const [categories, setCategories] = useState([]);
   const [statuses, setStatuses] = useState([]);
@@ -128,7 +130,7 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crea
       : await crearMaquinaria(dataToSend);
 
     if (exito) {
-      alert(isEditing ? '¡Maquinaria actualizada con éxito!' : '¡Maquinaria registrada con éxito!');
+      await showAlert(isEditing ? '¡Maquinaria actualizada con éxito!' : '¡Maquinaria registrada con éxito!');
       onClose(); 
     } else {
       setErrorForm('Ocurrió un problema en el servidor al intentar guardar la maquinaria.');

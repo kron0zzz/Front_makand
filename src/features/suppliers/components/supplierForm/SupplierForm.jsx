@@ -2,8 +2,10 @@ import { X } from 'lucide-react';
 import { useSuppliers } from "../../hooks/useSuppliers";
 import './SupplierForm.css';
 import { useEffect, useState } from 'react';
+import { useAlertModal } from "../../../../shared/alertModal";
 
 const SupplierForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
+  const { showAlert, showConfirm } = useAlertModal();
   const { cargarProveedores } = useSuppliers();
   const [departamentos, setDepartamentos] = useState([]);
   const [ciudades, setCiudades] = useState([]);
@@ -60,7 +62,7 @@ const SupplierForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
     e.preventDefault();
     
     if (Object.values(errores).some(e => e !== "")) {
-      alert("Por favor, corrige los errores antes de guardar.");
+      await showAlert("Por favor, corrige los errores antes de guardar.");
       return;
     }
 
@@ -88,15 +90,15 @@ const SupplierForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
       });
 
       if (response.ok) {
-        alert(isEditing ? '¡Proveedor actualizado con éxito!' : '¡Proveedor creado con éxito!');
+        await showAlert(isEditing ? '¡Proveedor actualizado con éxito!' : '¡Proveedor creado con éxito!');
         await cargarProveedores();
         onClose();
       } else {
         const errorData = await response.json();
-        alert(`Error al guardar: ${errorData.error || 'Verifica que todos los campos cumplan con el formato requerido.'}`);
+        await showAlert(`Error al guardar: ${errorData.error || 'Verifica que todos los campos cumplan con el formato requerido.'}`);
       }
     } catch (error) {
-      alert("Error de conexión: El servidor no responde.");
+      await showAlert("Error de conexión: El servidor no responde.");
     }
   };
 

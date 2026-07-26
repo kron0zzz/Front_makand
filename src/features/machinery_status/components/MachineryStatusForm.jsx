@@ -1,8 +1,10 @@
 import { X } from 'lucide-react';
 import { useMachineryStatuses } from "../hooks/useMachineryStatuses";
 import './MachineryStatusForm.css'; // Mantiene tus mismos estilos del modal
+import { useAlertModal } from "../../../shared/alertModal";
 
 const MachineryStatusForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
+  const { showAlert, showConfirm } = useAlertModal();
   // Consumimos el hook que crearemos para los estados de maquinaria
   const { cargarEstados } = useMachineryStatuses();
 
@@ -37,16 +39,16 @@ const MachineryStatusForm = ({ isOpen, onClose, formData, setFormData, isEditing
       });
 
       if (response.ok) {
-        alert(isEditing ? '¡Estado de maquinaria actualizado!' : '¡Estado de maquinaria creado!');
+        await showAlert(isEditing ? '¡Estado de maquinaria actualizado!' : '¡Estado de maquinaria creado!');
         await cargarEstados(); // Recarga la tabla de inmediato
         onClose();
       } else {
         const errorData = await response.json();
-        alert(`Error del servidor: ${errorData.error || 'No se pudo procesar la solicitud'}`);
+        await showAlert(`Error del servidor: ${errorData.error || 'No se pudo procesar la solicitud'}`);
       }
     } catch (error) {
       console.error("Error en la petición:", error);
-      alert("Error de conexión: Asegúrate de que el servidor de Makand esté corriendo.");
+      await showAlert("Error de conexión: Asegúrate de que el servidor de Makand esté corriendo.");
     }
   };
 

@@ -18,8 +18,10 @@ import Pagination from "../../../shared/components/pagination/Pagination";
 import useDebounce from "../../../shared/hooks/useDebounce";
 
 import "./OrderPage.css";
+import { useAlertModal } from "../../../shared/alertModal";
 
 const OrderPage = ({ onOpenWorkspace }) => {
+  const { showAlert, showConfirm } = useAlertModal();
 
   const { hasPermission } = useAuth();
 
@@ -55,7 +57,7 @@ const OrderPage = ({ onOpenWorkspace }) => {
     } catch (error) {
 
       console.error(error);
-      alert("No se pudo cargar el detalle del pedido");
+      await showAlert("No se pudo cargar el detalle del pedido");
 
     }
 
@@ -70,11 +72,11 @@ const OrderPage = ({ onOpenWorkspace }) => {
 
     if (result.success) {
 
-      alert(result.message);
+      await showAlert(result.message);
 
     } else {
 
-      alert(
+      await showAlert(
         `No fue posible anular el pedido.\n\n${result.message}`
       );
 

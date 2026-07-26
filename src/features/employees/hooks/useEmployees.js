@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { employeeService } from '../services/employeeService';
+import { useAlertModal } from "../../../shared/alertModal";
 
 export const useEmployees = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,7 +36,7 @@ export const useEmployees = () => {
 
   const toggleEmpleadoEstado = async (id, estadoActual) => {
     if (
-      !window.confirm(
+      !await showConfirm(
         `¿Estás seguro de que deseas ${
           estadoActual ? "desactivar" : "activar"
         } este empleado?`
@@ -54,7 +56,7 @@ export const useEmployees = () => {
   
     } catch (err) {
       console.error(err);
-      alert("No se pudo actualizar el estado.");
+      await showAlert("No se pudo actualizar el estado.");
     }
   };
 
@@ -78,13 +80,13 @@ export const useEmployees = () => {
   }, []);
 
   const eliminarEmpleado = async (id) => {
-    if (!window.confirm('¿Estás seguro de que deseas eliminar este empleado?')) return;
+    if (!await showConfirm('¿Estás seguro de que deseas eliminar este empleado?')) return;
     try {
       await employeeService.eliminar(id);
       setEmployees(prev => prev.filter(e => e.employee_id !== id));
     } catch (err) {
       console.error("Error al eliminar empleado:", err);
-      alert("No se pudo eliminar el empleado.");
+      await showAlert("No se pudo eliminar el empleado.");
     }
   };
 

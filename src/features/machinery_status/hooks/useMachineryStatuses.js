@@ -1,4 +1,7 @@
 // import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { machineryStatusService } from '../services/machineryStatusService';
+import { useAlertModal } from "../../../shared/alertModal";
 
 // export const useMachineryStatuses = () => {
 //   const [statuses, setStatuses] = useState([]);
@@ -65,10 +68,8 @@
 //   };
 // };
 
-import { useState, useCallback, useEffect } from 'react';
-import { machineryStatusService } from '../services/machineryStatusService';
-
 export const useMachineryStatuses = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const [statuses, setStatuses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -87,13 +88,13 @@ export const useMachineryStatuses = () => {
   }, []);
 
   const eliminarEstado = async (id) => {
-    if (!window.confirm('¿Estás seguro de que deseas eliminar este estado de maquinaria?')) return;
+    if (!await showConfirm('¿Estás seguro de que deseas eliminar este estado de maquinaria?')) return;
     
     try {
       await machineryStatusService.eliminar(id);
       setStatuses(prev => prev.filter(status => status.status_id !== id));
     } catch (err) {
-      alert(err.response?.data?.message || "No se pudo eliminar: el estado podría estar en uso.");
+      await showAlert(err.response?.data?.message || "No se pudo eliminar: el estado podría estar en uso.");
       console.error("Error al eliminar estado:", err);
     }
   };

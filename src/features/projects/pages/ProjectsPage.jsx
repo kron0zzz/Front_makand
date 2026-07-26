@@ -8,9 +8,11 @@ import './ProjectsPage.css';
 
 import Pagination from '../../../shared/components/pagination/Pagination';
 import useDebounce from "../../../shared/hooks/useDebounce";
+import { useAlertModal } from "../../../shared/alertModal";
 
 
 const ProjectsPage = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const { 
     projects, 
     cargarProyectos, 
@@ -38,7 +40,7 @@ const ProjectsPage = () => {
     const accion = nuevoEstado ? 'ACTIVAR' : 'DESACTIVAR';
     const mensaje = `¿Estás seguro de que deseas ${accion} el proyecto ${proyecto.project_name}?`;
     
-    if (window.confirm(mensaje)) {
+    if (await showConfirm(mensaje)) {
       try {
         const response = await fetch(`http://localhost:3000/api/projects/${proyectoId}`, {
           method: 'PUT',
@@ -59,11 +61,11 @@ const ProjectsPage = () => {
         if (response.ok) {
           await cargarProyectos();
         } else {
-          alert("No se pudo actualizar el estado del Proyecto.");
+          await showAlert("No se pudo actualizar el estado del Proyecto.");
         }
       } catch (error) {
         console.error("Error al cambiar estado:", error);
-        alert("Error de conexión con el servidor.");
+        await showAlert("Error de conexión con el servidor.");
       }
     }
   };

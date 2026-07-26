@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { maintenanceService } from '../services/maintenanceService';
+import { useAlertModal } from "../../../shared/alertModal";
 
 export const useMaintenances = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const [maintenances, setMaintenances] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -33,7 +35,7 @@ export const useMaintenances = () => {
   // }, [cargarMaintenances]);
 
   const eliminarMaintenance = async (id) => {
-    if (!window.confirm('¿Estás seguro de que deseas eliminar este mantenimiento?')) return false;
+    if (!await showConfirm('¿Estás seguro de que deseas eliminar este mantenimiento?')) return false;
     try {
       await maintenanceService.eliminar(id);
       setMaintenances(prev => prev.filter(c => c.maintenance_id !== id));

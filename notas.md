@@ -9,8 +9,8 @@ Este archivo es pa borrar luego, son cosas que deberíamos tener en cuenta.
 
 - podríamos meter en shared todos los estilos? así no se repite el mismo archivo
 - las facturas en este momento están medio inservibles, como lo vamos a relacionar después?
-- todas las acciones deberían tener mensajes de confirmación
 - todos los cambiar estado deberían ser pa algo, no? por ejemplo que no se le pueda crear un proyecto a un cliente que esté inactivo. Se debería implementar esas validaciones en toda parte
+- !!!!todas las acciones deberían tener mensajes de confirmación, faltan varias cosas pa ponerle esas alertas
 
 #### orders
 
@@ -34,45 +34,38 @@ aparte de hacer los ajustes de arriba, falta entonces el editar pedido y anular
 
 
 ### users 
-- los campos que se renderizan deben ser otros más(empleado y rol), en el back también se debe hacer el llamado
 - al editar un usuario y asignar una contraseña, esta queda en texto plano en la db, es decir, no se encripta
-- el estado debe ser switch
 
 ### tipos de cobro
-- no funciona el eliminar
-- el nombre del tipo de cobro debe ser unique
+- todo melo manito
 
 
 ### proyectos
-- hay un error de lógica, pues el formulario de edición espera un dato de "departamento" que no existe en la base de datos(porque así lo definimos). entonces tenemos dos opciones: 1= incluir el dato de departamento en la db, 2= modificar el formulario para que cargue el departamento según la ciudad seleccionada
+- hay un error de lógica, pues el formulario de edición espera un dato de "departamento" que no existe en la base de datos(porque así lo definimos). lo que hice para resolver fue quitarle el required al campo en el formulario así que por ahora funciona.
+- deberíamos distribuir mejor la vista de ver detalles
 
 ### facturas de compra
 - si hay un ver detalle, pero como puedo ver la imagen más de cerca? tal vez descargandola o abariendo una vista dedicada?
 
 ### roles
-- el estado debe ser switch
-- pasa algo con el ver detalle, no sé bien como fue que sara hizo esa lógica
-- el nombre de los roles debe ser unique
+- al crear un usuario y seleccionar permisos, estos no se guardan, pero al editar un usuario si (el error está solo en el create)
 
 ### subalquileres
-- estado debe ser switch
+- todo melo
 
 ### cargos
-- el nombre de los cargos debe ser unique
+- todo melo
 
 ### estado de maquinaria
-- el nombre del estado debe ser unique
+- melo
 
 ### categoría de maquinaria
-- el nombre de la categoría debe ser unique
+- meloski
 
 ### mantenimientos
-- no se debe traer el id de la maquina sino el nombre
-- la fecha debe tener el formato que ya está establecido en shared/utils/dateUtils.js
-- las notas no deben estar en la tabla, para eso se debe crear un ver detalle de mantenimiento
-- cuando se edita, el campo de la fecha queda vacío
+- todo melo
 
 ### estado pedido
-- el nombre del estado debe ser unique
+- melo
 
 

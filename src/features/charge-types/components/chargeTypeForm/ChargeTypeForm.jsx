@@ -2,8 +2,10 @@ import { X } from 'lucide-react';
 import { useChargeTypes } from "../../hooks/useChargeTypes";
 import { chargeTypeService } from "../../services/chargeTypeService";
 import './ChargeTypeForm.css';
+import { useAlertModal } from "../../../../shared/alertModal";
 
 const ChargeTypeForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
+  const { showAlert, showConfirm } = useAlertModal();
   const { cargarTiposCobro } = useChargeTypes();
 
   if (!isOpen) return null;
@@ -23,10 +25,10 @@ const ChargeTypeForm = ({ isOpen, onClose, formData, setFormData, isEditing }) =
     try {
       if (isEditing) {
         await chargeTypeService.actualizar(formData.charge_type_id, dataToSend);
-        alert('Tipo de cobro actualizado con éxito.');
+        await showAlert('Tipo de cobro actualizado con éxito.');
       } else {
         await chargeTypeService.crear(dataToSend);
-        alert('Tipo de cobro creado con éxito.');
+        await showAlert('Tipo de cobro creado con éxito.');
       }
       
       // Recargamos la lista después del éxito
@@ -35,12 +37,12 @@ const ChargeTypeForm = ({ isOpen, onClose, formData, setFormData, isEditing }) =
     } catch (error) {
       const status = error.response?.status;
       if (status === 401) {
-        alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+        await showAlert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
       } else if (status === 403) {
-        alert("No tienes permiso para realizar esta acción. Contacta al administrador.");
+        await showAlert("No tienes permiso para realizar esta acción. Contacta al administrador.");
       } else {
         // Muestra el mensaje limpio que lanza el servicio (ej. "Ya existe un tipo de cobro...")
-        alert(error.message || "Error de conexión con el servidor.");
+        await showAlert(error.message || "Error de conexión con el servidor.");
       }
       console.error("Detalle del error:", error);
     }

@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { customerService } from '../services/customerService'; // Importamos el servicio
+import { useAlertModal } from "../../../shared/alertModal";
 
 export const useCustomers = () => {
+  const { showAlert, showConfirm } = useAlertModal();
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -37,7 +39,7 @@ export const useCustomers = () => {
 
   const toggleCustomerEstado = async (id, estadoActual) => {
     if (
-      !window.confirm(
+      !await showConfirm(
         `¿Estás seguro de que deseas ${
           estadoActual ? "desactivar" : "activar"
         } este cliente?`
@@ -56,7 +58,7 @@ export const useCustomers = () => {
       await cargarClientes();
     } catch (err) {
       console.error(err);
-      alert("No se pudo actualizar el estado.");
+      await showAlert("No se pudo actualizar el estado.");
     }
   };
 
@@ -80,14 +82,14 @@ export const useCustomers = () => {
   }, []);
 
   const eliminarCliente = async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este cliente?')) {
+    if (await showConfirm('¿Estás seguro de que deseas eliminar este cliente?')) {
       try {
         // Usamos el servicio en lugar de fetch
         await customerService.eliminar(id);
         setCustomers(prev => prev.filter(c => c.customer_id !== id));
       } catch (err) {
         console.error("Error al eliminar:", err);
-        alert("No se pudo eliminar el cliente.");
+        await showAlert("No se pudo eliminar el cliente.");
       }
     }
   };
