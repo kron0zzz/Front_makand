@@ -61,15 +61,15 @@ const CustomerPage = () => {
     setIsEditing(true);
     setFormData({
       customer_id: customer.customer_id,
-      firstName: customer.customer_first_name,
-      lastName: customer.customer_last_name,
+      customerName: customer.customer_name,
       tipoDocumento: customer.customer_document_type,
       documento: customer.customer_document_number,
       tipoOrganizacion: customer.organization_type,
       telefono: customer.customer_phone,
       email: customer.customer_email,
       direccion: customer.customer_address,
-      estado: customer.customer_status
+      estado: customer.customer_status,
+      representanteLegal: customer.legal_representative
     });
     setMostrarModalForm(true);
   };
@@ -133,7 +133,7 @@ const CustomerPage = () => {
               customers.map((customer) => (
                 <tr key={customer.customer_id}>
                   <td>#{customer.customer_id}</td>
-                  <td>{`${customer.customer_first_name} ${customer.customer_last_name}`}</td>
+                  <td>{customer.customer_name}</td>
                   <td>{customer.customer_document_number}</td>
                   <td>
                     <label className="switch">

@@ -10,19 +10,41 @@ const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
   if (!isOpen) return null;
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  const { name, value } = e.target;
+
+  if (name === "organization_type") {
+    setFormData({
+      ...formData,
+      organization_type: value,
+      customer_document_type:
+        value === "Jurídica" ? "NIT" : "CC",
+      legal_representative:
+        value === "Natural"
+          ? ""
+          : formData.legal_representative
+    });
+
+    return;
+  }
+
+  setFormData({
+    ...formData,
+    [name]: value
+  });
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token"); 
     const dataToSend = {
-      customer_first_name: formData.customer_first_name,
-      customer_last_name: formData.customer_last_name,
+      organization_type: formData.organization_type,
+      customer_name: formData.customer_name,
+      legal_representative:
+        formData.organization_type === "Jurídica"
+          ? formData.legal_representative
+          : null,
       customer_document_type: formData.customer_document_type,
       customer_document_number: formData.customer_document_number,
-      organization_type: formData.organization_type,
       customer_phone: formData.customer_phone,
       customer_email: formData.customer_email,
       customer_address: formData.customer_address,
@@ -102,25 +124,58 @@ const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
               </select>
             </div>
 
-            {/* Nombres */}
+            {/* Nombre o Razón Social */}
             <div>
-              <label className="form-label">Nombres *</label>
-              <input name="customer_first_name" type="text" className="form-input" value={formData.customer_first_name || ''} onChange={handleChange} required />
+              <label className="form-label">
+                {formData.organization_type === "Jurídica"
+                  ? "Razón Social *"
+                  : "Nombre Completo *"}
+              </label>
+
+              <input
+                name="customer_name"
+                type="text"
+                className="form-input"
+                value={formData.customer_name || ""}
+                onChange={handleChange}
+                required
+              />
             </div>
 
-            {/* Apellidos */}
-            <div>
-              <label className="form-label">Apellidos *</label>
-              <input name="customer_last_name" type="text" className="form-input" value={formData.customer_last_name || ''} onChange={handleChange} required />
-            </div>
+            {/* Representante legal (solo persona jurídica) */}
+            {formData.organization_type === "Jurídica" && (
+              <div>
+                <label className="form-label">
+                  Representante Legal *
+                </label>
+
+                <input
+                  name="legal_representative"
+                  type="text"
+                  className="form-input"
+                  value={formData.legal_representative || ""}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            )}
 
             {/* Tipo de Identificación */}
             <div>
-              <label className="form-label">Tipo Documento *</label>
-              <select name="customer_document_type" className="form-input" value={formData.customer_document_type || 'CC'} onChange={handleChange}>
+              <label className="form-label">
+                Tipo Documento *
+              </label>
+
+              <select
+                name="customer_document_type"
+                className="form-input"
+                value={formData.customer_document_type || "CC"}
+                onChange={handleChange}
+                disabled={formData.organization_type === "Jurídica"}
+              >
                 <option value="CC">Cédula de Ciudadanía</option>
-                <option value="NIT">NIT</option>
                 <option value="CE">Cédula de Extranjería</option>
+                <option value="NIT">NIT</option>
               </select>
             </div>
 
@@ -158,7 +213,7 @@ const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
                       type="checkbox" 
                       name="estado"
                       checked={formData.customer_status} 
-                      onChange={(e) => setFormData({...formData, estado: e.target.checked})} 
+                      onChange={(e) => setFormData({...formData, customer_status: e.target.checked})} 
                     />
                     <span className="slider round"></span>
                   </label>

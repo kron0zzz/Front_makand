@@ -19,16 +19,38 @@ const CustomerDetail = ({ isOpen, onClose, cliente, onEdit }) => {
         <div className="modal-content">
           <div className="detail-grid">
             
-            {/* Nombre Completo */}
+      
+            {/* Cliente */}
             <div className="full-width user-avatar-section">
               <div className="avatar-icon-wrapper">
                 <User size={24} />
               </div>
+
               <div>
-                <p className="label-text">Nombre Completo</p>
-                <p className="value-text value-text-large">
-                  {cliente.customer_first_name} {cliente.customer_last_name}
+                <p className="label-text">
+                  {cliente.organization_type === "Jurídica"
+                    ? "Razón Social"
+                    : "Cliente"}
                 </p>
+
+                <p className="value-text value-text-large">
+                  {cliente.customer_name}
+                </p>
+
+                {cliente.organization_type === "Jurídica" &&
+                  cliente.legal_representative && (
+                    <p
+                      className="value-text"
+                      style={{
+                        marginTop: "4px",
+                        color: "#6b7280",
+                        fontSize: "0.9rem"
+                      }}
+                    >
+                      <strong>Representante legal:</strong>{" "}
+                      {cliente.legal_representative}
+                    </p>
+                  )}
               </div>
             </div>
             
@@ -39,7 +61,9 @@ const CustomerDetail = ({ isOpen, onClose, cliente, onEdit }) => {
                 <p className="label-text">Documento</p>
               </div>
               <p className="value-text">
-                <span className="doc-type-tag">{cliente.customer_document_type}:</span> 
+                <span className="doc-type-tag">
+                  {cliente.customer_document_type}
+                </span>{" "}
                 {cliente.customer_document_number}
               </p>
             </div>
@@ -48,7 +72,7 @@ const CustomerDetail = ({ isOpen, onClose, cliente, onEdit }) => {
             <div>
               <div className="info-item-header">
                 <Briefcase size={16} color="#9ca3af" />
-                <p className="label-text">Tipo Cliente</p>
+                <p className="label-text">Tipo de Persona</p>
               </div>
               <p className="value-text">{cliente.organization_type || 'No especificado'}</p>
             </div>
@@ -90,6 +114,7 @@ const CustomerDetail = ({ isOpen, onClose, cliente, onEdit }) => {
                 {cliente.customer_status ? 'ACTIVO' : 'INACTIVO'}
               </span>
             </div>
+            
           </div>
 
           {/* Botones de Acción */}
