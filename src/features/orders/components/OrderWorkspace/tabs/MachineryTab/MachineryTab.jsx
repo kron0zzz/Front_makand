@@ -1,7 +1,7 @@
 import MachineCard from "./MachineCard";
 import "./MachineryTab.css";
 
-const MachineryTab = ({ order, onRegisterReturn}) => {
+const MachineryTab = ({ order, onRegisterReturn, onDeleteReturn }) => {
 
   if (!order?.details?.length) {
     return (
@@ -25,6 +25,7 @@ const MachineryTab = ({ order, onRegisterReturn}) => {
             key={detail.order_detail_id}
             detail={detail}
             onRegisterReturn={onRegisterReturn}
+            onDeleteReturn={onDeleteReturn}
           />
 
         ))}

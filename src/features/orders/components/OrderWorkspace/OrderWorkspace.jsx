@@ -20,6 +20,7 @@ const OrderWorkspace = ({ orderId, onBack }) => {
         error,
         cargarWorkspace,
         registrarDevolucion,
+        eliminarDevolucion,
         cerrarPedido,
         
         cuts,
@@ -119,6 +120,7 @@ const OrderWorkspace = ({ orderId, onBack }) => {
 
                         order={workspace}
                         onRegisterReturn={registrarDevolucion}
+                        onDeleteReturn={eliminarDevolucion}
 
                     />
 

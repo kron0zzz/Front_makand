@@ -1,11 +1,14 @@
-import { Pencil,Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { formatDate } from "../../../../../../shared/utils/dateUtils";
-
 import "./ReturnCard.css";
 
-const ReturnCard=({returnData})=>{
+const ReturnCard = ({ returnData, onDeleteReturn }) => {
 
-    return(
+    const handleDelete = () => {
+        onDeleteReturn(returnData.return_id);
+    };
+
+    return (
 
         <div className="return-card">
 
@@ -35,7 +38,7 @@ const ReturnCard=({returnData})=>{
 
                 </button>
 
-                <button>
+                <button onClick={handleDelete}>
 
                     <Trash2 size={16}/>
 

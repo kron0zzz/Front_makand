@@ -17,7 +17,7 @@ import ReturnCard from "./ReturnCard";
 
 import "./MachineCard.css";
 
-const MachineCard = ({ detail, onRegisterReturn }) => {
+const MachineCard = ({ detail, onRegisterReturn, onDeleteReturn }) => {
 
     const [open,setOpen]=useState(false);
     const [showReturnForm, setShowReturnForm] = useState(false);
@@ -242,6 +242,7 @@ const MachineCard = ({ detail, onRegisterReturn }) => {
                                 <ReturnCard
                                     key={ret.return_id}
                                     returnData={ret}
+                                    onDeleteReturn={(returnId) => onDeleteReturn(detail.order_id, returnId)}
                                 />
                             ))
                         }

@@ -153,13 +153,38 @@ export const useWorkspace = () => {
 
 
 
-    const eliminarDevolucion = async (orderId,returnId) => {
+     const eliminarDevolucion = async (orderId,returnId) => {
 
-        await deleteReturn(returnId);
+         if (!await showConfirm(
+             `¿Está seguro de eliminar esta devolución?
 
-        await cargarWorkspace(orderId);
+Esta acción no se puede deshacer.
 
-    };
+¿Desea continuar?`
+         )) return;
+
+         try {
+
+             await deleteReturn(returnId);
+             await cargarWorkspace(orderId);
+
+             return {
+                 success: true,
+                 message: "Devolución eliminada correctamente."
+             };
+
+         } catch (error) {
+
+             return {
+                 success: false,
+                 message:
+                     error.response?.data?.message ||
+                     "No fue posible eliminar la devolución."
+             };
+
+         }
+
+     };
 
 
 
