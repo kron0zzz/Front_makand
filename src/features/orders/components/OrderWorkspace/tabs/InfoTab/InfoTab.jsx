@@ -89,8 +89,7 @@ const InfoTab = ({ order, onCloseOrder}) => {
                         </div>
 
                         <p className="main-text">
-                            {order.customer_first_name}{" "}
-                            {order.customer_last_name}
+                            {order.customer_name}
                         </p>
 
                         <small>

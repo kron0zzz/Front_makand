@@ -32,7 +32,7 @@ const ProjectDetail = ({ isOpen, onClose, proyecto, onEdit }) => {
                 <p className="label-text">Cliente</p>
               </div>
               <p className="value-text">
-                {proyecto.customer_first_name} {proyecto.customer_last_name}
+                {proyecto.customer_name}
               </p>
             </div>
 

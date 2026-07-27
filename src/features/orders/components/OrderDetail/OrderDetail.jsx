@@ -163,9 +163,7 @@ const OrderDetail = ({
               </div>
 
               <p className="value-text">
-                {order.customer_first_name}
-                {" "}
-                {order.customer_last_name}
+                {order.customer_name}
               </p>
               <p className="value-text">
                 id: {order.customer_id}
