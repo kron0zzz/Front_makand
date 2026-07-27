@@ -48,7 +48,7 @@ aparte de hacer los ajustes de arriba, falta entonces el editar pedido y anular
 - melo 
 
 ### roles
-- al crear un usuario y seleccionar permisos, estos no se guardan, pero al editar un usuario si (el error está solo en el create)
+- al crear un usuario y seleccionar permisos, estos no se guardan, pero al editar un usuario si (el error está solo en el create) (ya quedó)
 
 ### subalquileres
 - todo melo
