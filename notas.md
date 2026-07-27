@@ -45,7 +45,7 @@ aparte de hacer los ajustes de arriba, falta entonces el editar pedido y anular
 - deberíamos distribuir mejor la vista de ver detalles
 
 ### facturas de compra
-- si hay un ver detalle, pero como puedo ver la imagen más de cerca? tal vez descargandola o abariendo una vista dedicada?
+- melo 
 
 ### roles
 - al crear un usuario y seleccionar permisos, estos no se guardan, pero al editar un usuario si (el error está solo en el create)

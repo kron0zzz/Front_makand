@@ -18,6 +18,9 @@ const OrderForm = ({
 
   const [projects, setProjects] = useState([]);
   const [machines, setMachines] = useState([]);
+  const [customers, setCustomers] = useState([]);
+
+  const [selectedCustomerId, setSelectedCustomerId] = useState("");
 
   // Estados para la búsqueda interactiva de proyectos
   const [projectSearch, setProjectSearch] = useState("");
@@ -64,6 +67,21 @@ const OrderForm = ({
     }
   }, []);
 
+  const cargarClientes = useCallback(async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:3000/api/customers", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const data = await response.json();
+      setCustomers(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -72,7 +90,8 @@ const OrderForm = ({
     const inicializarFormulario = async () => {
       await Promise.all([
         cargarProyectos(),
-        cargarMaquinas()
+        cargarMaquinas(),
+        cargarClientes()
       ]);
 
       if (!isActive) return;
@@ -83,6 +102,7 @@ const OrderForm = ({
         discount_amount: prev?.discount_amount || "0.00"
       }));
       setProjectSearch("");
+      setSelectedCustomerId("");
       setDetails([
         {
           machinery_id: "",
@@ -103,6 +123,7 @@ const OrderForm = ({
     isOpen,
     cargarProyectos,
     cargarMaquinas,
+    cargarClientes,
     setFormData
   ]);
 
@@ -116,9 +137,11 @@ const OrderForm = ({
     });
   };
 
-  const filteredProjects = projects.filter((project) =>
-    project.project_name.toLowerCase().includes(projectSearch.toLowerCase())
-  );
+  const filteredProjects = projects.filter((project) => {
+    const matchesSearch = project.project_name.toLowerCase().includes(projectSearch.toLowerCase());
+    const matchesCustomer = !selectedCustomerId || project.customer_id == selectedCustomerId;
+    return matchesSearch && matchesCustomer;
+  });
 
   const agregarDetalle = () => {
     setDetails([
@@ -296,11 +319,32 @@ const OrderForm = ({
                     </li>
                   )}
                 </ul>
-              )}
+               )}
             </div>
 
-            <div>
-              <label className="form-label">Fecha Inicio *</label>
+             <div>
+               <label className="form-label">Cliente</label>
+               <select
+                 className="form-input"
+                 value={selectedCustomerId}
+                 onChange={(e) => {
+                   const value = e.target.value;
+                   setSelectedCustomerId(value);
+                   setFormData({ ...formData, project_id: "" });
+                   setProjectSearch("");
+                 }}
+               >
+                 <option value="">Todos los clientes</option>
+                 {customers.map(c => (
+                   <option key={c.customer_id} value={c.customer_id}>
+                     {c.customer_name}
+                   </option>
+                 ))}
+               </select>
+             </div>
+
+             <div>
+               <label className="form-label">Fecha Inicio *</label>
               <input
                 type="date"
                 name="order_creation_date"
@@ -346,9 +390,16 @@ const OrderForm = ({
                   Number(machine.machinery_id) === Number(detail.machinery_id)
               );
 
-              const filteredMachines = machines.filter((machine) =>
-                machine.machinery_name.toLowerCase().includes((detail.machineSearch || "").toLowerCase())
-              );
+               const filteredMachines = machines.filter((machine) =>
+                 machine.machinery_name.toLowerCase().includes((detail.machineSearch || "").toLowerCase())
+               );
+
+               const selectedMachineIds = details
+                 .filter((d, i) => i !== index && d.machinery_id !== "")
+                 .map((d) => Number(d.machinery_id));
+
+               const isMachineSelected = (machineId) =>
+                 selectedMachineIds.includes(Number(machineId));
 
               return (
                 <div
@@ -400,31 +451,36 @@ const OrderForm = ({
                           boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
                         }}
                       >
-                        {filteredMachines.length > 0 ? (
-                          filteredMachines.map((machine) => (
-                            <li
-                              key={machine.machinery_id}
-                              style={{
-                                padding: "8px 12px",
-                                cursor: "pointer",
-                                borderBottom: "1px solid #f3f4f6"
-                              }}
-                              onClick={() => {
-                                actualizarDetalle(index, "machinery_id", machine.machinery_id);
-                                const newDetails = [...details];
-                                newDetails[index].machineSearch = machine.machinery_name;
-                                newDetails[index].showMachineDropdown = false;
-                                setDetails(newDetails);
-                              }}
-                            >
-                              {machine.machinery_name}
-                            </li>
-                          ))
-                        ) : (
-                          <li style={{ padding: "8px 12px", color: "#6b7280" }}>
-                            No se encontraron máquinas
-                          </li>
-                        )}
+                         {filteredMachines.length > 0 ? (
+                           filteredMachines.map((machine) => {
+                             const disabled = isMachineSelected(machine.machinery_id);
+                             return (
+                             <li
+                               key={machine.machinery_id}
+                               style={{
+                                 padding: "8px 12px",
+                                 cursor: disabled ? "not-allowed" : "pointer",
+                                 borderBottom: "1px solid #f3f4f6",
+                                 opacity: disabled ? 0.4 : 1
+                               }}
+                               onClick={() => {
+                                 if (disabled) return;
+                                 actualizarDetalle(index, "machinery_id", machine.machinery_id);
+                                 const newDetails = [...details];
+                                 newDetails[index].machineSearch = machine.machinery_name;
+                                 newDetails[index].showMachineDropdown = false;
+                                 setDetails(newDetails);
+                               }}
+                             >
+                               {machine.machinery_name}
+                             </li>
+                             );
+                           })
+                         ) : (
+                           <li style={{ padding: "8px 12px", color: "#6b7280" }}>
+                             No se encontraron máquinas
+                           </li>
+                         )}
                       </ul>
                     )}
                   </div>

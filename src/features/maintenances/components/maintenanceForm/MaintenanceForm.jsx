@@ -17,7 +17,7 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
         headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
       })
       .then(res => res.json())
-      .then(data => setMaquinarias(data))
+      .then(data => setMaquinarias(data.filter(m => m.is_motorized)))
       .catch(err => console.error("Error cargando máquinas:", err));
     }
   }, [isOpen]);
@@ -73,9 +73,9 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
             <div>
               <label className="form-label">Maquinaria *</label>
               <Select
-                options={maquinarias.map(m => ({ value: m.machinery_id, label: m.machinery_name }))}
+                options={maquinarias.map(m => ({ value: m.machinery_id, label: `#${m.machinery_id} - ${m.machinery_name}` }))}
                 value={maquinarias.find(m => m.machinery_id == formData.machinery_id) 
-                       ? { value: formData.machinery_id, label: maquinarias.find(m => m.machinery_id == formData.machinery_id).machinery_name } 
+                       ? { value: formData.machinery_id, label: `#${maquinarias.find(m => m.machinery_id == formData.machinery_id).machinery_id} - ${maquinarias.find(m => m.machinery_id == formData.machinery_id).machinery_name}` } 
                        : null}
                 onChange={(opt) => setFormData({ ...formData, machinery_id: opt.value })}
                 placeholder="Selecciona o busca..."
