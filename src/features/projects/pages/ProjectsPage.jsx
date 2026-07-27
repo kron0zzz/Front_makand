@@ -147,7 +147,7 @@ const ProjectsPage = () => {
                 <tr key={proyecto.project_id}>
                   <td>#{proyecto.project_id}</td>
                   <td>{proyecto.project_name}</td>
-                  <td>{proyecto.customer_first_name} {proyecto.customer_last_name}</td>
+                  <td>{proyecto.customer_name}</td>
                   <td>
                     <label className="switch">
                       <input 

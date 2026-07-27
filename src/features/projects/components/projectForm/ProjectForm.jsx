@@ -132,7 +132,7 @@ const ProjectForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
               <select name="customer_id" className="form-input" value={formData.customer_id || ''} onChange={handleChange} required>
                 <option value="">Seleccione un cliente</option>
                 {customers.map(c => (
-                  <option key={c.customer_id} value={c.customer_id}>{c.customer_first_name} {c.customer_last_name}</option>
+                  <option key={c.customer_id} value={c.customer_id}>{c.customer_name}</option>
                 ))}
               </select>
             </div>
