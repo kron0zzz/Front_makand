@@ -254,6 +254,7 @@ Esta acción no se puede deshacer.
     const registrarAbono = async (orderId, data) => {
         await createPayment(data);
         await refreshPaymentsSilent(orderId);
+        await refreshWorkspaceSilent(orderId);
     };
 
 

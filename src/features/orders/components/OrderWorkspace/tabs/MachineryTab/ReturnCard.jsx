@@ -1,11 +1,18 @@
 import { Pencil, Trash2 } from "lucide-react";
 import { formatDate } from "../../../../../../shared/utils/dateUtils";
+import { useAlertModal } from "../../../../../../shared/alertModal";
 import "./ReturnCard.css";
 
 const ReturnCard = ({ returnData, onDeleteReturn }) => {
 
-    const handleDelete = () => {
-        onDeleteReturn(returnData.return_id);
+    const { showAlert } = useAlertModal();
+
+    const handleDelete = async () => {
+        const result = await onDeleteReturn(returnData.return_id);
+
+        if (result && !result.success) {
+            await showAlert(result.message);
+        }
     };
 
     return (
