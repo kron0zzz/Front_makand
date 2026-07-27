@@ -102,6 +102,42 @@
     padding-top: 20px;
 }
 
+.machinery-row {
+    margin-bottom: 40px;
+}
+
+.machinery-fields-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.machinery-field-machine {
+    flex: 5;
+    position: relative;
+}
+
+.machinery-field-quantity {
+    flex: 2;
+}
+
+.machinery-field-price {
+    flex: 2;
+}
+
+.machinery-field-delete {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 4px;
+    margin-top:20px;
+}
+
+.machinery-field-message {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
 .btn-cancel {
     padding: 10px 24px;
     border-radius: 8px;

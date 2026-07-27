@@ -31,11 +31,12 @@ const OrderForm = ({
       machinery_id: "",
       quantity_to_dispatch: 1,
       rental_unit_price: "",
-      // Estados de búsqueda individuales para cada máquina en los detalles
       machineSearch: "",
       showMachineDropdown: false
     }
   ]);
+
+  const [discountDisplay, setDiscountDisplay] = useState("");
 
   const cargarProyectos = useCallback(async () => {
     try {
@@ -99,8 +100,11 @@ const OrderForm = ({
       setFormData((prev) => ({
         ...prev,
         order_creation_date: new Date().toISOString().split("T")[0],
-        discount_amount: prev?.discount_amount || "0.00"
+        discount_amount: prev?.discount_amount || "0"
       }));
+      const initialDiscount = formData.discount_amount || "0";
+      const rawDiscount = initialDiscount.replace(/\D/g, "");
+      setDiscountDisplay(rawDiscount === "" ? "" : Number(rawDiscount).toLocaleString("es-CO"));
       setProjectSearch("");
       setSelectedCustomerId("");
       setDetails([
@@ -135,6 +139,15 @@ const OrderForm = ({
       ...formData,
       [name]: value
     });
+  };
+
+  const handleDiscountChange = (e) => {
+    const raw = e.target.value.replace(/\D/g, "");
+    if (raw === "") {
+      setDiscountDisplay("");
+      return;
+    }
+    setDiscountDisplay(Number(raw).toLocaleString("es-CO"));
   };
 
   const filteredProjects = projects.filter((project) => {
@@ -224,7 +237,7 @@ const OrderForm = ({
       const payload = {
         project_id: Number(formData.project_id),
         order_creation_date: formData.order_creation_date,
-        discount_amount: formData.discount_amount || "0.00",
+         discount_amount: discountDisplay === "" ? "0" : Number(discountDisplay.replace(/\./g, "")).toString(),
         order_description: formData.order_description,
         details: details.map((item) => ({
           machinery_id: Number(item.machinery_id),
@@ -254,6 +267,29 @@ const OrderForm = ({
 
         <form onSubmit={handleSubmit} className="form-body">
           <div className="form-grid">
+
+            <div>
+               <label className="form-label">Cliente</label>
+               <select
+                 className="form-input"
+                 value={selectedCustomerId}
+                 onChange={(e) => {
+                   const value = e.target.value;
+                   setSelectedCustomerId(value);
+                   setFormData({ ...formData, project_id: "" });
+                   setProjectSearch("");
+                 }}
+               >
+                 <option value="">Todos los clientes</option>
+                 {customers.map(c => (
+                   <option key={c.customer_id} value={c.customer_id}>
+                     {c.customer_name}
+                   </option>
+                 ))}
+               </select>
+             </div>
+
+
             {/* Input con autocompletado para Proyecto */}
             <div style={{ position: "relative" }}>
               <label className="form-label">Proyecto *</label>
@@ -273,7 +309,7 @@ const OrderForm = ({
                 required={!formData.project_id}
               />
 
-              {showProjectDropdown && projectSearch.trim() !== "" && (
+              {showProjectDropdown && (
                 <ul
                   style={{
                     position: "absolute",
@@ -322,26 +358,7 @@ const OrderForm = ({
                )}
             </div>
 
-             <div>
-               <label className="form-label">Cliente</label>
-               <select
-                 className="form-input"
-                 value={selectedCustomerId}
-                 onChange={(e) => {
-                   const value = e.target.value;
-                   setSelectedCustomerId(value);
-                   setFormData({ ...formData, project_id: "" });
-                   setProjectSearch("");
-                 }}
-               >
-                 <option value="">Todos los clientes</option>
-                 {customers.map(c => (
-                   <option key={c.customer_id} value={c.customer_id}>
-                     {c.customer_name}
-                   </option>
-                 ))}
-               </select>
-             </div>
+
 
              <div>
                <label className="form-label">Fecha Inicio *</label>
@@ -355,17 +372,17 @@ const OrderForm = ({
               />
             </div>
 
-            <div>
-              <label className="form-label">Descuento</label>
-              <input
-                type="number"
-                step="0.01"
-                name="discount_amount"
-                className="form-input"
-                value={formData.discount_amount || "0.00"}
-                onChange={handleChange}
-              />
-            </div>
+             <div>
+               <label className="form-label">Descuento (COP)</label>
+               <input
+                 type="text"
+                 name="discount_amount"
+                 className="form-input"
+                 inputMode="numeric"
+                 value={discountDisplay}
+                 onChange={handleDiscountChange}
+               />
+             </div>
 
             <div className="form-full-width">
               <label className="form-label">Descripción</label>
@@ -381,7 +398,7 @@ const OrderForm = ({
 
           <hr />
 
-          <div style={{ marginTop: "20px" }}>
+          <div style={{ marginTop: "12px" }}>
             <h3>Maquinaria</h3>
 
             {details.map((detail, index) => {
@@ -404,154 +421,160 @@ const OrderForm = ({
               return (
                 <div
                   key={index}
-                  className="form-grid"
-                  style={{ marginBottom: "20px" }}
+                  className="machinery-row"
                 >
-                  {/* Input con autocompletado para Máquina */}
-                  <div style={{ position: "relative" }}>
-                    <label className="form-label">Máquina *</label>
-                    <input
-                      type="text"
-                      className="form-input"
-                      placeholder="Escribe para buscar máquina..."
-                      value={detail.machineSearch}
-                      onChange={(e) => {
-                        const newDetails = [...details];
-                        newDetails[index].machineSearch = e.target.value;
-                        newDetails[index].showMachineDropdown = true;
-                        if (e.target.value === "") {
-                          newDetails[index].machinery_id = "";
-                        }
-                        setDetails(newDetails);
-                      }}
-                      onFocus={() => {
-                        const newDetails = [...details];
-                        newDetails[index].showMachineDropdown = true;
-                        setDetails(newDetails);
-                      }}
-                      required={!detail.machinery_id}
-                    />
-
-                    {detail.showMachineDropdown && (detail.machineSearch || "").trim() !== "" && (
-                      <ul
-                        style={{
-                          position: "absolute",
-                          top: "100%",
-                          left: 0,
-                          right: 0,
-                          background: "white",
-                          border: "1px solid #d1d5db",
-                          borderRadius: "0.375rem",
-                          maxHeight: "150px",
-                          overflowY: "auto",
-                          zIndex: 50,
-                          listStyle: "none",
-                          padding: 0,
-                          margin: "4px 0 0 0",
-                          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
+                  <div className="machinery-fields-row">
+                    <div className="machinery-field-machine">
+                      <label className="form-label">Máquina *</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        placeholder="Escribe para buscar máquina..."
+                        value={detail.machineSearch}
+                        onChange={(e) => {
+                          const newDetails = [...details];
+                          newDetails[index].machineSearch = e.target.value;
+                          newDetails[index].showMachineDropdown = true;
+                          if (e.target.value === "") {
+                            newDetails[index].machinery_id = "";
+                          }
+                          setDetails(newDetails);
                         }}
-                      >
-                         {filteredMachines.length > 0 ? (
-                           filteredMachines.map((machine) => {
-                             const disabled = isMachineSelected(machine.machinery_id);
-                             return (
-                             <li
-                               key={machine.machinery_id}
-                               style={{
-                                 padding: "8px 12px",
-                                 cursor: disabled ? "not-allowed" : "pointer",
-                                 borderBottom: "1px solid #f3f4f6",
-                                 opacity: disabled ? 0.4 : 1
-                               }}
-                               onClick={() => {
-                                 if (disabled) return;
-                                 actualizarDetalle(index, "machinery_id", machine.machinery_id);
-                                 const newDetails = [...details];
-                                 newDetails[index].machineSearch = machine.machinery_name;
-                                 newDetails[index].showMachineDropdown = false;
-                                 setDetails(newDetails);
-                               }}
-                             >
-                               {machine.machinery_name}
+                        onFocus={() => {
+                          const newDetails = [...details];
+                          newDetails[index].showMachineDropdown = true;
+                          setDetails(newDetails);
+                        }}
+                        required={!detail.machinery_id}
+                      />
+
+                      {detail.showMachineDropdown && (
+                        <ul
+                          style={{
+                            position: "absolute",
+                            top: "100%",
+                            left: 0,
+                            right: 0,
+                            background: "white",
+                            border: "1px solid #d1d5db",
+                            borderRadius: "0.375rem",
+                            maxHeight: "150px",
+                            overflowY: "auto",
+                            zIndex: 50,
+                            listStyle: "none",
+                            padding: 0,
+                            margin: "4px 0 0 0",
+                            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
+                          }}
+                        >
+                           {filteredMachines.length > 0 ? (
+                             filteredMachines.map((machine) => {
+                               const disabled = isMachineSelected(machine.machinery_id);
+                               return (
+                               <li
+                                 key={machine.machinery_id}
+                                 style={{
+                                   padding: "8px 12px",
+                                   cursor: disabled ? "not-allowed" : "pointer",
+                                   borderBottom: "1px solid #f3f4f6",
+                                   opacity: disabled ? 0.4 : 1
+                                 }}
+                                 onClick={() => {
+                                   if (disabled) return;
+                                   actualizarDetalle(index, "machinery_id", machine.machinery_id);
+                                   const newDetails = [...details];
+                                   newDetails[index].machineSearch = machine.machinery_name;
+                                   newDetails[index].showMachineDropdown = false;
+                                   setDetails(newDetails);
+                                 }}
+                               >
+                                 {machine.machinery_name}
+                               </li>
+                               );
+                             })
+                           ) : (
+                             <li style={{ padding: "8px 12px", color: "#6b7280" }}>
+                               No se encontraron máquinas
                              </li>
-                             );
-                           })
-                         ) : (
-                           <li style={{ padding: "8px 12px", color: "#6b7280" }}>
-                             No se encontraron máquinas
-                           </li>
-                         )}
-                      </ul>
-                    )}
+                           )}
+                        </ul>
+                      )}
+                    </div>
+
+                    <div className="machinery-field-quantity">
+                      <label className="form-label">Cantidad</label>
+                      <input
+                        type="number"
+                        min="1"
+                        max={!maquinaSeleccionada?.is_motorized ? maquinaSeleccionada?.stock_quantity : undefined}
+                        className="form-input"
+                        disabled={maquinaSeleccionada?.is_motorized}
+                        value={detail.quantity_to_dispatch}
+                        onChange={(e) =>
+                          actualizarDetalle(
+                            index,
+                            "quantity_to_dispatch",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+
+                    <div className="machinery-field-price">
+                      <label className="form-label">Precio</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        className="form-input"
+                        value={detail.rental_unit_price}
+                        onChange={(e) =>
+                          actualizarDetalle(
+                            index,
+                            "rental_unit_price",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+
+                    <div className="machinery-field-delete">
+                      <button
+                        type="button"
+                        className="btn-cancel"
+                        onClick={() => eliminarDetalle(index)}
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
                   </div>
 
-                  <div>
-                    <label className="form-label">Cantidad</label>
-                    <input
-                      type="number"
-                      min="1"
-                      max={!maquinaSeleccionada?.is_motorized ? maquinaSeleccionada?.stock_quantity : undefined}
-                      className="form-input"
-                      disabled={maquinaSeleccionada?.is_motorized}
-                      value={detail.quantity_to_dispatch}
-                      onChange={(e) =>
-                        actualizarDetalle(
-                          index,
-                          "quantity_to_dispatch",
-                          e.target.value
-                        )
-                      }
-                    />
+                  {maquinaSeleccionada && (
+                    <div className="machinery-field-message">
+                      {maquinaSeleccionada.is_motorized ? (
+                        <small style={{ color: "#6b7280" }}>
+                          La maquinaria motorizada se alquila por unidad.
+                        </small>
+                      ) : (
+                        <small style={{ color: "#6b7280" }}>
+                          Disponibles: {maquinaSeleccionada.stock_quantity}
+                        </small>
+                      )}
+                    </div>
+                  )}
 
-                    {maquinaSeleccionada?.is_motorized ? (
-                      <small style={{ color: "#6b7280" }}>
-                        La maquinaria motorizada se alquila por unidad.
-                      </small>
-                    ) : maquinaSeleccionada ? (
-                      <small style={{ color: "#6b7280" }}>
-                        Disponibles: {maquinaSeleccionada.stock_quantity}
-                      </small>
-                    ) : null}
-                  </div>
-
-                  <div>
-                    <label className="form-label">Precio</label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      className="form-input"
-                      value={detail.rental_unit_price}
-                      onChange={(e) =>
-                        actualizarDetalle(
-                          index,
-                          "rental_unit_price",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-
-                  <div style={{ display: "flex", alignItems: "end" }}>
+                  {index === details.length - 1 && (
                     <button
                       type="button"
-                      className="btn-cancel"
-                      onClick={() => eliminarDetalle(index)}
+                      className="btn-secondary"
+                      onClick={agregarDetalle}
                     >
-                      <Trash2 size={18} />
+                      <Plus size={18} />
+                      Agregar
                     </button>
-                  </div>
+                  )}
                 </div>
               );
             })}
-
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={agregarDetalle}
-            >
-              <Plus size={18} />
-              Agregar Máquina
-            </button>
           </div>
 
           <div className="form-footer">
