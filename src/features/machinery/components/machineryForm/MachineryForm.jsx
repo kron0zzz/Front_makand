@@ -5,7 +5,7 @@ import { useAlertModal } from "../../../../shared/alertModal";
 
 // 🛠️ ACTUALIZADO: Ahora recibe crearMaquinaria y actualizarMaquinaria por props desde el padre
 const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crearMaquinaria, actualizarMaquinaria }) => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showAlert } = useAlertModal();
 
   const [categories, setCategories] = useState([]);
   const [statuses, setStatuses] = useState([]);
@@ -112,17 +112,13 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crea
     setErrorForm('');
     
     const dataToSend = {
-      status_id: parseInt(formData.status_id),
       category_id: parseInt(formData.category_id),
       machinery_name: formData.machinery_name,
       machinery_description: formData.machinery_description || '',
       sale_price: limpiarPrecioFormato(formData.sale_price),
       daily_rental_price: limpiarPrecioFormato(formData.daily_rental_price),
-      stock_quantity: parseInt(formData.stock_quantity),
-      next_revision_date: formData.next_revision_date || null,
       weight_kg: formData.weight_kg ? parseFloat(formData.weight_kg) : null,
-      is_motorized: !!formData.is_motorized,
-      is_owned: formData.is_owned ?? true
+      is_motorized: !!formData.is_motorized
     };
 
     const exito = isEditing 
@@ -200,13 +196,12 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crea
             </div>
 
             <div>
-              <label className="form-label">Estado de la Máquina *</label>
+              <label className="form-label">Estado de la Máquina</label>
               <select 
                 name="status_id" 
-                className="form-input"
+                className="form-input form-input-disabled"
                 value={formData.status_id ? formData.status_id.toString() : ''} 
-                onChange={handleChange}
-                required
+                disabled
               >
                 <option value="">Seleccione un estado</option>
                 {statuses.map((stat) => (
@@ -215,20 +210,20 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crea
                   </option>
                 ))}
               </select>
+              <small style={{ color: '#6b7280', fontSize: '12px' }}>Gestionado desde el inventario de stock</small>
             </div>
 
             <div>
-              <label className="form-label">Cantidad en Stock (Disponibles) *</label>
+              <label className="form-label">Cantidad en Stock (Disponibles)</label>
               <input 
                 name="stock_quantity" 
                 type="number" 
                 min="0"
-                className={`form-input ${formData.is_motorized ? 'form-input-disabled' : ''}`} 
+                className="form-input form-input-disabled" 
                 value={formData.stock_quantity ?? ''} 
-                onChange={handleChange} 
-                required 
-                disabled={!!formData.is_motorized} 
+                disabled 
               />
+              <small style={{ color: '#6b7280', fontSize: '12px' }}>Gestionado desde el inventario de stock</small>
             </div>
 
             <div>
@@ -273,10 +268,11 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crea
               <input 
                 name="next_revision_date" 
                 type="date" 
-                className="form-input" 
+                className="form-input form-input-disabled" 
                 value={formData.next_revision_date || ''} 
-                onChange={handleChange} 
+                disabled 
               />
+              <small style={{ color: '#6b7280', fontSize: '12px' }}>Gestionado desde el inventario de stock</small>
             </div>
 
             <div className="checkbox-field-container" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '25px' }}>
@@ -296,9 +292,10 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crea
                 type="checkbox" 
                 id="is_owned"
                 checked={formData.is_owned ?? true} 
-                onChange={handleChange} 
+                disabled 
               />
-              <label htmlFor="is_owned" className="form-label" style={{ margin: 0, cursor: 'pointer' }}>¿Es Propiedad de la Empresa?</label>
+              <label htmlFor="is_owned" className="form-label" style={{ margin: 0, cursor: 'not-allowed', opacity: 0.7 }}>¿Es Propiedad de la Empresa?</label>
+              <small style={{ color: '#6b7280', fontSize: '12px', marginLeft: '8px' }}>Gestionado desde el inventario de stock</small>
             </div>
 
             <div className="form-full-width">

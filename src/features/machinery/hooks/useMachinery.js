@@ -19,6 +19,10 @@ export const useMachinery = () => {
       total: 0
   });
 
+  const [stockList, setStockList] = useState([]);
+  const [stockPagination, setStockPagination] = useState({ page: 1, totalPages: 1, total: 0 });
+  const [loadingStock, setLoadingStock] = useState(false);
+
   const cargarMaquinarias = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -53,12 +57,34 @@ export const useMachinery = () => {
     setPage(1);
   }, []);
 
+  const cargarStockPorMaquinaria = useCallback(async (machineryId, machineryName) => {
+    setLoadingStock(true);
+    try {
+      const datos = await machineryService.obtenerStockPorMaquinaria(machineryId, machineryName);
+      setStockList(datos.data);
+      setStockPagination(datos.pagination);
+    } catch (err) {
+      await showAlert(err.message || 'Error al cargar el stock de la maquinaria');
+    } finally {
+      setLoadingStock(false);
+    }
+  }, [showAlert]);
+
+  const cambiarPaginaStock = useCallback((nuevaPagina) => {
+    setStockPagination((prev) => {
+      if (nuevaPagina >= 1 && nuevaPagina <= prev.totalPages) {
+        return { ...prev, page: nuevaPagina };
+      }
+      return prev;
+    });
+  }, []);
+
   const eliminarMaquinaria = async (id) => {
     if (!await showConfirm('¿Estás seguro de que deseas eliminar esta maquinaria?')) return;
     try {
       await machineryService.eliminar(id);
       setMachineries(prev => prev.filter(item => item.machinery_id !== id));
-    } catch (err) {
+    } catch {
       await showAlert("No se pudo eliminar la maquinaria.");
     }
   };
@@ -101,6 +127,12 @@ export const useMachinery = () => {
     page,
     cambiarPagina,
     cambiarBusqueda,
-    pagination
+    pagination,
+
+    stockList,
+    stockPagination,
+    loadingStock,
+    cargarStockPorMaquinaria,
+    cambiarPaginaStock
   };
 };

@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { X, Plus, Trash2 } from "lucide-react";
 
 import { useOrders } from "../../hooks/useOrders";
 
 import "./OrderForm.css";
+import "./StockSelectionModal.css";
 import { useAlertModal } from "../../../../shared/alertModal";
+import StockSelectionModal from "./StockSelectionModal";
 
 const OrderForm = ({
   isOpen,
@@ -12,19 +14,36 @@ const OrderForm = ({
   formData,
   setFormData
 }) => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showAlert } = useAlertModal();
 
   const { crearPedidoCompleto } = useOrders();
 
   const [projects, setProjects] = useState([]);
   const [machines, setMachines] = useState([]);
   const [customers, setCustomers] = useState([]);
+  const [allStocks, setAllStocks] = useState([]);
 
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
 
-  // Estados para la búsqueda interactiva de proyectos
   const [projectSearch, setProjectSearch] = useState("");
   const [showProjectDropdown, setShowProjectDropdown] = useState(false);
+
+  const [discountDisplay, setDiscountDisplay] = useState("");
+  const discountInitialized = useRef(false);
+  const initialDiscountRef = useRef("");
+
+  useLayoutEffect(() => {
+    if (isOpen && !discountInitialized.current) {
+      initialDiscountRef.current = formData.discount_amount || "0";
+      const rawDiscount = initialDiscountRef.current.replace(/\D/g, "");
+      setDiscountDisplay(rawDiscount === "" ? "" : Number(rawDiscount).toLocaleString("es-CO"));
+      discountInitialized.current = true;
+    }
+    if (!isOpen) {
+      discountInitialized.current = false;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   const [details, setDetails] = useState([
     {
@@ -32,11 +51,16 @@ const OrderForm = ({
       quantity_to_dispatch: 1,
       rental_unit_price: "",
       machineSearch: "",
-      showMachineDropdown: false
+      showMachineDropdown: false,
+      isMotorized: false,
+      selectedStocks: [],
+      stock_id: null
     }
   ]);
 
-  const [discountDisplay, setDiscountDisplay] = useState("");
+  const [stockModalOpen, setStockModalOpen] = useState(false);
+  const [stockModalIndex, setStockModalIndex] = useState(null);
+  const [stockModalMachine, setStockModalMachine] = useState(null);
 
   const cargarProyectos = useCallback(async () => {
     try {
@@ -56,13 +80,13 @@ const OrderForm = ({
   const cargarMaquinas = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:3000/api/machines", {
+      const response = await fetch("http://localhost:3000/api/machines/table?page=1&limit=1000&search=", {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
       const data = await response.json();
-      setMachines(data);
+      setMachines(data.data || []);
     } catch (error) {
       console.error(error);
     }
@@ -83,6 +107,46 @@ const OrderForm = ({
     }
   }, []);
 
+  const cargarStocks = useCallback(async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        "http://localhost:3000/api/stock/table?page=1&limit=1000&search=",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      const data = await response.json();
+      setAllStocks(data.data || []);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  const openStockModal = (index, machine) => {
+    setStockModalIndex(index);
+    setStockModalMachine(machine);
+    setStockModalOpen(true);
+  };
+
+  const handleStockConfirm = (selectedStocks) => {
+    if (stockModalIndex === null) return;
+
+    const nuevosDetalles = [...details];
+    nuevosDetalles[stockModalIndex].selectedStocks = selectedStocks;
+    nuevosDetalles[stockModalIndex].quantity_to_dispatch = selectedStocks.length;
+    
+    if (selectedStocks.length > 0) {
+      nuevosDetalles[stockModalIndex].stock_id = selectedStocks[0].stock_id;
+    } else {
+      nuevosDetalles[stockModalIndex].stock_id = null;
+    }
+    
+    setDetails(nuevosDetalles);
+  };
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -92,7 +156,8 @@ const OrderForm = ({
       await Promise.all([
         cargarProyectos(),
         cargarMaquinas(),
-        cargarClientes()
+        cargarClientes(),
+        cargarStocks()
       ]);
 
       if (!isActive) return;
@@ -102,9 +167,6 @@ const OrderForm = ({
         order_creation_date: new Date().toISOString().split("T")[0],
         discount_amount: prev?.discount_amount || "0"
       }));
-      const initialDiscount = formData.discount_amount || "0";
-      const rawDiscount = initialDiscount.replace(/\D/g, "");
-      setDiscountDisplay(rawDiscount === "" ? "" : Number(rawDiscount).toLocaleString("es-CO"));
       setProjectSearch("");
       setSelectedCustomerId("");
       setDetails([
@@ -113,7 +175,10 @@ const OrderForm = ({
           quantity_to_dispatch: 1,
           rental_unit_price: "",
           machineSearch: "",
-          showMachineDropdown: false
+          showMachineDropdown: false,
+          isMotorized: false,
+          selectedStocks: [],
+          stock_id: null
         }
       ]);
     };
@@ -128,6 +193,7 @@ const OrderForm = ({
     cargarProyectos,
     cargarMaquinas,
     cargarClientes,
+    cargarStocks,
     setFormData
   ]);
 
@@ -164,7 +230,10 @@ const OrderForm = ({
         quantity_to_dispatch: 1,
         rental_unit_price: "",
         machineSearch: "",
-        showMachineDropdown: false
+        showMachineDropdown: false,
+        isMotorized: false,
+        selectedStocks: [],
+        stock_id: null
       }
     ]);
   };
@@ -175,46 +244,9 @@ const OrderForm = ({
     setDetails(nuevosDetalles);
   };
 
-  const actualizarDetalle = async (index, campo, valor) => {
+  const actualizarDetalle = (index, campo, valor) => {
     const nuevosDetalles = [...details];
-
-    if (campo === "quantity_to_dispatch") {
-      const maquinaActual = machines.find(
-        (m) => Number(m.machinery_id) === Number(nuevosDetalles[index].machinery_id)
-      );
-
-      if (maquinaActual && !maquinaActual.is_motorized) {
-        const stockDisponible = Number(maquinaActual.stock_quantity) || 0;
-        const cantidadIngresada = Number(valor) || 0;
-
-        if (cantidadIngresada > stockDisponible) {
-          await showAlert(`La cantidad no puede superar el stock disponible (${stockDisponible})`);
-          return;
-        }
-      }
-    }
-
     nuevosDetalles[index][campo] = valor;
-
-    if (campo === "machinery_id") {
-      const maquina = machines.find(
-        (m) => Number(m.machinery_id) === Number(valor)
-      );
-
-      if (maquina) {
-        nuevosDetalles[index].rental_unit_price = maquina.daily_rental_price;
-
-        if (maquina.is_motorized) {
-          nuevosDetalles[index].quantity_to_dispatch = 1;
-        } else {
-          const stock = Number(maquina.stock_quantity) || 0;
-          if (stock > 0 && Number(nuevosDetalles[index].quantity_to_dispatch) > stock) {
-            nuevosDetalles[index].quantity_to_dispatch = stock;
-          }
-        }
-      }
-    }
-
     setDetails(nuevosDetalles);
   };
 
@@ -223,27 +255,74 @@ const OrderForm = ({
 
     for (const item of details) {
       const maquina = machines.find((m) => Number(m.machinery_id) === Number(item.machinery_id));
-      if (maquina && !maquina.is_motorized) {
-        const stock = Number(maquina.stock_quantity) || 0;
+      if (!maquina) {
+        await showAlert("Seleccione una máquina válida para cada detalle.");
+        return;
+      }
+
+      if (maquina.is_motorized) {
+        if (!item.selectedStocks || item.selectedStocks.length === 0) {
+          await showAlert(`Seleccione al menos un equipo disponible para "${maquina.machinery_name}".`);
+          return;
+        }
+        if (!item.rental_unit_price || Number(item.rental_unit_price) <= 0) {
+          await showAlert(`Ingrese un precio válido para "${maquina.machinery_name}".`);
+          return;
+        }
+      } else {
+        if (!item.stock_id) {
+          await showAlert(`No hay stock disponible para la máquina "${maquina.machinery_name}".`);
+          return;
+        }
         const cantidad = Number(item.quantity_to_dispatch) || 0;
-        if (cantidad > stock) {
-          await showAlert(`La cantidad para la máquina "${maquina.machinery_name}" supera el stock disponible (${stock}).`);
+        if (cantidad <= 0) {
+          await showAlert(`Ingrese una cantidad válida para "${maquina.machinery_name}".`);
+          return;
+        }
+        const stockDisponible = Number(maquina.available_stock) || Number(maquina.total_stock) || 0;
+        if (cantidad > stockDisponible) {
+          await showAlert(`La cantidad para "${maquina.machinery_name}" supera el stock disponible (${stockDisponible}).`);
+          return;
+        }
+        if (!item.rental_unit_price || Number(item.rental_unit_price) <= 0) {
+          await showAlert(`Ingrese un precio válido para "${maquina.machinery_name}".`);
           return;
         }
       }
     }
 
     try {
+      const detailsPayload = [];
+
+      details.forEach((item) => {
+        const maquina = machines.find((m) => Number(m.machinery_id) === Number(item.machinery_id));
+        if (!maquina) return;
+
+        if (maquina.is_motorized) {
+          item.selectedStocks.forEach((stock) => {
+            detailsPayload.push({
+              stock_id: stock.stock_id,
+              quantity_to_dispatch: 1,
+              rental_unit_price: Number(item.rental_unit_price),
+              machinery_rental_status: true
+            });
+          });
+        } else {
+          detailsPayload.push({
+            stock_id: item.stock_id,
+            quantity_to_dispatch: Number(item.quantity_to_dispatch),
+            rental_unit_price: Number(item.rental_unit_price),
+            machinery_rental_status: true
+          });
+        }
+      });
+
       const payload = {
         project_id: Number(formData.project_id),
         order_creation_date: formData.order_creation_date,
-         discount_amount: discountDisplay === "" ? "0" : Number(discountDisplay.replace(/\./g, "")).toString(),
+        discount_amount: discountDisplay === "" ? "0" : Number(discountDisplay.replace(/\./g, "")).toString(),
         order_description: formData.order_description,
-        details: details.map((item) => ({
-          machinery_id: Number(item.machinery_id),
-          quantity_to_dispatch: Number(item.quantity_to_dispatch),
-          rental_unit_price: item.rental_unit_price
-        }))
+        details: detailsPayload
       };
 
       await crearPedidoCompleto(payload);
@@ -267,7 +346,6 @@ const OrderForm = ({
 
         <form onSubmit={handleSubmit} className="form-body">
           <div className="form-grid">
-
             <div>
                <label className="form-label">Cliente</label>
                <select
@@ -289,8 +367,6 @@ const OrderForm = ({
                </select>
              </div>
 
-
-            {/* Input con autocompletado para Proyecto */}
             <div style={{ position: "relative" }}>
               <label className="form-label">Proyecto *</label>
               <input
@@ -358,8 +434,6 @@ const OrderForm = ({
                )}
             </div>
 
-
-
              <div>
                <label className="form-label">Fecha Inicio *</label>
               <input
@@ -407,24 +481,20 @@ const OrderForm = ({
                   Number(machine.machinery_id) === Number(detail.machinery_id)
               );
 
-               const filteredMachines = machines.filter((machine) =>
-                 machine.machinery_name.toLowerCase().includes((detail.machineSearch || "").toLowerCase())
-               );
-
-               const selectedMachineIds = details
-                 .filter((d, i) => i !== index && d.machinery_id !== "")
-                 .map((d) => Number(d.machinery_id));
-
-               const isMachineSelected = (machineId) =>
-                 selectedMachineIds.includes(Number(machineId));
+               const filteredMachines = machines.filter((machine) => {
+                 const matchesSearch = machine.machinery_name.toLowerCase().includes((detail.machineSearch || "").toLowerCase());
+                 const alreadySelected = details.some((d, i) => i !== index && d.machinery_id === String(machine.machinery_id));
+                 return matchesSearch && !alreadySelected;
+               });
 
               return (
                 <div
                   key={index}
                   className="machinery-row"
+                  style={{ padding: "16px", border: "1px solid #e5e7eb", borderRadius: "12px", marginBottom: "16px" }}
                 >
                   <div className="machinery-fields-row">
-                    <div className="machinery-field-machine">
+                    <div className="machinery-field-machine" style={{ position: "relative" }}>
                       <label className="form-label">Máquina *</label>
                       <input
                         type="text"
@@ -435,9 +505,14 @@ const OrderForm = ({
                           const newDetails = [...details];
                           newDetails[index].machineSearch = e.target.value;
                           newDetails[index].showMachineDropdown = true;
-                          if (e.target.value === "") {
-                            newDetails[index].machinery_id = "";
-                          }
+if (e.target.value === "") {
+                             newDetails[index].machinery_id = "";
+                             newDetails[index].isMotorized = false;
+                             newDetails[index].selectedStocks = [];
+                             newDetails[index].stock_id = null;
+                             newDetails[index].rental_unit_price = "";
+                             newDetails[index].quantity_to_dispatch = 1;
+                           }
                           setDetails(newDetails);
                         }}
                         onFocus={() => {
@@ -468,30 +543,38 @@ const OrderForm = ({
                           }}
                         >
                            {filteredMachines.length > 0 ? (
-                             filteredMachines.map((machine) => {
-                               const disabled = isMachineSelected(machine.machinery_id);
-                               return (
+                             filteredMachines.map((machine) => (
                                <li
                                  key={machine.machinery_id}
                                  style={{
                                    padding: "8px 12px",
-                                   cursor: disabled ? "not-allowed" : "pointer",
-                                   borderBottom: "1px solid #f3f4f6",
-                                   opacity: disabled ? 0.4 : 1
+                                   cursor: "pointer",
+                                   borderBottom: "1px solid #f3f4f6"
                                  }}
-                                 onClick={() => {
-                                   if (disabled) return;
-                                   actualizarDetalle(index, "machinery_id", machine.machinery_id);
-                                   const newDetails = [...details];
-                                   newDetails[index].machineSearch = machine.machinery_name;
-                                   newDetails[index].showMachineDropdown = false;
-                                   setDetails(newDetails);
-                                 }}
+onClick={() => {
+                                     actualizarDetalle(index, "machinery_id", machine.machinery_id);
+                                     const isMotorized = Boolean(machine.is_motorized);
+                                     const newDetails = [...details];
+                                     newDetails[index].machineSearch = machine.machinery_name;
+                                     newDetails[index].showMachineDropdown = false;
+                                     newDetails[index].isMotorized = isMotorized;
+                                     newDetails[index].selectedStocks = [];
+                                     newDetails[index].rental_unit_price = machine.daily_rental_price || "";
+                                     newDetails[index].quantity_to_dispatch = isMotorized ? 0 : 1;
+                                     if (!isMotorized) {
+                                       const stock = (allStocks || []).find(
+                                         (s) => Number(s.machinery_id) === Number(machine.machinery_id) && s.status_id === 1
+                                       );
+                                       newDetails[index].stock_id = stock ? stock.stock_id : null;
+                                     } else {
+                                       newDetails[index].stock_id = null;
+                                     }
+                                     setDetails(newDetails);
+                                   }}
                                >
                                  {machine.machinery_name}
                                </li>
-                               );
-                             })
+                             ))
                            ) : (
                              <li style={{ padding: "8px 12px", color: "#6b7280" }}>
                                No se encontraron máquinas
@@ -501,32 +584,61 @@ const OrderForm = ({
                       )}
                     </div>
 
-                    <div className="machinery-field-quantity">
-                      <label className="form-label">Cantidad</label>
-                      <input
-                        type="number"
-                        min="1"
-                        max={!maquinaSeleccionada?.is_motorized ? maquinaSeleccionada?.stock_quantity : undefined}
-                        className="form-input"
-                        disabled={maquinaSeleccionada?.is_motorized}
-                        value={detail.quantity_to_dispatch}
-                        onChange={(e) =>
-                          actualizarDetalle(
-                            index,
-                            "quantity_to_dispatch",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </div>
+                    {maquinaSeleccionada?.is_motorized ? (
+                      <div className="machinery-field-quantity">
+                        <label className="form-label">Cantidad</label>
+                        <input
+                          type="number"
+                          className="form-input"
+                          value={detail.quantity_to_dispatch}
+                          readOnly
+                        />
+                        <small style={{ color: "#6b7280" }}>
+                          {detail.selectedStocks.length} equipo(s) seleccionado(s)
+                        </small>
+                        <button
+                          type="button"
+                          className="btn-secondary"
+                          style={{ marginTop: "8px", width: "100%" }}
+                          onClick={() => openStockModal(index, maquinaSeleccionada)}
+                        >
+                          Seleccionar equipos
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="machinery-field-quantity">
+                        <label className="form-label">Cantidad</label>
+                        <input
+                          type="number"
+                          min="1"
+                          max={maquinaSeleccionada?.total_stock || undefined}
+                          className="form-input"
+                          value={detail.quantity_to_dispatch}
+                          onChange={(e) =>
+                            actualizarDetalle(
+                              index,
+                              "quantity_to_dispatch",
+                              e.target.value
+                            )
+                          }
+                        />
+                        {maquinaSeleccionada && (
+                          <small style={{ color: "#6b7280" }}>
+                            Disponibles: {maquinaSeleccionada.total_stock ?? 0}
+                          </small>
+                        )}
+                      </div>
+                    )}
 
-                    <div className="machinery-field-price">
-                      <label className="form-label">Precio</label>
+                    <div>
+                      <label className="form-label">
+                        {maquinaSeleccionada?.is_motorized ? "Precio por unidad" : "Precio"}
+                      </label>
                       <input
                         type="number"
                         step="0.01"
                         className="form-input"
-                        value={detail.rental_unit_price}
+                        value={detail.rental_unit_price || maquinaSeleccionada?.daily_rental_price || ""}
                         onChange={(e) =>
                           actualizarDetalle(
                             index,
@@ -548,25 +660,12 @@ const OrderForm = ({
                     </div>
                   </div>
 
-                  {maquinaSeleccionada && (
-                    <div className="machinery-field-message">
-                      {maquinaSeleccionada.is_motorized ? (
-                        <small style={{ color: "#6b7280" }}>
-                          La maquinaria motorizada se alquila por unidad.
-                        </small>
-                      ) : (
-                        <small style={{ color: "#6b7280" }}>
-                          Disponibles: {maquinaSeleccionada.stock_quantity}
-                        </small>
-                      )}
-                    </div>
-                  )}
-
                   {index === details.length - 1 && (
                     <button
                       type="button"
                       className="btn-secondary"
                       onClick={agregarDetalle}
+                      style={{ marginTop: "12px" }}
                     >
                       <Plus size={18} />
                       Agregar
@@ -594,6 +693,15 @@ const OrderForm = ({
           </div>
         </form>
       </div>
+
+      <StockSelectionModal
+        key={stockModalMachine?.machinery_id}
+        isOpen={stockModalOpen}
+        onClose={() => setStockModalOpen(false)}
+        machinery={stockModalMachine}
+        onConfirm={handleStockConfirm}
+        initialSelectedIds={stockModalIndex !== null ? details[stockModalIndex]?.selectedStocks || [] : []}
+      />
     </div>
   );
 };

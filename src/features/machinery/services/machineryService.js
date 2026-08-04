@@ -22,5 +22,18 @@ export const machineryService = {
   eliminar: async (id) => {
     const { data } = await apiClient.delete(`/machines/${id}`);
     return data;
+  },
+
+  obtenerStockPorMaquinaria: async (machineryId, machineryName) => {
+    const { data } = await apiClient.get(
+      `/stock/table?search=${encodeURIComponent(machineryName || '')}`
+    );
+    const stocksFiltrados = (data.data || []).filter(
+      (s) => s.machinery_id === Number(machineryId)
+    );
+    return {
+      data: stocksFiltrados,
+      pagination: data.pagination || { page: 1, totalPages: 1, total: stocksFiltrados.length }
+    };
   }
 };

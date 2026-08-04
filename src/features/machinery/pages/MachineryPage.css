@@ -173,6 +173,29 @@
     font-style: italic;
 }
 
+/* Botón Ver Equipos */
+.btn-ver-equipos {
+    background-color: #ff6b35;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn-ver-equipos:hover {
+    background-color: #e85a2a;
+    transform: translateY(-1px);
+}
+
+.btn-ver-equipos:active {
+    transform: translateY(0);
+}
+
 
 
 

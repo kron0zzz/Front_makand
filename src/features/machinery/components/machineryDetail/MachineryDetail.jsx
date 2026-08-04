@@ -60,7 +60,7 @@ const MachineryDetail = ({ isOpen, onClose, machinery, onEdit }) => {
                 <Layers size={16} />
                 <p className="label-text">Stock Disponible</p>
               </div>
-              <p className="value-text"><strong>{machinery.stock_quantity}</strong> unidades</p>
+              <p className="value-text"><strong>{machinery.total_stock ?? 0}</strong> unidades</p>
             </div>
 
             {/* Precio de Venta */}
@@ -96,7 +96,11 @@ const MachineryDetail = ({ isOpen, onClose, machinery, onEdit }) => {
                 <Calendar size={16} />
                 <p className="label-text">Próxima Revisión Técnica</p>
               </div>
-              <p className="value-text">{formatDate(machinery.next_revision_date)}</p>
+              <p className="value-text">
+                {machinery.stock_details?.length > 0
+                  ? formatDate(machinery.stock_details[0].next_revision_date)
+                  : 'No programada'}
+              </p>
             </div>
 
             {/* Atributos Booleanos (Motorizado / Propiedad) */}
@@ -107,7 +111,7 @@ const MachineryDetail = ({ isOpen, onClose, machinery, onEdit }) => {
               </div>
               <div className="value-text value-text-list">
                 <span>⚡ <strong>Motorizado:</strong> {machinery.is_motorized ? 'Sí' : 'No'}</span>
-                <span>🏢 <strong>Origen:</strong> {machinery.is_owned ? 'Propio de la Empresa' : 'Subcontratado / Externo'}</span>
+                <span>🏢 <strong>Origen:</strong> {machinery.stock_details?.length > 0 && machinery.stock_details[0].is_owned !== undefined ? (machinery.stock_details[0].is_owned ? 'Propio de la Empresa' : 'Subcontratado / Externo') : 'No especificado'}</span>
               </div>
             </div>
 
@@ -117,9 +121,20 @@ const MachineryDetail = ({ isOpen, onClose, machinery, onEdit }) => {
                 <Activity size={16} />
                 <p className="label-text">Estado Actual</p>
               </div>
-              <span className={`status-badge status-${machinery.status_name?.toLowerCase().replace(/\s+/g, '-')}`}>
-                {machinery.status_name || 'DESCONOCIDO'}
-              </span>
+              {machinery.stock_details?.length > 0 ? (
+                <div className="value-text-list">
+                  {machinery.stock_details.map((detail, idx) => (
+                    <span key={detail.stock_id || idx}>
+                      <span className={`status-badge status-${detail.status_name?.toLowerCase().replace(/\s+/g, '-') || 'inactive'}`}>
+                        {detail.status_name || 'DESCONOCIDO'}
+                      </span>
+                      {detail.serial_number && <small> · Serie: {detail.serial_number}</small>}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <span className={`status-badge status-inactive`}>Sin stock registrado</span>
+              )}
             </div>
 
             {/* Descripción Completa */}

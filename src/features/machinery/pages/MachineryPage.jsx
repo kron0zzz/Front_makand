@@ -4,6 +4,7 @@ import { useMachinery } from '../hooks/useMachinery';
 import { useAuth } from '../../../shared/context/AuthContext'; // Ajusta esta ruta según tu estructura real
 import MachineryForm from '../components/machineryForm/MachineryForm';
 import MachineryDetail from '../components/machineryDetail/MachineryDetail';
+import MachineryStockModal from '../components/machineryStockModal/MachineryStockModal';
 import './MachineryPage.css';
 
 
@@ -21,7 +22,12 @@ const MachineryPage = () => {
     page,
     cambiarPagina,
     cambiarBusqueda,
-    pagination
+    pagination,
+    stockList,
+    stockPagination,
+    loadingStock,
+    cargarStockPorMaquinaria,
+    cambiarPaginaStock
   } = useMachinery();
 
   const { hasPermission } = useAuth();
@@ -31,7 +37,9 @@ const MachineryPage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [mostrarModalForm, setMostrarModalForm] = useState(false);
   const [mostrarModalDetalle, setMostrarModalDetalle] = useState(false);
+  const [mostrarModalStock, setMostrarModalStock] = useState(false);
   const [machinerySeleccionado, setMachinerySeleccionado] = useState(null);
+  const [maquinariaStockSeleccionada, setMaquinariaStockSeleccionada] = useState(null);
 
 
 
@@ -45,22 +53,20 @@ const MachineryPage = () => {
     setIsEditing(true);
 
     const idCategoria = machinery.category_id || machinery.machinery_category_id;
-    const idEstado = machinery.status_id || machinery.machinery_status_id;
 
     setFormData({
       machinery_id: machinery.machinery_id,
       category_id: idCategoria !== undefined && idCategoria !== null ? idCategoria.toString() : '',
-      status_id: idEstado !== undefined && idEstado !== null ? idEstado.toString() : '',
       category_name: machinery.category_name || '',
       status_name: machinery.status_name || '',
-      next_revision_date: machinery.next_revision_date ? machinery.next_revision_date.split('T')[0] : '',
+      next_revision_date: '',
       machinery_name: machinery.machinery_name,
       is_motorized: machinery.is_motorized,
       sale_price: limpiarCerosDecimales(machinery.sale_price),
       daily_rental_price: limpiarCerosDecimales(machinery.daily_rental_price),
       weight_kg: machinery.weight_kg,
-      stock_quantity: machinery.stock_quantity,
-      is_owned: machinery.is_owned,
+      stock_quantity: machinery.total_stock || 0,
+      is_owned: '',
       machinery_description: machinery.machinery_description
     });
     
@@ -135,11 +141,24 @@ const MachineryPage = () => {
                   <td>#{machinery.machinery_id}</td>
                   <td><strong>{machinery.machinery_name}</strong></td>
                   <td>{machinery.category_name}</td>
-                  <td>{machinery.stock_quantity} unds</td>
+                  <td>{machinery.total_stock} unds</td>
                   <td>
-                    <span className={`status-badge status-${machinery.status_name?.toLowerCase().replace(/\s+/g, '-')}`}>
-                      {machinery.status_name}
-                    </span>
+                    {machinery.is_motorized ? (
+                      <button
+                        className="btn-ver-equipos"
+                        onClick={() => {
+                          setMaquinariaStockSeleccionada(machinery);
+                          setMostrarModalStock(true);
+                          cargarStockPorMaquinaria(machinery.machinery_id, machinery.machinery_name);
+                        }}
+                      >
+                        Ver equipos
+                      </button>
+                    ) : (
+                      <span className={`status-badge status-${machinery.stock_details?.[0]?.status_name?.toLowerCase().replace(/\s+/g, '-') || 'inactive'}`}>
+                        {machinery.stock_details?.[0]?.status_name || 'No disponible'}
+                      </span>
+                    )}
                   </td>
                   <td className="actions-cell">
                     {hasPermission('Ver Detalle de Maquinaria') && (
@@ -214,6 +233,16 @@ const MachineryPage = () => {
           setMostrarModalDetalle(false);
           prepararEdicion(machinery);
         }}
+      />
+
+      <MachineryStockModal
+        isOpen={mostrarModalStock}
+        onClose={() => setMostrarModalStock(false)}
+        machinery={maquinariaStockSeleccionada}
+        stockList={stockList}
+        loadingStock={loadingStock}
+        stockPagination={stockPagination}
+        cambiarPaginaStock={cambiarPaginaStock}
       />
     </div>
   );
