@@ -177,6 +177,26 @@ body {
   text-align: center;
 }
 
+.password-checks {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.password-checks li {
+  padding: 4px 0;
+}
+
+.check-complete {
+  color: #22c55e;
+}
+
+.check-incomplete {
+  color: #9ca3af;
+}
+
 .forgot-password {
   margin-top: 24px;
 
