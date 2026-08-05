@@ -63,6 +63,14 @@ const MaintenanceDetail = ({ isOpen, onClose, maintenance, onEdit }) => {
               <span className="value-text">{formatDate(datos.maintenance_date)}</span>
             </div>
 
+            <div className="info-card">
+              <div className="info-item-header">
+                <Calendar size={16} />
+                <span className="label-text">Serial de este equipo</span>
+              </div>
+              <span className="value-text">{datos.serial_number}</span>
+            </div>
+
             {/* Notas de revisión detalladas */}
             <div className="info-card full-width description-card">
               <div className="info-item-header">

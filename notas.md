@@ -59,7 +59,9 @@ aparte de hacer los ajustes de arriba, falta entonces el editar pedido y anular
 - meloski
 
 ### mantenimientos
-- todo melo
+- la lógica de editar mantenimiento y de eliminar mantenimiento debe reforzarse, porque por ahora no cambia el estado de maquinaria ni nada, no tiene un carajo de lógica cabrón... mamabicho el que lo lea.
+- este podría tener una lógica mejor, en este momento se está guardando en la tabla de stock el campo de "proxima revision". Podríamos implementar la funcionalidad de que al realizar un mantenimiento, se pueda asignar también una fecha de próximo mantenimiento para que funcione como recordatorio. cuando se haga el próximo mantenimiento después de esa fecha, entonces se quitará esa fecha de proxima revisión o se renovará dependiendo de qué haga el usuario.
+- no sé si sea muy urgente, pero en la tabla se podría agrupar los mantenimientos por fecha y cuando se haga click en ver detalles se muestre todos los equipos que se les hizo mantenimiento en esa fecha (ahora que lo pienso no sé si sea buena idea, porque entonces cuando hayan 2 tipos de maquina con la misma fecha q)
 
 ### estado pedido
 - melo

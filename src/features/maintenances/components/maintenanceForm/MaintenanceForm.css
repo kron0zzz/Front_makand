@@ -71,6 +71,7 @@
     border: 1px solid #e5e7eb;
     font-size: 14px;
     outline: none;
+    box-sizing: border-box;
 }
 
 .form-input-disabled {
@@ -110,7 +111,121 @@
     cursor: pointer;
 }
 
+.btn-secondary {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    font-weight: 600;
+    cursor: pointer;
+    color: #374151;
+    font-size: 13px;
+}
+
+.btn-secondary:hover {
+    background-color: #fff7ed;
+    border-color: #ff6b35;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
 textarea.form-input {
     resize: vertical;
     min-height: 80px;
+}
+
+.machine-search-wrapper {
+    position: relative;
+}
+
+.machine-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    list-style: none;
+    margin: 4px 0 0 0;
+    padding: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.machine-dropdown-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.machine-dropdown-item:hover {
+    background-color: #fff7ed;
+    color: #ff6b35;
+}
+
+.machine-dropdown-item.disabled {
+    color: #9ca3af;
+    cursor: default;
+    pointer-events: none;
+}
+
+.machine-selected-row {
+    grid-column: span 2;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background-color: #f9fafb;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.machine-selected-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+    flex: 1;
+}
+
+.selected-stocks-tags {
+    grid-column: span 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 0;
+}
+
+.stock-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background-color: #fff7ed;
+    border: 1px solid #ff6b35;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #374151;
+}
+
+.stock-tag-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ff6b35;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0 2px;
+    font-weight: bold;
+}
+
+.stock-tag-remove:hover {
+    color: #dc2626;
 }

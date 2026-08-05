@@ -4,9 +4,8 @@ import { X, Plus, Trash2 } from "lucide-react";
 import { useOrders } from "../../hooks/useOrders";
 
 import "./OrderForm.css";
-import "./StockSelectionModal.css";
 import { useAlertModal } from "../../../../shared/alertModal";
-import StockSelectionModal from "./StockSelectionModal";
+import StockSelectionModal from "../../../../shared/components/stockSelection/StockSelectionModal";
 
 const OrderForm = ({
   isOpen,
