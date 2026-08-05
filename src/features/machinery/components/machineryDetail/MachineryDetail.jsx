@@ -58,9 +58,12 @@ const MachineryDetail = ({ isOpen, onClose, machinery, onEdit }) => {
             <div className="info-card">
               <div className="info-item-header">
                 <Layers size={16} />
-                <p className="label-text">Stock Disponible</p>
+                <p className="label-text">Stock</p>
               </div>
-              <p className="value-text"><strong>{machinery.total_stock ?? 0}</strong> unidades</p>
+              <p className="value-text">
+                <strong>{machinery.available_stock ?? 0}</strong> disponibles de <br />
+                <strong>{machinery.total_stock ?? 0}</strong> totales
+              </p>
             </div>
 
             {/* Precio de Venta */}
@@ -121,7 +124,11 @@ const MachineryDetail = ({ isOpen, onClose, machinery, onEdit }) => {
                 <Activity size={16} />
                 <p className="label-text">Estado Actual</p>
               </div>
-              {machinery.stock_details?.length > 0 ? (
+              {machinery.is_motorized ? (
+                <span className={`status-badge ${machinery.total_stock > 0 ? 'status-disponible' : 'status-inactivo'}`}>
+                  {machinery.total_stock > 0 ? 'Disponible' : 'No disponible'}
+                </span>
+              ) : machinery.stock_details?.length > 0 ? (
                 <div className="value-text-list">
                   {machinery.stock_details.map((detail, idx) => (
                     <span key={detail.stock_id || idx}>

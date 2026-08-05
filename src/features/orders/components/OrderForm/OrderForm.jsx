@@ -446,6 +446,8 @@ const OrderForm = ({
               />
             </div>
 
+             {/*  ----El descuento no se aplicará
+    
              <div>
                <label className="form-label">Descuento (COP)</label>
                <input
@@ -457,7 +459,7 @@ const OrderForm = ({
                  onChange={handleDiscountChange}
                />
              </div>
-
+              */}
             <div className="form-full-width">
               <label className="form-label">Descripción</label>
               <textarea

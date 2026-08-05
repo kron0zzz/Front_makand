@@ -89,9 +89,9 @@ export const useMachinery = () => {
     }
   };
 
-  const crearMaquinaria = async (maquinariaData) => {
+  const crearMaquinaria = async (maquinariaData, stockData) => {
     try {
-      await machineryService.crear(maquinariaData);
+      await machineryService.crearCompleta(maquinariaData, stockData);
       await cargarMaquinarias();
       return true;
     } catch (err) {

@@ -17,11 +17,9 @@
     border-radius: 12px;
     width: 90%;
     max-width: 750px;
-    /* 🌟 NUEVO: Evita que el modal sea más alto que la pantalla del usuario */
-    max-height: 85vh; 
+    max-height: 90vh;
     box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
     overflow: hidden;
-    /* 🌟 NUEVO: Asegura que el contenedor use flexbox para mantener header/footer pegados */
     display: flex;
     flex-direction: column;
 }
@@ -33,7 +31,6 @@
     align-items: center;
     padding: 20px 24px;
     border-bottom: 1px solid #f3f4f6;
-    /* 🌟 NUEVO: Evita que el header se encoja */
     flex-shrink: 0;
 }
 
@@ -51,15 +48,47 @@
     color: #9ca3af;
 }
 
-/* Cuerpo y Grid */
-.form-body {
-    padding: 24px;
-    /* 🌟 NUEVO: Permite que esta sección tome el espacio intermedio y maneje el scroll */
-    flex-grow: 1;
-    overflow-y: auto;
-    /* Opcional: estiliza levemente la barra de scroll si lo deseas */
+/* Error alert */
+.form-error-alert {
+    padding: 10px 20px;
+    background-color: #fef2f2;
+    color: #dc2626;
+    font-weight: 600;
+    font-size: 13px;
+    border-bottom: 1px solid #fecaca;
 }
 
+/* Cuerpo y Scroll */
+.form-body {
+    padding: 24px;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+/* Secciones del formulario */
+.form-section {
+    margin-bottom: 24px;
+}
+
+.form-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #ff6b35;
+}
+
+.form-section-title svg {
+    color: #ff6b35;
+}
+
+/* Grid */
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -93,28 +122,94 @@
 }
 
 .form-input:focus {
-    border-color: #ff6b35; /* Color Luna Llena */
+    border-color: #ff6b35;
 }
 
-/* Estados especiales de input */
 .form-input-disabled {
     background-color: #f3f4f6;
     cursor: not-allowed;
     color: #9ca3af;
 }
 
+/* Checkbox */
+.checkbox-field-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.motorized-checkbox {
+    width: 20px;
+    height: 20px;
+    accent-color: #ff6b35;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.motorized-checkbox:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.motorized-label {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    cursor: pointer;
+}
+
+.motorized-label .checkbox-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.motorized-label .checkbox-desc {
+    font-size: 11px;
+    color: #6b7280;
+    font-weight: 400;
+}
+
+/* Inventario card (no motorizado) */
+.inventory-card {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.inventory-field {
+    margin-bottom: 12px;
+}
+
+.inventory-hint {
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 4px;
+}
+
+/* Info card estático (modo edición) */
+.info-card-static {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.5;
+}
+
 /* Footer y Botones */
 .form-footer {
-    /* 🌟 CORREGIDO: Reducido de 32px a 16px para acercarlo al contenido */
-    margin-top: 16px;
+    margin-top: 24px;
     display: flex;
     justify-content: flex-end;
     gap: 12px;
     border-top: 1px solid #f3f4f6;
-    padding: 16px 24px; /* Agregado padding horizontal simétrico */
-    /* 🌟 NUEVO: Evita que el footer se encoja o desaparezca */
+    padding-top: 16px;
     flex-shrink: 0;
-    background-color: white; /* Mantiene el fondo limpio sobre el scroll */
+    background-color: white;
 }
 
 .btn-cancel {
@@ -125,20 +220,56 @@
     font-weight: 600;
     cursor: pointer;
     color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .btn-submit {
     padding: 10px 24px;
     border-radius: 8px;
     border: none;
-    background-color: #ff6b35; /* Color Luna Llena */
+    background-color: #ff6b35;
     color: white;
     font-weight: 600;
     cursor: pointer;
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .btn-submit:hover {
     opacity: 0.9;
+}
+
+.btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .form-modal-container {
+        width: 95%;
+        max-height: 95vh;
+    }
+
+    .form-body {
+        padding: 16px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .form-full-width {
+        grid-column: span 1;
+    }
+
+    .form-footer {
+        padding: 12px 16px;
+    }
 }

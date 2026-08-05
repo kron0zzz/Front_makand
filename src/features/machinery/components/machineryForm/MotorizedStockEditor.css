@@ -1,0 +1,238 @@
+.motorized-stock-editor {
+    margin-top: 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background-color: #f8fafc;
+    overflow: hidden;
+}
+
+.motorized-stock-editor-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background-color: #ff6b35;
+    color: white;
+}
+
+.motorized-stock-editor-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+}
+
+.motorized-serial-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.toggle-switch {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border: none;
+    border-radius: 11px;
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 0.2s;
+}
+
+.toggle-switch.active {
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+.toggle-knob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch.active .toggle-knob {
+    transform: translateX(18px);
+}
+
+.motorized-stock-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.team-card {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    transition: all 0.2s;
+}
+
+.team-card:hover {
+    border-color: #ff6b35;
+    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.08);
+}
+
+.team-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.team-card-number {
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.team-card-auto-badge {
+    font-size: 10px;
+    font-weight: 600;
+    color: #059669;
+    background-color: #ecfdf5;
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid #a7f3d0;
+}
+
+.team-card-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.team-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.team-field label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    min-width: 80px;
+    flex-shrink: 0;
+}
+
+.serial-input-wrapper,
+.date-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    position: relative;
+}
+
+.serial-input-wrapper svg,
+.date-input-wrapper svg {
+    color: #9ca3af;
+    flex-shrink: 0;
+}
+
+.serial-input-wrapper input,
+.date-input-wrapper input {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #1f2937;
+    background-color: #f9fafb;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.serial-input-wrapper input:disabled {
+    background-color: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.serial-input-wrapper input:focus,
+.date-input-wrapper input:focus {
+    border-color: #ff6b35;
+    background-color: white;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #374151;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #ff6b35;
+    cursor: pointer;
+}
+
+.motorized-quantity-input {
+    padding: 12px 16px;
+    background-color: white;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.motorized-quantity-input .form-label {
+    margin-bottom: 6px;
+}
+
+.motorized-quantity-input .form-input {
+    max-width: 120px;
+}
+
+.motorized-empty-state {
+    padding: 24px 16px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 13px;
+    background-color: #f9fafb;
+}
+
+.motorized-stock-summary {
+    padding: 10px 16px;
+    background-color: white;
+    border-top: 1px solid #e2e8f0;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    text-align: center;
+}
+
+@media (max-width: 640px) {
+    .team-card-fields {
+        flex-direction: column;
+    }
+
+    .team-field label {
+        min-width: 70px;
+    }
+}

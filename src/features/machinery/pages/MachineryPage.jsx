@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Search, Eye, Edit, Trash2 } from 'lucide-react';
 import { useMachinery } from '../hooks/useMachinery';
 import { useAuth } from '../../../shared/context/AuthContext'; // Ajusta esta ruta según tu estructura real
@@ -56,9 +56,9 @@ const MachineryPage = () => {
 
     setFormData({
       machinery_id: machinery.machinery_id,
-      category_id: idCategoria !== undefined && idCategoria !== null ? idCategoria.toString() : '',
-      category_name: machinery.category_name || '',
-      status_name: machinery.status_name || '',
+      category_id: idCategoria !== undefined && idCategoria !== null ? idCategoria.toString() : "",
+      category_name: machinery.category_name || "",
+      status_name: machinery.status_name || "",
       next_revision_date: '',
       machinery_name: machinery.machinery_name,
       is_motorized: machinery.is_motorized,
@@ -67,6 +67,10 @@ const MachineryPage = () => {
       weight_kg: machinery.weight_kg,
       stock_quantity: machinery.total_stock || 0,
       is_owned: '',
+      teamCount: 0,
+      autoSerial: true,
+      teams: [],
+      existingSerials: [],
       machinery_description: machinery.machinery_description
     });
     
@@ -101,19 +105,24 @@ const MachineryPage = () => {
           {hasPermission('Crear Maquinaria') && (
             <button 
               className="btn-nuevo"
-              onClick={() => {
-                setIsEditing(false);
-                setFormData({
-                  is_motorized: false,
-                  is_owned: true,
-                  status_id: '',
-                  category_id: '',
-                  category_name: '',
-                  status_name: '',
-                  stock_quantity: ''
-                }); 
-                setMostrarModalForm(true);
-              }}
+onClick={() => {
+                  setIsEditing(false);
+                  setFormData({
+                    is_motorized: false,
+                    is_owned: true,
+                    status_id: '',
+                    category_id: '',
+                    category_name: '',
+                    status_name: '',
+                    stock_quantity: '',
+                    teamCount: 0,
+                    autoSerial: true,
+                    teams: [],
+                    existingSerials: [],
+                    machinery_description: ''
+                  }); 
+                  setMostrarModalForm(true);
+                }}
             >
               <Plus size={20} />
               Nueva Maquinaria

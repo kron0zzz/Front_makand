@@ -34,9 +34,7 @@ const MachineryStockModal = ({ isOpen, onClose, machinery, stockList, loadingSto
                       <th>ID Stock</th>
                       <th>N° Serie</th>
                       <th>Estado</th>
-                      <th>Cantidad</th>
-                      <th>Propiedad</th>
-                      <th>Próxima Revisión</th>
+                      {/*<th>Próxima Revisión</th>*/}
                     </tr>
                   </thead>
                   <tbody>
@@ -48,10 +46,8 @@ const MachineryStockModal = ({ isOpen, onClose, machinery, stockList, loadingSto
                           <span className={`status-badge status-${stock.status_name?.toLowerCase().replace(/\s+/g, '-')}`}>
                             {stock.status_name}
                           </span>
-                        </td>
-                        <td>{stock.stock_quantity}</td>
-                        <td>{stock.is_owned ? 'Propio' : 'Subcontratado'}</td>
-                        <td>{formatDate(stock.next_revision_date)}</td>
+                        </td>                        
+                        {/*<td>{formatDate(stock.next_revision_date)}</td>*/}
                       </tr>
                     ))}
                   </tbody>

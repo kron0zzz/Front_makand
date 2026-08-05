@@ -14,6 +14,14 @@ export const machineryService = {
     return data;
   },
 
+  crearCompleta: async (machineryData, stockData) => {
+    const { data } = await apiClient.post('/machines/complete', {
+      machineryData,
+      stockData,
+    });
+    return data;
+  },
+
   actualizar: async (id, datos) => {
     const { data } = await apiClient.put(`/machines/${id}`, datos);
     return data;
