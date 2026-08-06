@@ -16,6 +16,15 @@ function ResetPasswordPage() {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  const checks = {
+    hasUpper: /(?=.*[A-Z])/.test(newPassword),
+    hasLower: /(?=.*[a-z])/.test(newPassword),
+    hasNumber: /(?=.*\d)/.test(newPassword),
+    hasSpecial: /(?=.*[\W_])/.test(newPassword),
+  };
+
+  const isValid = Object.values(checks).every(Boolean);
+
   const handleResetSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -95,13 +104,28 @@ function ResetPasswordPage() {
               </div>
             </div>
 
+            <ul className="password-checks">
+              <li className={checks.hasUpper ? "check-complete" : "check-incomplete"}>
+                {checks.hasUpper ? "✓" : "✗"} Al menos una mayúscula
+              </li>
+              <li className={checks.hasLower ? "check-complete" : "check-incomplete"}>
+                {checks.hasLower ? "✓" : "✗"} Al menos una minúscula
+              </li>
+              <li className={checks.hasNumber ? "check-complete" : "check-incomplete"}>
+                {checks.hasNumber ? "✓" : "✗"} Al menos un número
+              </li>
+              <li className={checks.hasSpecial ? "check-complete" : "check-incomplete"}>
+                {checks.hasSpecial ? "✓" : "✗"} Al menos un carácter especial (., !, @, #, etc.)
+              </li>
+            </ul>
+
             {error && <div className="error-message">{error}</div>}
             {successMessage && <div style={{ color: "green", fontSize: "13px", marginBottom: "10px" }}>{successMessage}</div>}
 
             <button
               type="submit"
               className="login-button"
-              disabled={loading || successMessage}
+              disabled={loading || successMessage || !isValid}
             >
               {loading ? "Actualizando..." : "Restablecer Contraseña"}
             </button>
