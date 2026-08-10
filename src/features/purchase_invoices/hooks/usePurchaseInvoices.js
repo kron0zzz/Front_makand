@@ -64,6 +64,21 @@ export const usePurchaseInvoices = () => {
     }
   }, []);
 
+  const crearFacturaCompleta = useCallback(async (payload) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await purchaseInvoiceService.crearCompleta(payload);
+      await cargarFacturas();
+      return result;
+    } catch (err) {
+      setError(err.message || 'Error al crear la factura de compra');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [cargarFacturas]);
+
   useEffect(() => {
     cargarFacturas();
   }, [cargarFacturas]);
@@ -75,6 +90,7 @@ export const usePurchaseInvoices = () => {
     error,
     cargarFacturas,
     eliminarFactura,
+    crearFacturaCompleta,
 
     page,
     cambiarPagina,

@@ -53,5 +53,15 @@ export const purchaseInvoiceService = {
       console.error('Error al eliminar factura:', error);
       throw error;
     }
+  },
+
+  crearCompleta: async (datos) => {
+    try {
+      const { data } = await apiClient.post('/purchase-invoices/complete', datos);
+      return data;
+    } catch (error) {
+      console.error('Error al crear factura completa:', error);
+      throw error;
+    }
   }
 };

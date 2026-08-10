@@ -1,0 +1,119 @@
+.new-machinery-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.new-machinery-fields .form-error-alert {
+  padding: 10px 16px;
+  background-color: #fef2f2;
+  color: #dc2626;
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+}
+
+.new-machinery-fields .form-section {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.new-machinery-fields .form-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #ff6b35;
+}
+
+.new-machinery-fields .form-section-title svg {
+  color: #ff6b35;
+}
+
+.new-machinery-fields .form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 20px;
+}
+
+.new-machinery-fields .form-full-width {
+  grid-column: span 2;
+}
+
+.new-machinery-fields .form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.new-machinery-fields .form-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: #374151;
+  background-color: #f9fafb;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.new-machinery-fields .form-input:focus {
+  border-color: #ff6b35;
+}
+
+.new-machinery-fields .checkbox-field-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.new-machinery-fields .motorized-checkbox {
+  width: 20px;
+  height: 20px;
+  accent-color: #ff6b35;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.new-machinery-fields .motorized-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: pointer;
+}
+
+.new-machinery-fields .motorized-label .checkbox-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.new-machinery-fields .motorized-label .checkbox-desc {
+  font-size: 11px;
+  color: #6b7280;
+  font-weight: 400;
+}
+
+@media (max-width: 640px) {
+  .new-machinery-fields .form-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .new-machinery-fields .form-full-width {
+    grid-column: span 1;
+  }
+}
