@@ -55,29 +55,20 @@ const CutForm = ({
         try {
 
             await onSubmit(
-
                 order.order_id,
-
                 {
-
                     order_id: order.order_id,
-
                     period_start_date: periodStartDate,
-
-                    period_end_date: periodEndDate
-
+                    period_end_date: periodEndDate,
+                    include_pending_extra_charges: true
                 }
-
             );
 
             onClose();
-
             await showAlert("Corte registrado correctamente");
 
         } catch (err) {
-
             await showAlert(`Error al registrar corte: ${err.message}`);
-
         }
 
     };
