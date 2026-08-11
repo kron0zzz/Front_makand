@@ -242,6 +242,8 @@ const MachineCard = ({ detail, onRegisterReturn, onDeleteReturn }) => {
                                 <ReturnCard
                                     key={ret.return_id}
                                     returnData={ret}
+                                    // LE PASAS LOS CARGOS ADICIONALES AQUÍ DIRECTO:
+                                    additionalCharges={ret.additional_charges || []}
                                     onDeleteReturn={(returnId) => onDeleteReturn(detail.order_id, returnId)}
                                 />
                             ))
