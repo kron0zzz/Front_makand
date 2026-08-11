@@ -92,41 +92,45 @@ function LoginPage({ onLogin }) {
   };
 
   return (
-    <div className="login-page">
+    <main className="login-page">
       <div className="login-wrapper">
-        <div className="login-brand">
+        <header className="login-brand">
           <h1>MakandSMR</h1>
           <p>Sistema de Gestión de Alquiler</p>
-        </div>
+        </header>
 
-        <div className="login-card">
+        <section className="login-card">
           {!isForgotMode ? (
             <>
               <h2>Iniciar Sesión</h2>
               <form onSubmit={handleSubmit}>
                 <div className="input-group">
-                  <label>Correo Electrónico</label>
+                  <label htmlFor="email">Correo Electrónico</label>
                   <div className="input-container">
-                    <Mail size={20} className="input-icon" />
+                    <Mail size={20} className="input-icon" aria-hidden="true" />
                     <input
+                      id="email"
                       type="email"
                       placeholder="tu-email@makandsmr.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                      autoComplete="email"
                       required
                     />
                   </div>
                 </div>
 
                 <div className="input-group">
-                  <label>Contraseña</label>
+                  <label htmlFor="password">Contraseña</label>
                   <div className="input-container">
-                    <Lock size={20} className="input-icon" />
+                    <Lock size={20} className="input-icon" aria-hidden="true" />
                     <input
+                      id="password"
                       type="password"
                       placeholder="••••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      autoComplete="current-password"
                       required
                     />
                   </div>
@@ -136,13 +140,13 @@ function LoginPage({ onLogin }) {
                   <button
                     type="button"
                     onClick={() => { setIsForgotMode(true); setError(""); }}
-                    style={{ background: "none", border: "none", color: "#f97316", cursor: "pointer", fontSize: "13px", padding: 0 }}
+                     style={{ background: "none", border: "none", color: "#ea580c", cursor: "pointer", fontSize: "13px", padding: 0 }}
                   >
                     ¿Olvidaste tu contraseña?
                   </button>
                 </div>
 
-                {error && <div className="error-message">{error}</div>}
+                {error && <div className="error-message" role="alert">{error}</div>}
 
                 <button
                   type="submit"
@@ -162,21 +166,23 @@ function LoginPage({ onLogin }) {
 
               <form onSubmit={handleForgotSubmit}>
                 <div className="input-group">
-                  <label>Correo Electrónico</label>
+                  <label htmlFor="forgot-email">Correo Electrónico</label>
                   <div className="input-container">
-                    <Mail size={20} className="input-icon" />
+                    <Mail size={20} className="input-icon" aria-hidden="true" />
                     <input
+                      id="forgot-email"
                       type="email"
                       placeholder="tu-email@makandsmr.com"
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
+                      autoComplete="email"
                       required
                     />
                   </div>
                 </div>
 
-                {error && <div className="error-message">{error}</div>}
-                {forgotMessage && <div style={{ color: "green", fontSize: "13px", marginBottom: "10px" }}>{forgotMessage}</div>}
+                {error && <div className="error-message" role="alert">{error}</div>}
+                {forgotMessage && <div style={{ color: "#15803d", fontSize: "13px", marginBottom: "10px" }} role="status">{forgotMessage}</div>}
 
                 <button
                   type="submit"
@@ -192,7 +198,7 @@ function LoginPage({ onLogin }) {
                     onClick={() => { setIsForgotMode(false); setError(""); setForgotMessage(""); }}
                     style={{ background: "none", border: "none", color: "#666", cursor: "pointer", fontSize: "13px", display: "inline-flex", alignItems: "center", gap: "5px" }}
                   >
-                    <ArrowLeft size={16} /> Volver al Login
+                    <ArrowLeft size={16} aria-hidden="true" /> Volver al Login
                   </button>
                 </div>
               </form>
@@ -206,23 +212,25 @@ function LoginPage({ onLogin }) {
 
               <form onSubmit={handleVerifyCode}>
                 <div className="input-group">
-                  <label>Código de Verificación</label>
+                  <label htmlFor="verification-code">Código de Verificación</label>
                   <div className="input-container">
-                    <Mail size={20} className="input-icon" />
+                    <Mail size={20} className="input-icon" aria-hidden="true" />
                     <input
+                      id="verification-code"
                       type="text"
                       placeholder="000000"
                       value={verificationCode}
                       onChange={(e) => setVerificationCode(e.target.value)}
                       maxLength={6}
+                      autoComplete="one-time-code"
                       required
                       style={{ letterSpacing: "4px", textAlign: "center", fontSize: "18px", fontWeight: "bold" }}
                     />
                   </div>
                 </div>
 
-                {error && <div className="error-message">{error}</div>}
-                {codeMessage && <div style={{ color: "green", fontSize: "13px", marginBottom: "10px" }}>{codeMessage}</div>}
+                {error && <div className="error-message" role="alert">{error}</div>}
+                {codeMessage && <div style={{ color: "#15803d", fontSize: "13px", marginBottom: "10px" }} role="status">{codeMessage}</div>}
 
                 <button
                   type="submit"
@@ -238,15 +246,15 @@ function LoginPage({ onLogin }) {
                     onClick={() => { setIsCodeMode(false); setError(""); setVerificationCode(""); }}
                     style={{ background: "none", border: "none", color: "#666", cursor: "pointer", fontSize: "13px", display: "inline-flex", alignItems: "center", gap: "5px" }}
                   >
-                    <ArrowLeft size={16} /> Volver atrás
+                    <ArrowLeft size={16} aria-hidden="true" /> Volver atrás
                   </button>
                 </div>
               </form>
             </>
           )}
-        </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }
 
