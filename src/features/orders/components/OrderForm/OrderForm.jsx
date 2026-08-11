@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { X, Plus, Trash2 } from "lucide-react";
+import { X, Plus, Trash2, Truck } from "lucide-react";
 
 import { useOrders } from "../../hooks/useOrders";
 
@@ -31,6 +31,10 @@ const OrderForm = ({
   const discountInitialized = useRef(false);
   const initialDiscountRef = useRef("");
 
+  // Nuevos estados para el transporte de entrega (ida)
+  const [includeDeliveryTransport, setIncludeDeliveryTransport] = useState(false);
+  const [deliveryTransportPriceDisplay, setDeliveryTransportPriceDisplay] = useState("");
+
   useLayoutEffect(() => {
     if (isOpen && !discountInitialized.current) {
       initialDiscountRef.current = formData.discount_amount || "0";
@@ -40,6 +44,8 @@ const OrderForm = ({
     }
     if (!isOpen) {
       discountInitialized.current = false;
+      setIncludeDeliveryTransport(false);
+      setDeliveryTransportPriceDisplay("");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
@@ -168,6 +174,8 @@ const OrderForm = ({
       }));
       setProjectSearch("");
       setSelectedCustomerId("");
+      setIncludeDeliveryTransport(false);
+      setDeliveryTransportPriceDisplay("");
       setDetails([
         {
           machinery_id: "",
@@ -213,6 +221,15 @@ const OrderForm = ({
       return;
     }
     setDiscountDisplay(Number(raw).toLocaleString("es-CO"));
+  };
+
+  const handleDeliveryTransportPriceChange = (e) => {
+    const raw = e.target.value.replace(/\D/g, "");
+    if (raw === "") {
+      setDeliveryTransportPriceDisplay("");
+      return;
+    }
+    setDeliveryTransportPriceDisplay(Number(raw).toLocaleString("es-CO"));
   };
 
   const filteredProjects = projects.filter((project) => {
@@ -290,6 +307,14 @@ const OrderForm = ({
       }
     }
 
+    if (includeDeliveryTransport) {
+      const transportVal = deliveryTransportPriceDisplay === "" ? 0 : Number(deliveryTransportPriceDisplay.replace(/\./g, ""));
+      if (isNaN(transportVal) || transportVal < 0) {
+        await showAlert("Ingrese un precio de transporte de entrega válido.");
+        return;
+      }
+    }
+
     try {
       const detailsPayload = [];
 
@@ -316,11 +341,29 @@ const OrderForm = ({
         }
       });
 
+      const additionalChargesPayload = [];
+
+      if (includeDeliveryTransport && deliveryTransportPriceDisplay) {
+        const rawPrice = Number(deliveryTransportPriceDisplay.replace(/\./g, "").replace(/\D/g, ""));
+        if (rawPrice > 0) {
+          additionalChargesPayload.push({
+            charge_type_id: 1, // 1 suele ser Transporte (según tu base de datos)
+            charge_description: "Transporte de entrega inicial",
+            charge_amount: rawPrice
+          });
+        }
+      }
+
       const payload = {
         project_id: Number(formData.project_id),
         order_creation_date: formData.order_creation_date,
         discount_amount: discountDisplay === "" ? "0" : Number(discountDisplay.replace(/\./g, "")).toString(),
         order_description: formData.order_description,
+        // Nuevos campos adaptados al backend para el transporte de ida
+        delivery_transport_price: includeDeliveryTransport 
+          ? (deliveryTransportPriceDisplay === "" ? "0" : Number(deliveryTransportPriceDisplay.replace(/\./g, "")).toString()) 
+          : "0",
+        additional_charges: additionalChargesPayload,
         details: detailsPayload
       };
 
@@ -443,10 +486,8 @@ const OrderForm = ({
                 onChange={handleChange}
                 required
               />
-            </div>
+             </div>
 
-             {/*  ----El descuento no se aplicará
-    
              <div>
                <label className="form-label">Descuento (COP)</label>
                <input
@@ -458,7 +499,7 @@ const OrderForm = ({
                  onChange={handleDiscountChange}
                />
              </div>
-              */}
+
             <div className="form-full-width">
               <label className="form-label">Descripción</label>
               <textarea
@@ -471,7 +512,37 @@ const OrderForm = ({
             </div>
           </div>
 
-          <hr />
+          {/* Sección de Transporte de Entrega (Ida) */}
+          <div style={{ marginTop: "16px", padding: "12px", background: "#f9fafb", borderRadius: "8px", border: "1px solid #e5e7eb" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+              <Truck size={18} color="#4b5563" />
+              <label style={{ fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" }}>
+                <input
+                  type="checkbox"
+                  checked={includeDeliveryTransport}
+                  onChange={(e) => setIncludeDeliveryTransport(e.target.checked)}
+                  style={{ width: "16px", height: "16px", cursor: "pointer" }}
+                />
+                ¿Incluye servicio de transporte (ida)?
+              </label>
+            </div>
+
+            {includeDeliveryTransport && (
+              <div style={{ marginTop: "8px" }}>
+                <label className="form-label">Precio de transporte de entrega (COP)</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  inputMode="numeric"
+                  placeholder="Ej: 50.000"
+                  value={deliveryTransportPriceDisplay}
+                  onChange={handleDeliveryTransportPriceChange}
+                />
+              </div>
+            )}
+          </div>
+
+          <hr style={{ margin: "16px 0" }} />
 
           <div style={{ marginTop: "12px" }}>
             <h3>Maquinaria</h3>
@@ -506,7 +577,7 @@ const OrderForm = ({
                           const newDetails = [...details];
                           newDetails[index].machineSearch = e.target.value;
                           newDetails[index].showMachineDropdown = true;
-if (e.target.value === "") {
+                          if (e.target.value === "") {
                              newDetails[index].machinery_id = "";
                              newDetails[index].isMotorized = false;
                              newDetails[index].selectedStocks = [];
@@ -552,7 +623,7 @@ if (e.target.value === "") {
                                    cursor: "pointer",
                                    borderBottom: "1px solid #f3f4f6"
                                  }}
-onClick={() => {
+                                 onClick={() => {
                                      actualizarDetalle(index, "machinery_id", machine.machinery_id);
                                      const isMotorized = Boolean(machine.is_motorized);
                                      const newDetails = [...details];
