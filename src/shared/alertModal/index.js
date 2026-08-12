@@ -1,1 +1,1 @@
-export { AlertModalProvider, useAlertModal } from './useAlertModal.jsx';
+export { AlertModalProvider, useAlertModal, useAlert } from './useAlertModal.jsx';

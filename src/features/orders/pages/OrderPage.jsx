@@ -21,7 +21,7 @@ import "./OrderPage.css";
 import { useAlertModal } from "../../../shared/alertModal";
 
 const OrderPage = ({ onOpenWorkspace }) => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showAlert, showSuccess, showError } = useAlertModal();
 
   const { hasPermission } = useAuth();
 
@@ -57,7 +57,7 @@ const OrderPage = ({ onOpenWorkspace }) => {
     } catch (error) {
 
       console.error(error);
-      await showAlert("No se pudo cargar el detalle del pedido");
+      await showError("No se pudo cargar el detalle del pedido");
 
     }
 
@@ -72,12 +72,13 @@ const OrderPage = ({ onOpenWorkspace }) => {
 
     if (result.success) {
 
-      await showAlert(result.message);
+      await showSuccess(result.message);
 
     } else {
 
       await showAlert(
-        `No fue posible anular el pedido.\n\n${result.message}`
+        `No fue posible anular el pedido.\n\n${result.message}`,
+        'Anulación no permitida'
       );
 
     }

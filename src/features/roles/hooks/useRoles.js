@@ -72,7 +72,7 @@ import { useAlertModal } from "../../../shared/alertModal";
 
 
 export const useRoles = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showConfirm, showSuccess, showError } = useAlertModal();
   const [roles, setRoles] = useState([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(9);
@@ -129,10 +129,10 @@ export const useRoles = () => {
         });
         
         cargarRoles();
-        await showAlert("Estado del rol actualizado correctamente.");
+        await showSuccess("Estado del rol actualizado correctamente.");
       } catch (err) {
         console.error("Error al cambiar estado del rol:", err);
-        await showAlert("No se pudo cambiar el estado del rol. Verifica que tengas permisos de edición.");
+        await showError("No se pudo cambiar el estado del rol. Verifica que tengas permisos de edición.");
       }
     }
   };

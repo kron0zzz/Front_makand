@@ -106,7 +106,7 @@ function AppContent() {
   }
 
   return (
-    <div className="app-layout" style={{ display: 'flex', minHeight: '100vh' }}>
+    <div className="app-layout">
       <Sidebar
         currentView={currentView}
         onViewChange={setCurrentView}
@@ -115,7 +115,7 @@ function AppContent() {
         onLogout={handleLogout}
         user={user} 
       />
-      <main style={{ flex: 1, background: '#f4f4f4' }}>
+      <main className={`main-content ${collapsed ? 'main-content--collapsed' : ''}`}>
         {renderContent()}
       </main>
     </div>

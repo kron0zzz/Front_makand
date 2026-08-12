@@ -1,10 +1,10 @@
 import { useState, useCallback, useEffect} from "react";
-import api from "../../../shared/services/api";  //ojoooooo, que maldita mierda hice aquí
+import api from "../../../shared/services/api";
 import { orderService } from "../services/orderService";
 import { useAlertModal } from "../../../shared/alertModal";
 
 export const useOrders = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showConfirm, showSuccess, showError } = useAlertModal();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -21,14 +21,13 @@ export const useOrders = () => {
   });
 
   const handleError = (err) => {
-    const message = err.response?.data?.message || err.message || "Error desconocido";
+    const message = err.response?.data?.error || err.response?.data?.message || err.message || "Error desconocido";
     setError(message);
     throw err;
   };
 
   const cargarPedidos = useCallback(async () => {
     try {
-      //ahora se carga con los datos requeridos para paginación
       const datos = await orderService.obtenerTabla(page, limit, search);
       setOrders(datos.data);
       setPagination(datos.pagination);
@@ -39,9 +38,6 @@ export const useOrders = () => {
     }
   }, [page, limit, search]);
 
-
-
-  //función para cambiar de página
   const cambiarPagina = (nuevaPagina) => {
     if (
         nuevaPagina !== page &&
@@ -52,17 +48,13 @@ export const useOrders = () => {
     }
   };
 
-
-
   const cambiarBusqueda = useCallback((texto) => {
     setSearch(texto);
     setPage(1);
   }, []);
 
-
   const crearPedidoCompleto = async (pedidoData) => {
     try {
-      // baseURL es /api + esta ruta = /api/orders/complete
       const { data } = await api.post("/orders/complete", pedidoData);
       await cargarPedidos();
       return data;
@@ -72,13 +64,20 @@ export const useOrders = () => {
   };
 
   const eliminarPedido = async (id) => {
-    if (!await showConfirm("¿Deseas eliminar este pedido?")) return;
+    if (!await showConfirm(
+      "¿Estás seguro de que deseas eliminar este pedido?\n\nEsta acción no se puede deshacer.\nSe eliminarán todos los datos asociados incluyendo pagos y cortes."
+    )) return;
     try {
-      // baseURL es /api + esta ruta = /api/orders/:id
       await api.delete(`/orders/${id}`);
       await cargarPedidos();
+      await showSuccess("Pedido eliminado correctamente.");
     } catch (err) {
-      handleError(err);
+      const mensaje =
+        err.response?.data?.error ||
+        err.response?.data?.message ||
+        "No se puede eliminar este pedido.";
+      setError(mensaje);
+      await showError(mensaje);
     }
   };
 
@@ -91,26 +90,25 @@ export const useOrders = () => {
     }
   };
 
-
   const anularPedido = async (id) => {
-    if (!await showConfirm(`¿Está seguro de que desea anular este pedido?
+    if (!await showConfirm(
+      `¿Está seguro de que desea anular este pedido?
 
-      Esta acción no se puede deshacer.
+Esta acción no se puede deshacer.
 
-      • Toda la maquinaria será devuelta automáticamente al inventario.
-      • El pedido quedará bloqueado y no podrá modificarse.
-      • No será posible registrar devoluciones, cortes ni pagos.
+• Toda la maquinaria será devuelta automáticamente al inventario.
+• El pedido quedará bloqueado y no podrá modificarse.
+• No será posible registrar devoluciones, cortes ni pagos.
 
-      ¿Desea continuar?`)) return;
+¿Desea continuar?`
+    )) return;
     try {
       await orderService.anular(id);
-
       await cargarPedidos(
         pagination.page,
         pagination.limit,
         search
       );
-
       return {
         success: true,
         message: "Pedido anulado correctamente."
@@ -119,12 +117,12 @@ export const useOrders = () => {
       return {
         success: false,
         message:
+          error.response?.data?.error ||
           error.response?.data?.message ||
           "Error al anular el pedido."
       };
     }
   };
-
 
   useEffect(() => {
   cargarPedidos();
@@ -139,11 +137,9 @@ export const useOrders = () => {
     eliminarPedido,
     obtenerPedidoCompleto, 
     anularPedido,
-
     page,
     cambiarPagina,
     cambiarBusqueda,
     pagination
- 
   };
 };

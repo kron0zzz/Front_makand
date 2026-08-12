@@ -3,7 +3,7 @@ import { supplierService } from '../services/suppliersService';
 import { useAlertModal } from "../../../shared/alertModal";
 
 export const useSuppliers = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showAlert, showConfirm, showSuccess, showError } = useAlertModal();
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -55,10 +55,10 @@ export const useSuppliers = () => {
     await supplierService.actualizar(id, proveedor);
 
     await cargarProveedores();
-    await showAlert("Estado del proveedor actualizado correctamente.");
+    await showSuccess("Estado del proveedor actualizado correctamente.");
   } catch (err) {
     console.error(err);
-    await showAlert("No se pudo actualizar el estado.");
+    await showError("No se pudo actualizar el estado del proveedor.");
   }
 };
 
@@ -88,8 +88,10 @@ export const useSuppliers = () => {
       try {
         await supplierService.eliminar(id);
         setSuppliers(prev => prev.filter(s => s.supplier_id !== id));
+        await showSuccess("Proveedor eliminado correctamente.");
       } catch (err) {
         console.error("Error al eliminar:", err);
+        await showError("No se puede eliminar este proveedor. Verifica que no tenga pedidos asociados.");
       }
     }
   };
