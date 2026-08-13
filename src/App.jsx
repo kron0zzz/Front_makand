@@ -1,47 +1,30 @@
-import { useState, lazy, Suspense } from 'react';
+import { useState } from 'react';
+import { Sidebar } from './shared/components/sidebar/SideBar';
 import { AuthProvider } from "./shared/context/AuthContext";
 import { AlertModalProvider } from "./shared/alertModal";
+import CustomerPage from './features/customers/pages/CustomerPage/CustomerPage';
+import SupplierPage from './features/suppliers/pages/SupplierPage';
+import VehiculosPage from './features/vehicles/pages/VehiculosPage';
+import MachineryStatusPage from './features/machinery_status/pages/MachineryStatusPage';
+import MachineryCategoryPage from './features/machinery_category/pages/MachineryCategoryPage';
+import MachineryPage from './features/machinery/pages/MachineryPage';
+import PositionPage from './features/positions/pages/PositionPage';
+import EmployeePage from './features/employees/pages/EmployeePage';
+import PurchaseInvoicePage from './features/purchase_invoices/pages/PurchaseInvoicePage';
+import SubRentalPage from './features/sub_rental/pages/SubRentalPage';
+import OrderPage from './features/orders/pages/OrderPage';
+import ProjectsPage from './features/projects/pages/ProjectsPage';
+import ChargeTypesPage from './features/charge-types/pages/ChargeTypesPage';
+import MaintenancesPage from './features/maintenances/pages/MaintenancesPage';
+import UsersPage from './features/users/pages/UsersPage';
+import OrderStatusPage from './features/order-status/pages/OrderStatusPage';
+import OrderWorkspace from "./features/orders/components/OrderWorkspace/OrderWorkspace";
+import Dashboard from './features/dashboard/Dashboard'; 
+import RolePage from './features/roles/pages/RolePage'; 
 import LoginPage from './features/login/pages/loginPage';
+import ResetPasswordPage from "./features/login/pages/ResetPasswordPage";
 import './App.css';
 import './shared/alertModal/AlertModal.css';
-
-const Sidebar = lazy(() => import('./shared/components/sidebar/SideBar').then(module => ({ default: module.Sidebar })));
-
-const CustomerPage = lazy(() => import('./features/customers/pages/CustomerPage/CustomerPage'));
-const SupplierPage = lazy(() => import('./features/suppliers/pages/SupplierPage'));
-const VehiculosPage = lazy(() => import('./features/vehicles/pages/VehiculosPage'));
-const MachineryStatusPage = lazy(() => import('./features/machinery_status/pages/MachineryStatusPage'));
-const MachineryCategoryPage = lazy(() => import('./features/machinery_category/pages/MachineryCategoryPage'));
-const MachineryPage = lazy(() => import('./features/machinery/pages/MachineryPage'));
-const PositionPage = lazy(() => import('./features/positions/pages/PositionPage'));
-const EmployeePage = lazy(() => import('./features/employees/pages/EmployeePage'));
-const PurchaseInvoicePage = lazy(() => import('./features/purchase_invoices/pages/PurchaseInvoicePage'));
-const SubRentalPage = lazy(() => import('./features/sub_rental/pages/SubRentalPage'));
-const OrderPage = lazy(() => import('./features/orders/pages/OrderPage'));
-const OrderWorkspace = lazy(() => import('./features/orders/components/OrderWorkspace/OrderWorkspace'));
-const ProjectsPage = lazy(() => import('./features/projects/pages/ProjectsPage'));
-const ChargeTypesPage = lazy(() => import('./features/charge-types/pages/ChargeTypesPage'));
-const MaintenancesPage = lazy(() => import('./features/maintenances/pages/MaintenancesPage'));
-const UsersPage = lazy(() => import('./features/users/pages/UsersPage'));
-const OrderStatusPage = lazy(() => import('./features/order-status/pages/OrderStatusPage'));
-const Dashboard = lazy(() => import('./features/dashboard/Dashboard'));
-const RolePage = lazy(() => import('./features/roles/pages/RolePage'));
-const ResetPasswordPage = lazy(() => import('./features/login/pages/ResetPasswordPage'));
-
-function LoadingFallback() {
-  return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-      color: '#6b7280',
-      fontSize: '14px'
-    }}>
-      Cargando...
-    </div>
-  );
-}
 
 function AppContent() {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
@@ -52,6 +35,10 @@ function AppContent() {
     const savedUser = localStorage.getItem("user");
     return savedUser ? JSON.parse(savedUser) : { name: "Usuario", role: "Sin rol" };
   });
+
+    console.log("DEBUG - Usuario actual:", user);
+
+
 
   const handleLogin = () => {
     setIsAuthenticated(true);
@@ -120,20 +107,16 @@ function AppContent() {
 
   return (
     <div className="app-layout" style={{ display: 'flex', minHeight: '100vh' }}>
-      <Suspense fallback={<div style={{ width: 280, minHeight: '100vh', background: '#ffffff', borderRight: '1px solid #e5e7eb' }} />}>
-        <Sidebar
-          currentView={currentView}
-          onViewChange={setCurrentView}
-          collapsed={collapsed}
-          onToggleCollapse={() => setCollapsed(!collapsed)}
-          onLogout={handleLogout}
-          user={user} 
-        />
-      </Suspense>
+      <Sidebar
+        currentView={currentView}
+        onViewChange={setCurrentView}
+        collapsed={collapsed}
+        onToggleCollapse={() => setCollapsed(!collapsed)}
+        onLogout={handleLogout}
+        user={user} 
+      />
       <main style={{ flex: 1, background: '#f4f4f4' }}>
-        <Suspense fallback={<LoadingFallback />}>
-          {renderContent()}
-        </Suspense>
+        {renderContent()}
       </main>
     </div>
   );
@@ -147,9 +130,7 @@ function App() {
     <AuthProvider>
       <AlertModalProvider>
       {hasResetToken ? (
-        <Suspense fallback={<LoadingFallback />}>
-          <ResetPasswordPage />
-        </Suspense>
+        <ResetPasswordPage />
       ) : (
         <AppContent />
       )}
