@@ -21,7 +21,7 @@ const SubRentalForm = ({ isOpen, onClose, formData, setFormData, isEditing, onSu
 
         const [resSuppliers, resMachines] = await Promise.all([
           fetch('http://localhost:3000/api/suppliers', { method: 'GET', headers }),
-          fetch('http://localhost:3000/api/machines', { method: 'GET', headers })
+          fetch('http://localhost:3000/api/stock', { method: 'GET', headers })
         ]);
 
         if (resSuppliers.ok) {
@@ -48,7 +48,7 @@ const SubRentalForm = ({ isOpen, onClose, formData, setFormData, isEditing, onSu
     if (isOpen && isEditing && (machines.length > 0 || suppliers.length > 0)) {
       setFormData(prev => ({
         ...prev,
-        machinery_id: prev.machinery_id ? parseInt(prev.machinery_id, 10) : '',
+        stock_id: prev.stock_id ? parseInt(prev.stock_id, 10) : '',
         supplier_id: prev.supplier_id ? parseInt(prev.supplier_id, 10) : ''
       }));
     }
@@ -60,7 +60,7 @@ const SubRentalForm = ({ isOpen, onClose, formData, setFormData, isEditing, onSu
     const { name, value } = e.target;
     
     let valorProcesado = value;
-    if (name === 'supplier_id' || name === 'machinery_id') {
+    if (name === 'supplier_id' || name === 'stock_id') {
       valorProcesado = value === '' ? '' : parseInt(value, 10);
     } else if (name === 'sub_rental_status') {
       valorProcesado = value === 'true';
@@ -117,16 +117,16 @@ const SubRentalForm = ({ isOpen, onClose, formData, setFormData, isEditing, onSu
             <div className="form-group">
               <label className="form-label">Maquinaria Asignada *</label>
               <select
-                name="machinery_id"
+                name="stock_id"
                 className="form-input"
-                value={formData.machinery_id !== undefined && formData.machinery_id !== null ? formData.machinery_id : ''}
+                value={formData.stock_id !== undefined && formData.stock_id !== null ? formData.stock_id : ''}
                 onChange={handleChange}
                 required
               >
                 <option value="">Seleccione la maquinaria...</option>
                 {machines.map((m) => {
                   // Evaluamos dinámicamente cómo se llama el ID del elemento del catálogo
-                  const currentId = m.machinery_id || m.id || m.id_machinery;
+                  const currentId = m.stock_id || m.id || m.id_machinery;
                   return (
                     <option key={currentId} value={Number(currentId)}>
                       {m.machinery_name} {m.machinery_model ? `(${m.machinery_model})` : ''}

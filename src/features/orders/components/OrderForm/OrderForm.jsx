@@ -487,6 +487,8 @@ const OrderForm = ({
                 required
               />
              </div>
+               {/* el descuento no se va a hacer(porque es innecesario y que hp pereza),
+                   dejen esto así comentado
 
              <div>
                <label className="form-label">Descuento (COP)</label>
@@ -500,6 +502,7 @@ const OrderForm = ({
                />
              </div>
 
+             */}
             <div className="form-full-width">
               <label className="form-label">Descripción</label>
               <textarea
