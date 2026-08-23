@@ -3,7 +3,7 @@ import { vehiculosService } from '../services/vehiculosService';
 import { useAlertModal } from "../../../shared/alertModal";
 
 export const useVehicles = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showAlert, showConfirm, showSuccess, showError } = useAlertModal();
   const [vehiculos, setVehiculos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -37,10 +37,10 @@ export const useVehicles = () => {
           estado: nuevoEstado
         });
         await cargarVehiculos();
-        await showAlert("Estado del vehículo actualizado correctamente.");
+        await showSuccess("Estado del vehículo actualizado correctamente.");
       } catch (err) {
         console.error("Error al actualizar estado:", err);
-        await showAlert("Error al actualizar el estado del vehículo.");
+        await showError("Error al actualizar el estado del vehículo.");
       }
     }
   };
@@ -50,8 +50,10 @@ export const useVehicles = () => {
       try {
         await vehiculosService.eliminar(id);
         setVehiculos(prev => prev.filter(v => v.id !== id));
+        await showSuccess("Vehículo eliminado correctamente.");
       } catch (err) {
         console.error("Error al eliminar:", err);
+        await showError("No se puede eliminar este vehículo. Verifica que no tenga datos asociados.");
       }
     }
   };

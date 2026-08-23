@@ -12,7 +12,7 @@ import { useAlertModal } from "../../../shared/alertModal";
 
 
 const ProjectsPage = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showConfirm, showSuccess, showError } = useAlertModal();
   const { 
     projects, 
     cargarProyectos, 
@@ -60,13 +60,13 @@ const ProjectsPage = () => {
 
         if (response.ok) {
           await cargarProyectos();
-          await showAlert("Estado del proyecto actualizado correctamente.");
+          await showSuccess("Estado del proyecto actualizado correctamente.");
         } else {
-          await showAlert("No se pudo actualizar el estado del Proyecto.");
+          await showError("No se pudo actualizar el estado del proyecto.");
         }
       } catch (error) {
         console.error("Error al cambiar estado:", error);
-        await showAlert("Error de conexión con el servidor.");
+        await showError("Error de conexión con el servidor.");
       }
     }
   };

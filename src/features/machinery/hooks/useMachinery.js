@@ -3,7 +3,7 @@ import { machineryService } from '../services/machineryService';
 import { useAlertModal } from "../../../shared/alertModal";
 
 export const useMachinery = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showAlert, showConfirm, showSuccess, showError } = useAlertModal();
   const [machineries, setMachineries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -84,8 +84,10 @@ export const useMachinery = () => {
     try {
       await machineryService.eliminar(id);
       setMachineries(prev => prev.filter(item => item.machinery_id !== id));
-    } catch {
-      await showAlert("No se pudo eliminar la maquinaria.");
+      await showSuccess("Maquinaria eliminada correctamente.");
+    } catch (err) {
+      await showError("No se puede eliminar esta maquinaria. Verifica que no tenga pedidos o datos asociados.");
+
     }
   };
 
@@ -93,9 +95,10 @@ export const useMachinery = () => {
     try {
       await machineryService.crearCompleta(maquinariaData, stockData);
       await cargarMaquinarias();
+      await showSuccess("Maquinaria creada correctamente.");
       return true;
     } catch (err) {
-      await showAlert(err.message);
+      await showError(err.message || "No se pudo crear la maquinaria.");
       return false;
     }
   };
@@ -104,9 +107,10 @@ export const useMachinery = () => {
     try {
       await machineryService.actualizar(id, maquinariaData);
       await cargarMaquinarias();
+      await showSuccess("Maquinaria actualizada correctamente.");
       return true;
     } catch (err) {
-      await showAlert(err.message);
+      await showError(err.message || "No se pudo actualizar la maquinaria.");
       return false;
     }
   };

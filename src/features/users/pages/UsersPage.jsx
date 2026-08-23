@@ -13,7 +13,7 @@ import useDebounce from "../../../shared/hooks/useDebounce";
 import { useAlertModal } from "../../../shared/alertModal";
 
 export const UsersPage = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showConfirm, showSuccess, showError } = useAlertModal();
   const { 
     users, 
     cargarUsers, 
@@ -90,10 +90,10 @@ export const UsersPage = () => {
       };
       await userService.actualizar(user.user_id, datosActualizados);
       await cargarUsers();
-      await showAlert("Estado del usuario actualizado correctamente.");
+      await showSuccess("Estado del usuario actualizado correctamente.");
     } catch (error) {
       console.error("Error al cambiar el estado del usuario:", error);
-      await showAlert("No se pudo actualizar el estado.");
+      await showError("No se pudo actualizar el estado del usuario.");
     }
   };
 

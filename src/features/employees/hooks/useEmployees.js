@@ -3,7 +3,7 @@ import { employeeService } from '../services/employeeService';
 import { useAlertModal } from "../../../shared/alertModal";
 
 export const useEmployees = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showAlert, showConfirm, showSuccess, showError } = useAlertModal();
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -53,10 +53,10 @@ export const useEmployees = () => {
       await employeeService.actualizar(id, empleado);
 
       await cargarEmpleados();
-      await showAlert("Estado del empleado actualizado correctamente.");
+      await showSuccess("Estado del empleado actualizado correctamente.");
     } catch (err) {
       console.error(err);
-      await showAlert("No se pudo actualizar el estado.");
+      await showError("No se pudo actualizar el estado del empleado.");
     }
   };
 
@@ -84,9 +84,10 @@ export const useEmployees = () => {
     try {
       await employeeService.eliminar(id);
       setEmployees(prev => prev.filter(e => e.employee_id !== id));
+      await showSuccess("Empleado eliminado correctamente.");
     } catch (err) {
       console.error("Error al eliminar empleado:", err);
-      await showAlert("No se pudo eliminar el empleado.");
+      await showError("No se puede eliminar este empleado. Verifica que no tenga datos asociados activos.");
     }
   };
 

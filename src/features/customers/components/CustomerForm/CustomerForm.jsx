@@ -4,7 +4,7 @@ import './CustomerForm.css';
 import { useAlertModal } from "../../../../shared/alertModal";
 
 const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showSuccess, showError } = useAlertModal();
   const { cargarClientes } = useCustomers();
 
   if (!isOpen) return null;
@@ -68,16 +68,16 @@ const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
       });
 
       if (response.ok) {
-        await showAlert(isEditing ? '¡Cliente actualizado con éxito!' : '¡Cliente creado con éxito!');
+        await showSuccess(isEditing ? '¡Cliente actualizado con éxito!' : '¡Cliente creado con éxito!');
         await cargarClientes();
         onClose();
       } else {
         const errorData = await response.json();
-        await showAlert(`Error del servidor: ${errorData.error || 'No se pudo procesar la solicitud'}`);
+        await showError(`Error del servidor: ${errorData.error || 'No se pudo procesar la solicitud'}`);
       }
     } catch (error) {
       console.error("Error en la petición:", error);
-      await showAlert("Error de conexión: Asegúrate de que el servidor de Makand esté corriendo.");
+      await showError("Error de conexión: Asegúrate de que el servidor de Makand esté corriendo.");
     }
   };
 

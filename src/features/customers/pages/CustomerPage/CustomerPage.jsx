@@ -13,7 +13,7 @@ import useDebounce from "../../../../shared/hooks/useDebounce";
 import { useAlertModal } from "../../../../shared/alertModal";
 
 const CustomerPage = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showAlert, showConfirm, showSuccess, showError } = useAlertModal();
   const { 
     customers, 
     cargarClientes, 
@@ -52,7 +52,7 @@ const CustomerPage = () => {
   
       } catch (error) {
         console.error(error);
-        await showAlert("No se pudo cargar la información del cliente.");
+        await showError("No se pudo cargar la información del cliente.");
       }
     };
 
@@ -61,15 +61,15 @@ const CustomerPage = () => {
     setIsEditing(true);
     setFormData({
       customer_id: customer.customer_id,
-      customerName: customer.customer_name,
-      tipoDocumento: customer.customer_document_type,
-      documento: customer.customer_document_number,
-      tipoOrganizacion: customer.organization_type,
-      telefono: customer.customer_phone,
-      email: customer.customer_email,
-      direccion: customer.customer_address,
-      estado: customer.customer_status,
-      representanteLegal: customer.legal_representative
+      customer_name: customer.customer_name,
+      organization_type: customer.organization_type,
+      customer_document_type: customer.customer_document_type,
+      customer_document_number: customer.customer_document_number,
+      customer_phone: customer.customer_phone,
+      customer_email: customer.customer_email,
+      customer_address: customer.customer_address,
+      customer_status: customer.customer_status,
+      legal_representative: customer.legal_representative
     });
     setMostrarModalForm(true);
   };

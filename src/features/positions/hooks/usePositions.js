@@ -3,7 +3,7 @@ import { PositionService } from '../services/PositionsService';
 import { useAlertModal } from "../../../shared/alertModal";
 
 export const usePositions = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showConfirm, showSuccess, showError } = useAlertModal();
   const [positions, setPositions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -60,10 +60,10 @@ export const usePositions = () => {
 
     try {
       await PositionService.eliminar(id);
-      await showAlert("Cargo eliminado correctamente");
+      await showSuccess("Cargo eliminado correctamente.");
       await cargarCargos();
     } catch (err) {
-      await showAlert(err.response?.data?.message || "Error al intentar eliminar.");
+      await showError(err.response?.data?.message || "No se puede eliminar este cargo.");
     }
   };
 

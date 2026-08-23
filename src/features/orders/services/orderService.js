@@ -100,7 +100,10 @@ export const orderService = {
     );
 
     if (!response.ok) {
+      const error =
+        await response.json();
       throw new Error(
+        error.error ||
         "Error eliminando pedido"
       );
     }

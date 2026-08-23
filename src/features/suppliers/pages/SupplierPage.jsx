@@ -13,7 +13,7 @@ import useDebounce from "../../../shared/hooks/useDebounce";
 import { useAlertModal } from "../../../shared/alertModal";
 
 const SupplierPage = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showConfirm, showSuccess, showError } = useAlertModal();
   const { 
     suppliers, 
     cargarProveedores, 
@@ -52,7 +52,7 @@ const SupplierPage = () => {
 
     } catch (error) {
       console.error(error);
-      await showAlert("No se pudo cargar la información del proveedor.");
+      await showError("No se pudo cargar la información del proveedor.");
     }
   };
 

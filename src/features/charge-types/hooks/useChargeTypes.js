@@ -3,7 +3,7 @@ import { chargeTypeService } from '../services/chargeTypeService';
 import { useAlertModal } from "../../../shared/alertModal";
 
 export const useChargeTypes = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showConfirm, showSuccess, showError } = useAlertModal();
   const [chargeTypes, setChargeTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -52,12 +52,13 @@ export const useChargeTypes = () => {
 
 
   const eliminarTipoCobro = useCallback(async (id) => {
+    if (!await showConfirm('¿Estás seguro de que deseas eliminar este tipo de cobro?')) return;
     try {
       await chargeTypeService.eliminar(id);
-      // Actualizamos el estado localmente filtrando el elemento eliminado
       setChargeTypes(prev => prev.filter(item => item.charge_type_id !== id));
+      await showSuccess("Tipo de cobro eliminado correctamente.");
     } catch (err) {
-      await showAlert(err.message || 'Error al intentar eliminar el tipo de cobro');
+      await showError(err.message || 'No se puede eliminar este tipo de cobro.');
     }
   }, []);
 
