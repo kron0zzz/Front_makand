@@ -17,8 +17,10 @@ import {
 
 } from "../services/workspaceService";
 
+import { orderService } from "../services/orderService";
+
 export const useWorkspace = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showConfirm } = useAlertModal();
 
     const [workspace, setWorkspace] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -95,6 +97,37 @@ export const useWorkspace = () => {
             }
 
         };
+
+
+    const anularPedido = async (orderId) => {
+        if (!await showConfirm(
+          `¿Está seguro de que desea anular este pedido?
+
+          Esta acción no se puede deshacer.
+
+          • Toda la maquinaria será devuelta automáticamente al inventario.
+          • El pedido quedará bloqueado y no podrá modificarse.
+          • No será posible registrar devoluciones, cortes ni pagos.
+
+          ¿Desea continuar?`
+        )) return;
+        try {
+          await orderService.anular(orderId);
+          await cargarWorkspace(orderId);
+          return {
+            success: true,
+            message: "Pedido anulado correctamente."
+          };
+        } catch (error) {
+          return {
+            success: false,
+            message:
+              error.response?.data?.error ||
+              error.response?.data?.message ||
+              "Error al anular el pedido."
+          };
+        }
+      };
 
 
 
@@ -266,6 +299,7 @@ Esta acción no se puede deshacer.
         error,
         cargarWorkspace,
         cerrarPedido,
+        anularPedido,
 
         registrarDevolucion,
         editarDevolucion,

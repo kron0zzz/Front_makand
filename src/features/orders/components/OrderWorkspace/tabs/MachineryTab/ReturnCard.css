@@ -40,6 +40,12 @@
     border:1px solid #e5e7eb;
 }
 
+.return-actions button:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+    pointer-events:none;
+}
+
 .return-actions button:hover{
     background:#f3f4f6;
 }

@@ -10,6 +10,8 @@ const PaymentsTab = ({paymentsData,onCreatePayment, order}) => {
 
     const [showPaymentForm, setShowPaymentForm] = useState(false);
 
+    const isBlocked = order?.order_status_id === 5 || order?.order_status_id === 4;
+
     const {
 
         payments = [],
@@ -87,6 +89,7 @@ const PaymentsTab = ({paymentsData,onCreatePayment, order}) => {
                 <button
                     className="btn-payment"
                     onClick={() => setShowPaymentForm(true)}
+                    disabled={isBlocked}
                 >
                     <Plus size={18}/>
                     Registrar Abono

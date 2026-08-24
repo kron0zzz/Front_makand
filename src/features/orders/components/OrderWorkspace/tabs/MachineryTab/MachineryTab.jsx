@@ -3,6 +3,8 @@ import "./MachineryTab.css";
 
 const MachineryTab = ({ order, onRegisterReturn, onDeleteReturn }) => {
 
+  const isBlocked = order?.order_status_id === 5 || order?.order_status_id === 4;
+
   if (!order?.details?.length) {
     return (
       <div className="empty-machinery">
@@ -26,6 +28,7 @@ const MachineryTab = ({ order, onRegisterReturn, onDeleteReturn }) => {
             detail={detail}
             onRegisterReturn={onRegisterReturn}
             onDeleteReturn={onDeleteReturn}
+            isBlocked={isBlocked}
           />
 
         ))}

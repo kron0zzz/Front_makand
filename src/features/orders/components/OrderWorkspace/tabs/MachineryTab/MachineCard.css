@@ -123,6 +123,13 @@ Esto es solo una pequeña propuesta para mostrar los datos de cada card (se pued
     transition:.2s;
 }
 
+.btn-return:disabled,
+.btn-history:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+    pointer-events:none;
+}
+
 .btn-return{
     background:#ff6b35;
     color:white;
