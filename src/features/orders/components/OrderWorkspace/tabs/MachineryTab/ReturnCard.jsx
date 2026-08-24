@@ -3,7 +3,7 @@ import { formatDate } from "../../../../../../shared/utils/dateUtils";
 import { useAlertModal } from "../../../../../../shared/alertModal";
 import "./ReturnCard.css";
 
-const ReturnCard = ({ returnData, additionalCharges = [], onDeleteReturn }) => {
+const ReturnCard = ({ returnData, additionalCharges = [], onDeleteReturn, isBlocked }) => {
     console.log("Datos de la devolución recibida en la card:", returnData);
     const { showAlert } = useAlertModal();
 
@@ -56,10 +56,10 @@ const ReturnCard = ({ returnData, additionalCharges = [], onDeleteReturn }) => {
             </div>
 
             <div className="return-actions">
-                <button className="btn-icon">
+                <button className="btn-icon" disabled={isBlocked}>
                     <Pencil size={16} />
                 </button>
-                <button className="btn-icon delete" onClick={handleDelete}>
+                <button className="btn-icon delete" onClick={handleDelete} disabled={isBlocked}>
                     <Trash2 size={16} />
                 </button>
             </div>

@@ -14,7 +14,6 @@ const OrderWorkspace = ({ orderId, onBack }) => {
     const [activeTab, setActiveTab] = useState("info");
 
     const {
-
         workspace,
         loading,
         error,
@@ -22,6 +21,7 @@ const OrderWorkspace = ({ orderId, onBack }) => {
         registrarDevolucion,
         eliminarDevolucion,
         cerrarPedido,
+        anularPedido,
         
         cuts,
         cargarCortes,
@@ -106,6 +106,7 @@ const OrderWorkspace = ({ orderId, onBack }) => {
                         <InfoTab
                             order={workspace}
                             onCloseOrder={cerrarPedido}
+                            onAnularOrder={anularPedido}
                         />
 
                     </div>

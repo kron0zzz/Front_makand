@@ -1,5 +1,5 @@
 import { Plus} from "lucide-react";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import { formatDate } from "../../../../../../shared/utils/dateUtils";
 
 import "./CutsTab.css";
@@ -8,8 +8,9 @@ import CutForm from "./CutForm";
 
 const CutsTab = ({cuts, order,onCreateCut}) => {
 
-
     const [showCutForm, setShowCutForm] = useState(false);
+
+    const isBlocked = order?.order_status_id === 5 || order?.order_status_id === 4;
 
   
     const totalAmount =
@@ -36,6 +37,7 @@ const CutsTab = ({cuts, order,onCreateCut}) => {
                     className="btn-cut"
                     //onClick={onCreateCut}
                     onClick={() => setShowCutForm(true)}
+                    disabled={isBlocked}
                 >
 
                     <Plus size={18}/>
