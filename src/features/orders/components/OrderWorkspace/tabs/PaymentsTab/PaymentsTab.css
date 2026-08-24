@@ -29,6 +29,12 @@
     transition:.2s;
 }
 
+.btn-payment:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+    pointer-events:none;
+}
+
 .btn-payment:hover{
     background:#f35b25;
 }

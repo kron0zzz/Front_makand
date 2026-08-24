@@ -11,8 +11,8 @@ import {
 import { formatDate } from "../../../../../../shared/utils/dateUtils";
 import { useAlertModal } from "../../../../../../shared/alertModal";
 
-const InfoTab = ({ order, onCloseOrder}) => {
-  const { showAlert, showConfirm } = useAlertModal();
+const InfoTab = ({ order, onCloseOrder, onAnularOrder }) => {
+  const { showAlert } = useAlertModal();
 
     const totalPedido =
         order.details?.reduce(
@@ -66,6 +66,26 @@ const InfoTab = ({ order, onCloseOrder}) => {
 
             await showAlert(
                 `No fue posible cerrar el pedido.\n\n${result.message}`
+            );
+
+        }
+
+    };
+
+    const handleAnularOrder = async () => {
+
+        const result = await onAnularOrder(order.order_id);
+
+        if (!result) return;
+
+        if (result.success) {
+
+            await showAlert(result.message);
+
+        } else {
+
+            await showAlert(
+                `No fue posible anular el pedido.\n\n${result.message}`
             );
 
         }
@@ -144,7 +164,7 @@ const InfoTab = ({ order, onCloseOrder}) => {
                         ?
                         (
                             <div className="cancelled-status">
-                                Pedido cancelado
+                                Pedido anulado
                             </div>
                         )
                         :
@@ -353,24 +373,44 @@ const InfoTab = ({ order, onCloseOrder}) => {
                 </div>
 
                 <p className="actions-description">
-                    Una vez cerrado, el pedido quedará finalizado y no será posible registrar nuevas devoluciones, cortes o pagos.
+                    Una vez cerrado o anulado, el pedido quedará finalizado y no será posible registrar nuevas devoluciones, cortes o pagos.
                 </p>
 
-                <button
-                    className={
-                        order.order_status_id === 4
-                            ? "btn-close-order disabled"
-                            : "btn-close-order"
-                    }
-                    disabled={order.order_status_id === 4}
-                    onClick={handleCloseOrder}
-                >
-                    {
-                        order.order_status_id === 4
-                            ? "Pedido cerrado"
-                            : "Cerrar pedido"
-                    }
-                </button>
+                <div className="actions-buttons">
+
+                    <button
+                        className={
+                            order.order_status_id === 4 || order.order_status_id === 5
+                                ? "btn-close-order disabled"
+                                : "btn-close-order"
+                        }
+                        disabled={order.order_status_id === 4 || order.order_status_id === 5}
+                        onClick={handleCloseOrder}
+                    >
+                        {
+                            order.order_status_id === 4
+                                ? "Pedido cerrado"
+                                : "Cerrar pedido"
+                        }
+                    </button>
+
+                    <button
+                        className={
+                            order.order_status_id === 4 || order.order_status_id === 5
+                                ? "btn-cancel-order disabled"
+                                : "btn-cancel-order"
+                        }
+                        disabled={order.order_status_id === 4 || order.order_status_id === 5}
+                        onClick={handleAnularOrder}
+                    >
+                        {
+                            order.order_status_id === 5
+                                ? "Pedido anulado"
+                                : "Anular pedido"
+                        }
+                    </button>
+
+                </div>
 
             </section>
 

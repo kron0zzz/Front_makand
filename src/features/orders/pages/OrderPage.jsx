@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import {
   Plus,
   Search,
-  Eye,
   ArrowRightCircle,
   Ban
 } from "lucide-react";
@@ -12,7 +11,6 @@ import { useAuth } from "../../../shared/context/AuthContext";
 import { formatDate } from "../../../shared/utils/dateUtils";
 
 import OrderForm from "../components/OrderForm/OrderForm";
-import OrderDetail from "../components/OrderDetail/OrderDetail";
 
 import Pagination from "../../../shared/components/pagination/Pagination";
 import useDebounce from "../../../shared/hooks/useDebounce";
@@ -21,14 +19,13 @@ import "./OrderPage.css";
 import { useAlertModal } from "../../../shared/alertModal";
 
 const OrderPage = ({ onOpenWorkspace }) => {
-  const { showAlert, showSuccess, showError } = useAlertModal();
+  const { showAlert, showSuccess } = useAlertModal();
 
   const { hasPermission } = useAuth();
 
   const {
     orders,
     cargarPedidos,
-    obtenerPedidoCompleto,
     anularPedido,
 
     page,
@@ -41,27 +38,6 @@ const OrderPage = ({ onOpenWorkspace }) => {
   const [busqueda, setBusqueda] = useState("");
   const [formData, setFormData] = useState({});
   const [mostrarModalForm, setMostrarModalForm] = useState(false);
-  const [mostrarModalDetalle, setMostrarModalDetalle] = useState(false);
-  const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
-
-  const abrirDetallePedido = async (orderId) => {
-
-    try {
-
-      const pedidoCompleto =
-        await obtenerPedidoCompleto(orderId);
-
-      setPedidoSeleccionado(pedidoCompleto);
-      setMostrarModalDetalle(true);
-
-    } catch (error) {
-
-      console.error(error);
-      await showError("No se pudo cargar el detalle del pedido");
-
-    }
-
-  };
 
   const handleAnularPedido = async (orderId) => {
 
@@ -223,32 +199,19 @@ const OrderPage = ({ onOpenWorkspace }) => {
 
                     <td>
 
-                      {order.order_status_name}
+                      <span className={`status-badge status-${order.order_status_id}`}>
+                        {order.order_status_name}
+                      </span>
 
                     </td>
 
                     <td className="actions-cell">
-
-                      <button
-                        className="action-btn view"
-                        title="Ver"
-                        onClick={() =>
-                          abrirDetallePedido(
-                            order.order_id
-                          )
-                        }
-                      >
-
-                        <Eye size={18} />
-
-                      </button>
 
                       {hasPermission("Gestionar Pedido") && (
 
                         <button
                           className="action-btn"
                           title="Gestionar Pedido"
-                          disabled={isCancelled}
                           onClick={() =>
                             onOpenWorkspace(
                               order.order_id
@@ -333,14 +296,6 @@ const OrderPage = ({ onOpenWorkspace }) => {
         }}
         formData={formData}
         setFormData={setFormData}
-      />
-
-      <OrderDetail
-        isOpen={mostrarModalDetalle}
-        onClose={() =>
-          setMostrarModalDetalle(false)
-        }
-        order={pedidoSeleccionado}
       />
 
     </div>

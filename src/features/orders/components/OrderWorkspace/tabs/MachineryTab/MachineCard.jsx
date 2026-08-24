@@ -17,7 +17,7 @@ import ReturnCard from "./ReturnCard";
 
 import "./MachineCard.css";
 
-const MachineCard = ({ detail, onRegisterReturn, onDeleteReturn }) => {
+const MachineCard = ({ detail, onRegisterReturn, onDeleteReturn, isBlocked }) => {
 
     const [open,setOpen]=useState(false);
     const [showReturnForm, setShowReturnForm] = useState(false);
@@ -202,6 +202,7 @@ const MachineCard = ({ detail, onRegisterReturn, onDeleteReturn }) => {
                         <button
                             className="btn-return"
                             onClick={() => setShowReturnForm(true)}
+                            disabled={isBlocked}
                         >
                             <Undo2 size={17}/>
                             Registrar devolución
@@ -211,6 +212,7 @@ const MachineCard = ({ detail, onRegisterReturn, onDeleteReturn }) => {
                 <button
                     className="btn-history"
                     onClick={()=>setOpen(!open)}
+                    disabled={isBlocked}
                 >
                     {
                         open
@@ -245,6 +247,7 @@ const MachineCard = ({ detail, onRegisterReturn, onDeleteReturn }) => {
                                     // LE PASAS LOS CARGOS ADICIONALES AQUÍ DIRECTO:
                                     additionalCharges={ret.additional_charges || []}
                                     onDeleteReturn={(returnId) => onDeleteReturn(detail.order_id, returnId)}
+                                    isBlocked={isBlocked}
                                 />
                             ))
                         }
