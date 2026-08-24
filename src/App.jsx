@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import { Sidebar } from './shared/components/sidebar/SideBar';
 import { AuthProvider } from "./shared/context/AuthContext";
 import { AlertModalProvider } from "./shared/alertModal";
@@ -27,8 +28,8 @@ import './App.css';
 import './shared/alertModal/AlertModal.css';
 
 function AppContent() {
+  const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
-  const [currentView, setCurrentView] = useState('dashboard');
   const [collapsed, setCollapsed] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [user, setUser] = useState(() => {
@@ -36,9 +37,7 @@ function AppContent() {
     return savedUser ? JSON.parse(savedUser) : { name: "Usuario", role: "Sin rol" };
   });
 
-    console.log("DEBUG - Usuario actual:", user);
-
-
+  console.log("DEBUG - Usuario actual:", user);
 
   const handleLogin = () => {
     setIsAuthenticated(true);
@@ -55,52 +54,6 @@ function AppContent() {
     setUser({ name: "Usuario", role: "Sin rol" });
   };
 
-  const renderContent = () => {
-    switch (currentView) {
-      case 'dashboard': return <Dashboard />;
-      case 'clientes': return <CustomerPage />;
-      case 'proveedores': return <SupplierPage />;
-      case 'vehiculos': return <VehiculosPage />;
-      case 'estados_maquinaria': return <MachineryStatusPage />;
-      case 'categorias_maquinaria': return <MachineryCategoryPage />;
-      case 'maquinaria': return <MachineryPage />;
-      case 'cargos': return <PositionPage />;
-      case 'empleados': return <EmployeePage />;
-      case 'facturas_compra': return <PurchaseInvoicePage />;
-      case 'subalquileres': return <SubRentalPage />;
-      
-      case "pedidos":
-        return (
-          <OrderPage
-              onOpenWorkspace={(orderId) => {
-                  setSelectedOrderId(orderId);
-                  setCurrentView("pedido-workspace");
-              }}
-          />
-        );
-
-      case "pedido-workspace":
-        return (
-          <OrderWorkspace
-              orderId={selectedOrderId}
-              onBack={() => {
-                  setSelectedOrderId(null);
-                  setCurrentView("pedidos");
-              }}
-          />
-        );
-      
-      case 'proyectos': return <ProjectsPage />;
-      case 'tipos-cobro': return <ChargeTypesPage />;
-      case 'mantenimientos': return <MaintenancesPage />;
-      case 'usuarios': return <UsersPage />;
-      case 'estados-pedido': return <OrderStatusPage />;
-      case 'roles': return <RolePage />;
-      
-      default: return <div className="p-6"><h1>Seleccione una opción</h1></div>;
-    }
-  };
-
   if (!isAuthenticated) {
     return <LoginPage onLogin={handleLogin} />;
   }
@@ -108,22 +61,56 @@ function AppContent() {
   return (
     <div className="app-layout" style={{ display: 'flex', minHeight: '100vh' }}>
       <Sidebar
-        currentView={currentView}
-        onViewChange={setCurrentView}
         collapsed={collapsed}
         onToggleCollapse={() => setCollapsed(!collapsed)}
         onLogout={handleLogout}
-        user={user} 
+        user={user}
+        onNavigate={navigate}
       />
       <main style={{ flex: 1, background: '#f4f4f4' }}>
-        {renderContent()}
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/clientes" element={<CustomerPage />} />
+          <Route path="/proveedores" element={<SupplierPage />} />
+          <Route path="/vehiculos" element={<VehiculosPage />} />
+          <Route path="/estados-maquinaria" element={<MachineryStatusPage />} />
+          <Route path="/categorias-maquinaria" element={<MachineryCategoryPage />} />
+          <Route path="/maquinaria" element={<MachineryPage />} />
+          <Route path="/cargos" element={<PositionPage />} />
+          <Route path="/empleados" element={<EmployeePage />} />
+          <Route path="/facturas-compra" element={<PurchaseInvoicePage />} />
+          <Route path="/subalquileres" element={<SubRentalPage />} />
+          <Route path="/pedidos" element={
+            <OrderPage
+              onOpenWorkspace={(orderId) => {
+                setSelectedOrderId(orderId);
+                navigate("/pedido-workspace");
+              }}
+            />
+          } />
+          <Route path="/pedido-workspace" element={
+            <OrderWorkspace
+              orderId={selectedOrderId}
+              onBack={() => {
+                setSelectedOrderId(null);
+                navigate("/pedidos");
+              }}
+            />
+          } />
+          <Route path="/proyectos" element={<ProjectsPage />} />
+          <Route path="/tipos-cobro" element={<ChargeTypesPage />} />
+          <Route path="/mantenimientos" element={<MaintenancesPage />} />
+          <Route path="/usuarios" element={<UsersPage />} />
+          <Route path="/estados-pedido" element={<OrderStatusPage />} />
+          <Route path="/roles" element={<RolePage />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
       </main>
     </div>
   );
 }
 
 function App() {
-  // Verificamos si la URL actual trae un token de recuperación de contraseña
   const queryParams = new URLSearchParams(window.location.search);
   const hasResetToken = queryParams.has("token");
   return (
