@@ -43,5 +43,12 @@ export const machineryService = {
       data: stocksFiltrados,
       pagination: data.pagination || { page: 1, totalPages: 1, total: stocksFiltrados.length }
     };
+  },
+
+  generarPdf: async (id) => {
+    const response = await apiClient.get(`/machines/${id}/pdf`, {
+      responseType: 'blob',
+    });
+    return response.data;
   }
 };

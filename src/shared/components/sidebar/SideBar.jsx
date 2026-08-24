@@ -33,19 +33,20 @@ const menuItems = [
         name: "Maquinaria", icon: Wrench, key: "maquinaria-parent",
         submenu: [
           { name: "Maquinaria", icon: Wrench, key: "maquinaria" },
-          { name: "Vehículos", icon: Truck, key: "vehiculos" },
-          { name: "Estado Máquina", icon: Wrench, key: "estados_maquinaria" },
+          /*{ name: "Vehículos", icon: Truck, key: "vehiculos" },
+          { name: "Estado Máquina", icon: Wrench, key: "estados_maquinaria" },*/
           { name: "Categorías Máquina", icon: FileText, key: "categorias_maquinaria" },
           { name: "Mantenimientos", icon: Wrench, key: "mantenimientos" },
         ]
       },
-      {
+      /*{
         name: "Pedidos", icon: FileText, key: "pedido-parent",
         submenu: [
           { name: "Pedidos", icon: FileText, key: "pedidos" },
           { name: "Estados de Pedido", icon: ShoppingCart, key: "estados-pedido" },
         ]
-      },
+      },*/
+      { name: "Pedidos", icon: FileText, key: "pedidos" },
     ]
   },
   {
