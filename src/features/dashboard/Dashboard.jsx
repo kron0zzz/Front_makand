@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend, LineChart, Line, AreaChart, Area
+  PieChart, Pie, Cell, Legend, AreaChart, Area
 } from 'recharts';
 import {
-  Users, Briefcase, ShoppingCart, ClipboardList, DollarSign,
-  FolderOpen, Car, Wrench, Package, TrendingUp, TrendingDown,
-  Clock, CheckCircle, AlertCircle, XCircle, Loader2, ArrowUpRight,
-  ArrowDownRight, Wallet, Receipt, RefreshCw, ChevronRight,
-  Activity, Target, Zap, ArrowUp, ArrowDown
+  Users, Briefcase, ShoppingCart, DollarSign,
+  FolderOpen, Wrench, Package, TrendingUp,
+  Clock, CheckCircle, AlertCircle, XCircle, Loader2,
+  ArrowDownRight, Wallet, RefreshCw, ChevronRight,
+  Activity
 } from 'lucide-react';
 import { apiClient } from '../../shared/services/api';
 import './Dashboard.css';
@@ -27,8 +27,8 @@ const COLORS = {
 };
 
 const STATUS_COLORS = {
-  'Cerrado': COLORS.success,
-  'Activo': COLORS.primary,
+  'Cerrado': COLORS.slate,
+  'Activo': COLORS.sucess,
   'Pendiente': COLORS.warning,
   'Anulado': COLORS.danger,
   'En espera': COLORS.info,
@@ -146,13 +146,6 @@ const Dashboard = () => {
       change: null,
     },
     {
-      title: 'Descuentos',
-      value: formatCurrency(financial.totalDiscount),
-      icon: ArrowDownRight,
-      color: COLORS.danger,
-      change: null,
-    },
-    {
       title: 'Saldo Pendiente',
       value: formatCurrency(financial.totalPendingBalance),
       icon: AlertCircle,
@@ -255,7 +248,7 @@ const Dashboard = () => {
                       }}
                     />
                     <Bar dataKey="count" radius={[8, 8, 0, 0]}>
-                      {ordersByStatus.map((entry, index) => (
+                       {ordersByStatus.map((entry) => (
                         <Cell key={entry.statusName} fill={getStatusColor(entry.statusName)} />
                       ))}
                     </Bar>
@@ -343,7 +336,7 @@ const Dashboard = () => {
                       <tr key={order.order_id}>
                         <td className="order-id">#{order.order_id}</td>
                         <td>{order.project_name || 'N/A'}</td>
-                        <td>{order.customer_first_name} {order.customer_last_name}</td>
+                        <td>{order.customer_name}</td>
                         <td>
                           <span className="status-badge" style={{ backgroundColor: `${getStatusColor(order.statusName)}20`, color: getStatusColor(order.statusName) }}>
                             {getStatusIcon(order.statusName)}
@@ -446,7 +439,6 @@ const Dashboard = () => {
                 <AreaChart data={[
                   { name: 'Facturado', value: financial.totalBilled, fill: COLORS.primary },
                   { name: 'Pagos', value: financial.totalPaid, fill: COLORS.success },
-                  { name: 'Descuentos', value: financial.totalDiscount, fill: COLORS.danger },
                   { name: 'Pendiente', value: financial.totalPendingBalance, fill: COLORS.warning },
                   { name: 'Mes Actual', value: financial.revenueThisMonth, fill: COLORS.emerald },
                 ]} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
@@ -486,7 +478,7 @@ const Dashboard = () => {
                       <th>Cliente</th>
                       <th>Estado</th>
                       <th>Fecha</th>
-                      <th>Descuento</th>
+                      
                     </tr>
                   </thead>
                   <tbody>
@@ -494,7 +486,7 @@ const Dashboard = () => {
                       <tr key={order.order_id}>
                         <td className="order-id">#{order.order_id}</td>
                         <td>{order.project_name || 'N/A'}</td>
-                        <td>{order.customer_first_name} {order.customer_last_name}</td>
+                        <td>{order.customer_name}</td>
                         <td>
                           <span className="status-badge" style={{ backgroundColor: `${getStatusColor(order.statusName)}20`, color: getStatusColor(order.statusName) }}>
                             {getStatusIcon(order.statusName)}
@@ -502,7 +494,6 @@ const Dashboard = () => {
                           </span>
                         </td>
                         <td>{formatDate(order.order_creation_date)}</td>
-                        <td>{formatCurrency(order.discount_amount || 0)}</td>
                       </tr>
                     ))}
                   </tbody>

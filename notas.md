@@ -8,25 +8,20 @@ Este archivo es pa borrar luego, son cosas que deberíamos tener en cuenta.
 ## Modulos
 
 - podríamos meter en shared todos los estilos? así no se repite el mismo archivo
-- las facturas en este momento están medio inservibles, como lo vamos a relacionar después?
 - todos los cambiar estado deberían ser pa algo, no? por ejemplo que no se le pueda crear un proyecto a un cliente que esté inactivo. Se debería implementar esas validaciones en toda parte
 - !!!!todas las acciones deberían tener mensajes de confirmación, faltan varias cosas pa ponerle esas alertas
 
 #### orders
 
-- la modal de ver detalle de orders podría hacerse horizontal, datos del pedido al lado izquierdo y la maquinaria al lado derecho, así no se tiene que hacer scroll
-- la fecha en los detalles de pedido deberían mostrar hora y en la tabla debería ser más entendible
 - la información del usuario no debería ser el correo, más bien el nombre del empleado para identificarlo fácilmente, o no?
 - poner botón de editar en ver detalles
 - entonces que se va a hacer con el precio dentro de detallles? se puede modificar completamente?
-- en los detalles debe aparecer el peso total
+- en la info debe aparecer el peso total
 - en el formulario, no se debe permitir registrar 2 veces la misma maquina, y además se debería mostrar un indicador de que x maquina está en mantenimiento, no disponible, etc
+- el transporte va después de maquinaria, no antes.
 
-!!! IMPORTANTE: esta mierda de orders tiene mucha más lógica de la que creí, en especial con anular un pedido
 
-### next
-
-aparte de hacer los ajustes de arriba, falta entonces el editar pedido y anular
+- aparte de hacer los ajustes de arriba, falta entonces el editar pedido
 
 
 ### users 
@@ -64,6 +59,11 @@ aparte de hacer los ajustes de arriba, falta entonces el editar pedido y anular
 - no sé si sea muy urgente, pero en la tabla se podría agrupar los mantenimientos por fecha y cuando se haga click en ver detalles se muestre todos los equipos que se les hizo mantenimiento en esa fecha (ahora que lo pienso no sé si sea buena idea, porque entonces cuando hayan 2 tipos de maquina con la misma fecha q)
 
 ### estado pedido
-- melo
+- melo (se quitó)
 
 
+## Preguntas pa yuly
+
+- en cuanto a los cortes, cuando se establece que van a ser quincenales o mensuales, esa quincena o mensualidad se hace de 15 en 15 de cada mes o se le suman 15 días desde que inició el pedido?
+- hay solo quincenal/mensual o hay más periodos de tiempo?
+- preguntar si la distribución de pedidos está bien (porque yeison habló de que se debe manejar todo desde proyectos)
