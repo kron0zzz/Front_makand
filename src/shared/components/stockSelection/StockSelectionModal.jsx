@@ -2,7 +2,15 @@ import { useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import "./StockSelectionModal.css";
 
-const StockSelectionModal = ({ isOpen, onClose, machinery, onConfirm, initialSelectedIds = [], statusFilter = 1 }) => {
+const StockSelectionModal = ({
+  isOpen,
+  onClose,
+  machinery,
+  onConfirm,
+  initialSelectedIds = [],
+  statusFilter = 1,
+  preloadedStocks = null
+}) => {
   const [stocks, setStocks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
@@ -12,6 +20,16 @@ const StockSelectionModal = ({ isOpen, onClose, machinery, onConfirm, initialSel
     if (!isOpen || !machinery) return;
 
     const loadStocks = async () => {
+      if (preloadedStocks) {
+        const filtered = (preloadedStocks || [])
+          .filter(
+            (s) => Number(s.machinery_id) === Number(machinery.machinery_id)
+          )
+          .filter((s) => !statusFilter || Number(s.status_id) === Number(statusFilter));
+        setStocks(filtered);
+        return;
+      }
+
       setLoading(true);
       try {
         const token = localStorage.getItem("token");
@@ -28,7 +46,7 @@ const StockSelectionModal = ({ isOpen, onClose, machinery, onConfirm, initialSel
           .filter(
             (s) => Number(s.machinery_id) === Number(machinery.machinery_id)
           )
-          .filter((s) => Number(s.status_id) === Number(statusFilter));
+          .filter((s) => !statusFilter || Number(s.status_id) === Number(statusFilter));
         setStocks(filtered);
       } catch (error) {
         console.error("Error al cargar stock:", error);
@@ -38,7 +56,7 @@ const StockSelectionModal = ({ isOpen, onClose, machinery, onConfirm, initialSel
     };
 
     loadStocks();
-  }, [isOpen, machinery, statusFilter]);
+  }, [isOpen, machinery, statusFilter, preloadedStocks]);
 
   useEffect(() => {
     if (isOpen && !prevIsOpenRef.current) {
