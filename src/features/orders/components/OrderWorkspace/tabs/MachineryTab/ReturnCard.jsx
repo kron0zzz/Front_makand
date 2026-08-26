@@ -25,6 +25,11 @@ const ReturnCard = ({ returnData, additionalCharges = [], onDeleteReturn, isBloc
                 <div className="return-main-info">
                     <strong>{formatDate(returnData.return_date)}</strong>
                     <p>Cantidad devuelta: {returnData.returned_quantity}</p>
+                    {returnData.serial_number && (
+                        <p className="return-serial">
+                            <span>Serial: {returnData.serial_number}</span>
+                        </p>
+                    )}
                 </div>
 
                 {/* Sección visual para los cobros adicionales dentro de la devolución */}

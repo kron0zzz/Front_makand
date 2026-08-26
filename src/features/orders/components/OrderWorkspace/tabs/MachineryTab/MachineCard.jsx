@@ -22,6 +22,8 @@ const MachineCard = ({ detail, onRegisterReturn, onDeleteReturn, isBlocked }) =>
     const [open,setOpen]=useState(false);
     const [showReturnForm, setShowReturnForm] = useState(false);
 
+    const isMotorized = detail._isMotorized;
+
     const cantidadDevuelta =
 
         detail.returns.reduce(
@@ -53,6 +55,46 @@ const MachineCard = ({ detail, onRegisterReturn, onDeleteReturn, isBlocked }) =>
         Number(detail.quantity_to_dispatch)*
         Number(detail.rental_unit_price);
 
+    const pendingStockForReturn = isMotorized && detail.subDetails
+        ? detail.subDetails
+            .filter(sd => {
+                const returned = (sd.returns || []).reduce(
+                    (acc, r) => acc + Number(r.returned_quantity), 0
+                );
+                return Number(sd.quantity_to_dispatch) - returned > 0;
+            })
+            .map(sd => ({
+                ...sd,
+                status_name: "Ocupada",
+                status_id: 3
+            }))
+        : [];
+
+    const handleReturnSubmit = async (data) => {
+        if (data.isMotorized && data.selectedStocks && data.selectedStocks.length > 0) {
+            for (const stock of data.selectedStocks) {
+                await onRegisterReturn(
+                    detail.order_id,
+                    {
+                        order_detail_id: stock.order_detail_id,
+                        return_date: data.return_date,
+                        returned_quantity: 1
+                    }
+                );
+            }
+        } else {
+            await onRegisterReturn(
+                detail.order_id,
+                {
+                    order_detail_id: detail.order_detail_id,
+                    return_date: data.return_date,
+                    returned_quantity: Number(data.returned_quantity),
+                    additional_charges: data.additional_charges
+                }
+            );
+        }
+    };
+
     return(
 
         <div className="machine-card">
@@ -70,25 +112,17 @@ const MachineCard = ({ detail, onRegisterReturn, onDeleteReturn, isBlocked }) =>
                 </div>
 
                 <span
-
                     className={
                         cantidadPendiente===0
                         ?"machine-status returned"
                         :"machine-status active"
                     }
-
                 >
-
                     {
-
                         cantidadPendiente===0
-
                         ?"DEVUELTO"
-
                         :"EN OBRA"
-
                     }
-
                 </span>
 
             </div>
@@ -205,7 +239,7 @@ const MachineCard = ({ detail, onRegisterReturn, onDeleteReturn, isBlocked }) =>
                             disabled={isBlocked}
                         >
                             <Undo2 size={17}/>
-                            Registrar devolución
+                            {isMotorized ? "Devolver maquinaria" : "Registrar devolución"}
                         </button>
                     )
                 }
@@ -227,10 +261,9 @@ const MachineCard = ({ detail, onRegisterReturn, onDeleteReturn, isBlocked }) =>
                     }
                 </button>
 
-            </div>  
+            </div>
 
             {
-
                 open&&(
                     <div className="returns-container">
                         {
@@ -244,7 +277,6 @@ const MachineCard = ({ detail, onRegisterReturn, onDeleteReturn, isBlocked }) =>
                                 <ReturnCard
                                     key={ret.return_id}
                                     returnData={ret}
-                                    // LE PASAS LOS CARGOS ADICIONALES AQUÍ DIRECTO:
                                     additionalCharges={ret.additional_charges || []}
                                     onDeleteReturn={(returnId) => onDeleteReturn(detail.order_id, returnId)}
                                     isBlocked={isBlocked}
@@ -260,13 +292,9 @@ const MachineCard = ({ detail, onRegisterReturn, onDeleteReturn, isBlocked }) =>
                 isOpen={showReturnForm}
                 onClose={() => setShowReturnForm(false)}
                 orderDetail={detail}
-                onSubmit={async(data) => {
-                    
-                    await onRegisterReturn(
-                        detail.order_id,
-                        data
-                    );
-                }}
+                isMotorized={isMotorized}
+                pendingStocks={pendingStockForReturn}
+                onSubmit={handleReturnSubmit}
             />
 
         </div>
