@@ -1,8 +1,9 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import './SideBar.css';
 import { useAuth } from '../../context/AuthContext';
 import { 
-  Truck, LayoutDashboard, Menu, X, LogOut, User, Building, Wrench, 
+  LayoutDashboard, Menu, X, LogOut, User, Building, Wrench, 
   ChevronDown, ChevronUp, ShoppingCart, FolderOpen, Users, FileText, 
   FolderKanban, ReceiptText, UserCog 
 } from "lucide-react";
@@ -59,8 +60,11 @@ const menuItems = [
   },
 ];
 
-export function Sidebar({ currentView, onViewChange, collapsed, onToggleCollapse, onLogout, user }) {
+const keyToPath = (key) => key === 'dashboard' ? '/' : `/${key.replace(/_/g, '-')}`;
+
+export function Sidebar({ collapsed, onToggleCollapse, onLogout, user, onNavigate }) {
   const [expandedMenus, setExpandedMenus] = useState([]);
+  const location = useLocation();
   const { hasPermission } = useAuth();
 
   const permissionMap = {
@@ -97,7 +101,7 @@ export function Sidebar({ currentView, onViewChange, collapsed, onToggleCollapse
   };
 
   const isMenuExpanded = (menuKey) => expandedMenus.includes(menuKey);
-  const isMenuActive = (item) => item.key === currentView || (item.submenu?.some(sub => isMenuActive(sub)));
+  const isMenuActive = (item) => location.pathname === keyToPath(item.key) || (item.submenu?.some(sub => isMenuActive(sub)));
 
   const renderMenuItem = (item, level = 0) => {
     const Icon = item.icon;
@@ -108,7 +112,7 @@ export function Sidebar({ currentView, onViewChange, collapsed, onToggleCollapse
     return (
       <div key={item.key}>
         <button
-          onClick={() => hasSubmenu ? toggleMenu(item.key) : onViewChange(item.key)}
+          onClick={() => hasSubmenu ? toggleMenu(item.key) : onNavigate(keyToPath(item.key))}
           className={`sidebar-link ${hasSubmenu && isExpanded ? "menu-expanded" : ""} ${!hasSubmenu && isActive ? "active-page" : ""}`}
         >
           <span className="sidebar-icon"><Icon size={20} /></span>
