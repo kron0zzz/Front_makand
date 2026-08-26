@@ -10,7 +10,9 @@ Este archivo es pa borrar luego, son cosas que deberíamos tener en cuenta.
 - podríamos meter en shared todos los estilos? así no se repite el mismo archivo
 - todos los cambiar estado deberían ser pa algo, no? por ejemplo que no se le pueda crear un proyecto a un cliente que esté inactivo. Se debería implementar esas validaciones en toda parte
 - !!!!todas las acciones deberían tener mensajes de confirmación, faltan varias cosas pa ponerle esas alertas
+- en todos los endpoint de table, se debe organizar el orden en DESC
 
+- El rol de asesor si deja hacer algunas cosas pero le falta la posibilidad de registrar pedidos por ejemplo (tal vez gestinarlo también?)
 #### orders
 
 - la información del usuario no debería ser el correo, más bien el nombre del empleado para identificarlo fácilmente, o no?
@@ -30,19 +32,23 @@ Este archivo es pa borrar luego, son cosas que deberíamos tener en cuenta.
 ### tipos de cobro
 - todo melo manito
 
+### proveedores
+- también se debería implementar lo que se hizo en clientes, que cuando se registre se pueda seleccionar si es persona natural o jurídica y según eso, cambie lo del nombre, tipo de documento y tales
+
 
 ### proyectos
 - hay un error de lógica, pues el formulario de edición espera un dato de "departamento" que no existe en la base de datos(porque así lo definimos). lo que hice para resolver fue quitarle el required al campo en el formulario así que por ahora funciona.
 - deberíamos distribuir mejor la vista de ver detalles
 
 ### facturas de compra
-- melo 
+- hay que solucionar esa cuestión de los códigos de las maquinarias cuando se compren, porque por ahora está muy pobre la lógica
 
 ### roles
 - al crear un usuario y seleccionar permisos, estos no se guardan, pero al editar un usuario si (el error está solo en el create) (ya quedó)
 
 ### subalquileres
-- todo melo
+- que porquería de lógica la de los subalquileres
+- cuando voy a seleccionar una maquina, aparece una lista blanca 
 
 ### cargos
 - todo melo
