@@ -3,7 +3,7 @@ import { userService } from '../services/userService';
 import { useAlertModal } from "../../../shared/alertModal";
 
 export const useUsers = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showSuccess, showError, showConfirm } = useAlertModal();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -46,7 +46,7 @@ export const useUsers = () => {
         nuevaPagina >= 1 &&
         nuevaPagina <= pagination.totalPages
     ) {
-        setPage(nuevaPagina);
+      setPage(nuevaPagina);
     }
   };
 
@@ -62,9 +62,11 @@ export const useUsers = () => {
     if (!await showConfirm('¿Estás seguro de que deseas eliminar este usuario?')) return false;
     try {
       await userService.eliminar(id);
-      setUsers(prev => prev.filter(c => c.user_id !== id));
+      await cargarUsers();
+      await showSuccess("Usuario eliminado correctamente.");
       return true;
     } catch (err) {
+      await showError(err.response?.data?.error || "No se pudo eliminar el usuario. Verifica que no tenga datos asociados.");
       console.error("Error al eliminar usuario:", err);
       return false;
     }

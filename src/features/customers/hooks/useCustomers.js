@@ -82,7 +82,7 @@ export const useCustomers = () => {
         await showSuccess("Cliente eliminado correctamente.");
       } catch (err) {
         console.error("Error al eliminar:", err);
-        await showError("No se puede eliminar este cliente. Verifica que no tenga pedidos o datos asociados activos.");
+        await showError("No se puede eliminar este cliente. Verifica que no tenga proyectos, pedidos o datos asociados activos.");
       }
     }
   };

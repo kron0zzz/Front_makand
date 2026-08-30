@@ -3,7 +3,7 @@ import { machineryCategoryService } from '../services/machineryCategoryService';
 import { useAlertModal } from "../../../shared/alertModal";
 
 export const useMachineryCategories = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showSuccess, showError, showConfirm } = useAlertModal();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -47,7 +47,7 @@ export const useMachineryCategories = () => {
         nuevaPagina >= 1 &&
         nuevaPagina <= pagination.totalPages
     ) {
-        setPage(nuevaPagina);
+      setPage(nuevaPagina);
     }
   };
 
@@ -65,10 +65,10 @@ export const useMachineryCategories = () => {
     
     try {
       await machineryCategoryService.eliminar(id);
-      setCategories(prev => prev.filter(cat => cat.category_id !== id));
       await cargarCategorias();
+      await showSuccess("Categoría eliminada correctamente.");
     } catch (err) {
-      await showAlert("No se pudo eliminar: la categoría podría estar en uso.");
+      await showError(err.response?.data?.error || "No se pudo eliminar la categoría.");
       console.error("Error al eliminar categoría:", err);
     }
   };

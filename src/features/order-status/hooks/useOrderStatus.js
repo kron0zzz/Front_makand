@@ -3,7 +3,7 @@ import { orderStatusService } from '../services/orderStatusService';
 import { useAlertModal } from "../../../shared/alertModal";
 
 export const useOrderStatus = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showSuccess, showError, showConfirm } = useAlertModal();
   const [orderStatus, setOrderStatus] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -26,9 +26,11 @@ export const useOrderStatus = () => {
     if (!await showConfirm('¿Estás seguro de que deseas eliminar este estado de pedido?')) return false;
     try {
       await orderStatusService.eliminar(id);
-      setOrderStatus(prev => prev.filter(c => c.order_status_id !== id));
+      await cargarOrderStatus();
+      await showSuccess("Estado de pedido eliminado correctamente.");
       return true;
     } catch (err) {
+      await showError(err.response?.data?.error || "No se pudo eliminar el estado de pedido.");
       console.error("Error al eliminar estado de pedido:", err);
       return false;
     }

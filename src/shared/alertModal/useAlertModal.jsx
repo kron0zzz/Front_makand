@@ -57,20 +57,12 @@ export const AlertModalProvider = ({ children }) => {
   }, [clearAlertTimer]);
 
   const showSuccess = useCallback((message) => {
-    const id = Date.now();
-    setToasts((prev) => [...prev, { id, type: 'success', message }]);
-    setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 3500);
-  }, []);
+    return showAlert(message, 'Éxito');
+  }, [showAlert]);
 
   const showError = useCallback((message) => {
-    const id = Date.now();
-    setToasts((prev) => [...prev, { id, type: 'error', message }]);
-    setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 4000);
-  }, []);
+    return showAlert(message, 'Error');
+  }, [showAlert]);
 
   return (
     <AlertModalContext.Provider value={{ showAlert, showConfirm, showSuccess, showError }}>

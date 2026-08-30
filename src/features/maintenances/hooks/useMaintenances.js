@@ -3,7 +3,7 @@ import { maintenanceService } from '../services/maintenanceService';
 import { useAlertModal } from "../../../shared/alertModal";
 
 export const useMaintenances = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showSuccess, showError, showConfirm } = useAlertModal();
   const [maintenances, setMaintenances] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -29,18 +29,15 @@ export const useMaintenances = () => {
     load();
   }, [cargarMaintenances]);
 
-  //opcion mas directa:
-  // useEffect(() => {
-  //   cargarMaintenances();
-  // }, [cargarMaintenances]);
-
   const eliminarMaintenance = async (id) => {
-    if (!await showConfirm('¿Estás seguro de que deseas eliminar este mantenimiento?')) return false;
+    if (!await showConfirm('¿Estás seguro que deseas eliminar este mantenimiento?')) return false;
     try {
       await maintenanceService.eliminar(id);
-      setMaintenances(prev => prev.filter(c => c.maintenance_id !== id));
+      await cargarMaintenances();
+      await showSuccess("Mantenimiento eliminado correctamente.");
       return true;
     } catch (err) {
+      await showError(err.response?.data?.error || "No se pudo eliminar el mantenimiento.");
       console.error("Error al eliminar mantenimiento:", err);
       return false;
     }
