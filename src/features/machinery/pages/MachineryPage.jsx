@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Plus, Search, Eye, Edit, Trash2, Download } from 'lucide-react';
 import { useMachinery } from '../hooks/useMachinery';
-import { useAuth } from '../../../shared/context/AuthContext'; // Ajusta esta ruta según tu estructura real
+import { useAuth } from '../../../shared/context/AuthContext';
 import { machineryService } from '../services/machineryService';
 import MachineryForm from '../components/machineryForm/MachineryForm';
 import MachineryDetail from '../components/machineryDetail/MachineryDetail';
 import MachineryStockModal from '../components/machineryStockModal/MachineryStockModal';
+import { useAlertModal } from '../../../shared/alertModal';
 import './MachineryPage.css';
 
 
@@ -18,7 +19,7 @@ const MachineryPage = () => {
     cargarMaquinarias, 
     eliminarMaquinaria, 
     crearMaquinaria, 
-    actualizarMaquinaria, 
+    actualizarMaquinaria,
 
     page,
     cambiarPagina,
@@ -30,6 +31,8 @@ const MachineryPage = () => {
     cargarStockPorMaquinaria,
     cambiarPaginaStock
   } = useMachinery();
+
+  const { showAlert } = useAlertModal();
 
   const { hasPermission } = useAuth();
 
@@ -196,7 +199,7 @@ onClick={() => {
                             document.body.removeChild(a);
                             window.URL.revokeObjectURL(url);
                           } catch {
-                            alert('No se pudo generar el PDF');
+                            await showAlert('No se pudo generar el PDF');
                           }
                         }}
                       >

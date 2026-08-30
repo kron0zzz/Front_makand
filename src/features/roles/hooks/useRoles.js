@@ -111,8 +111,13 @@ export const useRoles = () => {
 
   const eliminarRol = async (id) => {
     if (await showConfirm('¿Seguro que deseas eliminar este rol?')) {
-      const exito = await roleService.eliminar(id);
-      if (exito) cargarRoles();
+      try {
+        await roleService.eliminar(id);
+        await showSuccess("Rol eliminado correctamente.");
+        cargarRoles();
+      } catch (err) {
+        await showError(err.response?.data?.error || "No se pudo eliminar el rol. Verifica que no haya usuarios con este rol asignado.");
+      }
     }
   };
 

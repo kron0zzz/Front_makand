@@ -4,7 +4,7 @@ import { subRentalService } from '../services/subRentalService';
 import { useAlertModal } from "../../../shared/alertModal";
 
 export const useSubRentals = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showSuccess, showError, showConfirm } = useAlertModal();
   const [subRentals, setSubRentals] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -43,7 +43,7 @@ export const useSubRentals = () => {
         nuevaPagina >= 1 &&
         nuevaPagina <= pagination.totalPages
     ) {
-        setPage(nuevaPagina);
+      setPage(nuevaPagina);
     }
   };
 
@@ -77,9 +77,9 @@ export const useSubRentals = () => {
               : item
           )
         );
-        await showAlert("Estado del subalquiler actualizado correctamente.");
+        await showSuccess("Estado del subalquiler actualizado correctamente.");
       } catch (err) {
-        await showAlert(err.message || 'Error al cambiar el estado del subalquiler');
+        await showError(err.message || 'Error al cambiar el estado del subalquiler');
       }
     }
   }, []);
@@ -88,13 +88,13 @@ export const useSubRentals = () => {
     if (await showConfirm('¿Estás seguro de que deseas eliminar este registro de subalquiler?')) {
       try {
         await subRentalService.eliminar(id);
-        // Filtramos usando sub_rental_id para actualizar el estado instantáneamente
-        setSubRentals(prev => prev.filter(item => item.sub_rental_id !== id));
+        await cargarSubalquileres();
+        await showSuccess("Subalquiler eliminado correctamente.");
       } catch (err) {
-        setError(err.message || 'Error al intentar eliminar el subalquiler');
+        await showError(err.response?.data?.error || "No se pudo eliminar el subalquiler.");
       }
     }
-  }, []);
+  }, [showSuccess, showError, showConfirm, cargarSubalquileres]);
 
   useEffect(() => {
     cargarSubalquileres();

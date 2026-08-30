@@ -69,7 +69,7 @@ import { useAlertModal } from "../../../shared/alertModal";
 // };
 
 export const useMachineryStatuses = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showSuccess, showError, showConfirm } = useAlertModal();
   const [statuses, setStatuses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -92,9 +92,10 @@ export const useMachineryStatuses = () => {
     
     try {
       await machineryStatusService.eliminar(id);
-      setStatuses(prev => prev.filter(status => status.status_id !== id));
+      await cargarEstados();
+      await showSuccess("Estado de maquinaria eliminado correctamente.");
     } catch (err) {
-      await showAlert(err.response?.data?.message || "No se pudo eliminar: el estado podría estar en uso.");
+      await showError(err.response?.data?.error || "No se pudo eliminar el estado de maquinaria.");
       console.error("Error al eliminar estado:", err);
     }
   };

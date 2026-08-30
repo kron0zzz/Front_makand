@@ -3,7 +3,7 @@ import { purchaseInvoiceService } from '../services/purchaseInvoiceService';
 import { useAlertModal } from "../../../shared/alertModal";
 
 export const usePurchaseInvoices = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showSuccess, showError, showConfirm } = useAlertModal();
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -42,7 +42,7 @@ export const usePurchaseInvoices = () => {
         nuevaPagina >= 1 &&
         nuevaPagina <= pagination.totalPages
     ) {
-        setPage(nuevaPagina);
+      setPage(nuevaPagina);
     }
   };
 
@@ -57,12 +57,13 @@ export const usePurchaseInvoices = () => {
     if (await showConfirm('¿Estás seguro de que deseas eliminar esta factura de compra?')) {
       try {
         await purchaseInvoiceService.eliminar(id);
-        setInvoices(prev => prev.filter(invoice => invoice.invoice_id !== id));
+        await cargarFacturas();
+        await showSuccess("Factura de compra eliminada correctamente.");
       } catch (err) {
-        setError(err.message || 'Error al intentar eliminar la factura');
+        await showError(err.response?.data?.error || "No se pudo eliminar la factura de compra.");
       }
     }
-  }, []);
+  }, [showSuccess, showError, showConfirm, cargarFacturas]);
 
   const crearFacturaCompleta = useCallback(async (payload) => {
     setLoading(true);
