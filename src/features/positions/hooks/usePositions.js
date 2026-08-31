@@ -63,7 +63,7 @@ export const usePositions = () => {
       await showSuccess("Cargo eliminado correctamente.");
       await cargarCargos();
     } catch (err) {
-      await showError(err.response?.data?.message || "No se puede eliminar este cargo.");
+      await showError(err.response?.data?.message || "No se puede eliminar este cargo. Verifica que no hayan empleados con este cargo asignado.");
     }
   };
 

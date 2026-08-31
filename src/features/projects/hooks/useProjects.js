@@ -4,7 +4,7 @@ import { useCustomers } from '../../customers/hooks/useCustomers';
 import { useAlertModal } from "../../../shared/alertModal";
 
 export const useProjects = () => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showAlert, showConfirm, showSuccess, showError} = useAlertModal();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -42,9 +42,11 @@ export const useProjects = () => {
         setError(null);
         await projectService.eliminar(id);
         setProjects(prev => prev.filter(p => p.project_id !== id));
+        await showSuccess("Proyecto eliminado correctamente.");
       } catch (err) {
         setError(err.message);
         console.error("Error al eliminar:", err);
+        await showError("No se puede eliminar este proyecto. Verifica que no tenga pedidos asociados.");
       }
     }
   }, []);

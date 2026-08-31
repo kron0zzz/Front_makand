@@ -66,7 +66,7 @@ export const useUsers = () => {
       await showSuccess("Usuario eliminado correctamente.");
       return true;
     } catch (err) {
-      await showError(err.response?.data?.error || "No se pudo eliminar el usuario. Verifica que no tenga datos asociados.");
+      await showError("No se pudo eliminar el usuario. Verifica que este usuario no haya registrado pedidos.");
       console.error("Error al eliminar usuario:", err);
       return false;
     }

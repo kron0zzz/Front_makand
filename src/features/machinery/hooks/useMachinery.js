@@ -80,13 +80,13 @@ export const useMachinery = () => {
   }, []);
 
   const eliminarMaquinaria = async (id) => {
-    if (!await showConfirm('¿Estás seguro de que deseas eliminar esta maquinaria?')) return;
+    if (!await showConfirm('¿Estás seguro de que deseas eliminar esta maquinaria?.')) return;
     try {
       await machineryService.eliminar(id);
       setMachineries(prev => prev.filter(item => item.machinery_id !== id));
       await showSuccess("Maquinaria eliminada correctamente.");
     } catch (err) {
-      await showError("No se puede eliminar esta maquinaria. Verifica que no tenga pedidos o datos asociados.");
+      await showError("No se puede eliminar esta maquinaria. Verifica que no tenga pedidos, compras o mantenimientos asociados.");
 
     }
   };
