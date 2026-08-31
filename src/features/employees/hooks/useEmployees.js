@@ -87,7 +87,7 @@ export const useEmployees = () => {
       await showSuccess("Empleado eliminado correctamente.");
     } catch (err) {
       console.error("Error al eliminar empleado:", err);
-      await showError("No se puede eliminar este empleado. Verifica que no tenga datos asociados activos.");
+      await showError("No se puede eliminar este empleado. Verifica que este empleado no tenga un usuario dedicado en el sistema.");
     }
   };
 

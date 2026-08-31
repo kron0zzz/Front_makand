@@ -91,7 +91,7 @@ export const useSuppliers = () => {
         await showSuccess("Proveedor eliminado correctamente.");
       } catch (err) {
         console.error("Error al eliminar:", err);
-        await showError("No se puede eliminar este proveedor. Verifica que no tenga pedidos asociados.");
+        await showError("No se puede eliminar este proveedor. Verifica que no tenga compras o subalquileres asociados.");
       }
     }
   };

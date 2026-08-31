@@ -220,10 +220,8 @@ onClick={() => {
                         className="action-btn delete" 
                         title="Eliminar" 
                         onClick={async () => {
-                          if (confirm('¿Está seguro de eliminar esta maquinaria?')) {
-                            await eliminarMaquinaria(machinery.machinery_id);
-                            await cargarMaquinarias(); 
-                          }
+                          await eliminarMaquinaria(machinery.machinery_id);
+                          await cargarMaquinarias(); 
                         }}
                       >
                         <Trash2 size={18} />

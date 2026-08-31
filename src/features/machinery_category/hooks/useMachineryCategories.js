@@ -68,7 +68,7 @@ export const useMachineryCategories = () => {
       await cargarCategorias();
       await showSuccess("Categoría eliminada correctamente.");
     } catch (err) {
-      await showError(err.response?.data?.error || "No se pudo eliminar la categoría.");
+      await showError("No se pudo eliminar la categoría. Verifica que no haya una máquina con esta categoría asignada" || err.response?.data?.error  );
       console.error("Error al eliminar categoría:", err);
     }
   };
