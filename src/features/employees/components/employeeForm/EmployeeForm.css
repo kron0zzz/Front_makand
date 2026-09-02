@@ -127,3 +127,14 @@
 .btn-submit:hover {
     opacity: 0.9;
 }
+
+.form-input.input-error {
+    border: 2px solid #ef4444;
+}
+
+.error-text {
+    color: #ef4444;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
