@@ -16,6 +16,16 @@ const UserForm = ({
 }) => {
   const { showAlert, showConfirm } = useAlertModal();
   const { roles, cargarRoles } = useRoles();
+  const [errores, setErrores] = useState({});
+
+  const validarCampo = (name, value) => {
+    let error = "";
+    if (name === "user_email") {
+      if (value.length > 60) error = "Máximo 60 caracteres.";
+      else if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) error = "Formato de correo inválido.";
+    }
+    setErrores(prev => ({ ...prev, [name]: error }));
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -28,10 +38,18 @@ const UserForm = ({
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    validarCampo(name, value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const nuevosErrores = {};
+    if ((formData.user_email || '').length > 60 || (formData.user_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.user_email))) {
+      nuevosErrores.user_email = "Máximo 60 caracteres y formato de correo válido.";
+    }
+    setErrores(nuevosErrores);
+    if (Object.keys(nuevosErrores).length > 0) return;
 
     const dataToSend = {
       user_email: formData.user_email,
@@ -139,11 +157,13 @@ const UserForm = ({
               <input
                 name="user_email"
                 type="email"
-                className="form-input"
+                className={`form-input ${errores.user_email ? 'input-error' : ''}`}
+                maxLength={60}
                 value={formData.user_email || ''}
                 onChange={handleChange}
                 required
               />
+              {errores.user_email && <span className="error-text">{errores.user_email}</span>}
             </div>
 
             <div>

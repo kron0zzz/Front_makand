@@ -6,6 +6,7 @@ import './EmployeeForm.css';
 const EmployeeForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarEmpleados }) => {
   const [positions, setPositions] = useState([]);
   const [error, setError] = useState('');
+  const [errores, setErrores] = useState({});
   const [cargando, setCargando] = useState(false);
   const { showAlert } = useAlertModal();
   const getToken = () => localStorage.getItem("token");
@@ -55,17 +56,55 @@ const EmployeeForm = ({ isOpen, onClose, formData, setFormData, isEditing, carga
     obtenerDatosFrescos();
   }, [isOpen, isEditing, formData?.employee_id]);
 
+  const validarCampo = (name, value) => {
+    let error = "";
+    if (name === "employee_document_number") {
+      if (!value.trim()) error = "Este campo es obligatorio.";
+      else if (value.length > 10) error = "Máximo 10 dígitos.";
+      else if (!/^\d+$/.test(value)) error = "Solo se permiten números.";
+    }
+    if (name === "employee_email") {
+      if (value.length > 60) error = "Máximo 60 caracteres.";
+      else if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) error = "Formato de correo inválido.";
+    }
+    if (name === "employee_phone") {
+      if (!value.trim()) error = "Este campo es obligatorio.";
+      else if (value.length > 10) error = "Máximo 10 dígitos.";
+      else if (!/^\d+$/.test(value)) error = "Solo se permiten números.";
+    }
+    setErrores(prev => ({ ...prev, [name]: error }));
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+    let valor = value;
+    if (name === 'employee_document_number' || name === 'employee_phone') {
+      valor = value.replace(/\D/g, '');
+      if (valor.length > 10) valor = valor.slice(0, 10);
+    }
     setFormData({
       ...formData,
-      [name]: name === 'position_id' ? parseInt(value) : value
+      [name]: name === 'position_id' ? parseInt(value) : valor
     });
+    validarCampo(name, valor);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    const nuevosErrores = {};
+    if (!formData.employee_document_number || !/^\d+$/.test(formData.employee_document_number) || formData.employee_document_number.length > 10) {
+      nuevosErrores.employee_document_number = "Máximo 10 dígitos y solo números.";
+    }
+    if ((formData.employee_email || '').length > 60 || (formData.employee_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.employee_email))) {
+      nuevosErrores.employee_email = "Máximo 60 caracteres y formato de correo válido.";
+    }
+    if (!formData.employee_phone || !/^\d+$/.test(formData.employee_phone) || formData.employee_phone.length > 10) {
+      nuevosErrores.employee_phone = "Máximo 10 dígitos y solo números.";
+    }
+    setErrores(nuevosErrores);
+    if (Object.keys(nuevosErrores).length > 0) return;
 
     const url = isEditing 
       ? `http://localhost:3000/api/employees/${formData.employee_id}` 
@@ -127,7 +166,8 @@ const EmployeeForm = ({ isOpen, onClose, formData, setFormData, isEditing, carga
 
             <div className="form-group">
               <label className="form-label">Número de Documento *</label>
-              <input type="text" name="employee_document_number" className={`form-input ${isEditing ? 'form-input-disabled' : ''}`} value={formData.employee_document_number || ''} onChange={handleChange} disabled={isEditing} required />
+              <input type="text" name="employee_document_number" className={`form-input ${isEditing ? 'form-input-disabled' : ''} ${errores.employee_document_number ? 'input-error' : ''}`} maxLength={10} value={formData.employee_document_number || ''} onChange={handleChange} disabled={isEditing} required />
+              {errores.employee_document_number && <span className="error-text">{errores.employee_document_number}</span>}
             </div>
 
             <div className="form-group">
@@ -142,12 +182,14 @@ const EmployeeForm = ({ isOpen, onClose, formData, setFormData, isEditing, carga
 
             <div className="form-group">
               <label className="form-label">Correo Electrónico *</label>
-              <input type="email" name="employee_email" className="form-input" value={formData.employee_email || ''} onChange={handleChange} required />
+              <input type="email" name="employee_email" className={`form-input ${errores.employee_email ? 'input-error' : ''}`} maxLength={60} value={formData.employee_email || ''} onChange={handleChange} required />
+              {errores.employee_email && <span className="error-text">{errores.employee_email}</span>}
             </div>
 
             <div className="form-group">
               <label className="form-label">Teléfono Celular *</label>
-              <input type="text" name="employee_phone" className="form-input" value={formData.employee_phone || ''} onChange={handleChange} required />
+              <input type="text" name="employee_phone" className={`form-input ${errores.employee_phone ? 'input-error' : ''}`} maxLength={10} inputMode="numeric" value={formData.employee_phone || ''} onChange={handleChange} required />
+              {errores.employee_phone && <span className="error-text">{errores.employee_phone}</span>}
             </div>
 
             <div className="form-group">
