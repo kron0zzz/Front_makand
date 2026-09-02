@@ -215,3 +215,18 @@ body {
 .forgot-password:hover {
   text-decoration: underline;
 }
+
+
+
+
+.back-to-login-link {
+  font-size: 14px;
+  color: #666;
+  text-decoration: none;
+  display: inline-block;
+  transition: color 0.2s ease;
+}
+
+.back-to-login-link:hover {
+  color: #333;
+}
