@@ -156,7 +156,6 @@ export const UsersPage = () => {
                         <span className="slider round"></span>
                       </label>
                       <span style={{ fontSize: '13px', color: user.user_status ? '#16a34a' : '#dc2626', fontWeight: 500 }}>
-                        {user.user_status ? 'Activo' : 'Inactivo'}
                       </span>
                     </div>
                   </td>

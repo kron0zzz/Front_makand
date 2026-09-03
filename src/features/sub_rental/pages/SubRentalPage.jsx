@@ -127,7 +127,6 @@ const SubRentalPage = () => {
                           <span className="slider round"></span>
                         </label>
                         <span className={`status-text ${sr.sub_rental_status ? 'active' : 'inactive'}`} style={{ minWidth: '65px', display: 'inline-block' }}>
-                          {sr.sub_rental_status ? 'Activo' : 'Finalizado'}
                         </span>
                       </div>
                     </td>
