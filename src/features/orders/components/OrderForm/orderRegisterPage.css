@@ -1,0 +1,368 @@
+/* Contenedor principal de la pantalla */
+.register-page-container {
+    min-height: 100vh;
+    background-color: #f9fafb;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-sizing: border-box;
+}
+
+/* Sección superior: título + total */
+.register-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px 24px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.register-page-header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.register-page-total {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ff6b35;
+}
+
+/* Área central: dos columnas */
+.register-page-center {
+    display: flex;
+    gap: 16px;
+    flex: 1;
+    min-height: 0;
+}
+
+/* Columna izquierda: datos del pedido + controles de maquinaria */
+.register-left {
+    flex: 1;
+    background-color: white;
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+}
+
+.register-left-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.register-transport-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.register-transport-label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #374151;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.register-transport-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #ff6b35;
+}
+
+.register-transport-price {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.register-divider {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 8px 0;
+}
+
+/* Controles de maquinaria (izquierda) */
+.register-machinery-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.register-machinery-controls h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.register-machine-search {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.register-machine-quantity,
+.register-machine-price {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.register-hint {
+    color: #6b7280;
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+.register-add-btn {
+    margin-top: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Columna derecha: lista de maquinaria agregada */
+.register-right {
+    flex: 1;
+    background-color: white;
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+}
+
+.register-right h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.register-right-empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: #9ca3af;
+    text-align: center;
+}
+
+.register-machines-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.register-machine-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background-color: #f9fafb;
+}
+
+.register-machine-name {
+    flex: 3;
+    min-width: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.register-machine-quantity-cell {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.register-machine-qty,
+.register-machine-price {
+    flex: 2;
+    min-width: 90px;
+}
+
+.register-delete-btn {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    background-color: white;
+    color: #ef4444;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.register-delete-btn:hover {
+    background-color: #fef2f2;
+    border-color: #ef4444;
+}
+
+.register-stock-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    background-color: white;
+    color: #4b5563;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 0;
+}
+
+.register-stock-btn:hover {
+    background-color: #fff7ed;
+    border-color: #ff6b35;
+    color: #ff6b35;
+}
+
+/* Dropdown reutilizable en la página */
+.register-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    max-height: 180px;
+    overflow-y: auto;
+    z-index: 50;
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0 0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+
+.register-dropdown-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 14px;
+}
+
+.register-dropdown-item:hover {
+    background-color: #fff7ed;
+}
+
+.register-dropdown-empty {
+    padding: 8px 12px;
+    color: #6b7280;
+    font-size: 13px;
+    list-style: none;
+}
+
+/* Pie de página: botones */
+.register-page-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: auto;
+}
+
+/* Reutilización de estilos base del formulario */
+.form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    font-size: 14px;
+    color: #374151;
+    background-color: #f9fafb;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    border-color: #ff6b35;
+}
+
+.form-input:disabled {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+    color: #9ca3af;
+}
+
+.btn-cancel {
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background-color: white;
+    font-weight: 600;
+    cursor: pointer;
+    color: #374151;
+}
+
+.btn-submit {
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: none;
+    background-color: #ff6b35;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: opacity 0.2s;
+}
+
+.btn-submit:hover {
+    opacity: 0.9;
+}
+
+.btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

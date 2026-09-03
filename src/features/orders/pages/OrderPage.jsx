@@ -6,11 +6,10 @@ import {
   Ban
 } from "lucide-react";
 
+import { useNavigate } from "react-router-dom";
 import { useOrders } from "../hooks/useOrders";
 import { useAuth } from "../../../shared/context/AuthContext";
 import { formatDate } from "../../../shared/utils/dateUtils";
-
-import OrderForm from "../components/OrderForm/OrderForm";
 
 import Pagination from "../../../shared/components/pagination/Pagination";
 import useDebounce from "../../../shared/hooks/useDebounce";
@@ -19,13 +18,13 @@ import "./OrderPage.css";
 import { useAlertModal } from "../../../shared/alertModal";
 
 const OrderPage = ({ onOpenWorkspace }) => {
+  const navigate = useNavigate();
   const { showAlert, showSuccess } = useAlertModal();
 
   const { hasPermission } = useAuth();
 
   const {
     orders,
-    cargarPedidos,
     anularPedido,
 
     page,
@@ -36,8 +35,6 @@ const OrderPage = ({ onOpenWorkspace }) => {
   } = useOrders();
 
   const [busqueda, setBusqueda] = useState("");
-  const [formData, setFormData] = useState({});
-  const [mostrarModalForm, setMostrarModalForm] = useState(false);
 
   const handleAnularPedido = async (orderId) => {
 
@@ -115,8 +112,7 @@ const OrderPage = ({ onOpenWorkspace }) => {
               className="btn-nuevo"
               onClick={() => {
 
-                setFormData({});
-                setMostrarModalForm(true);
+                navigate("/pedido-registro");
 
               }}
             >
@@ -279,23 +275,11 @@ const OrderPage = ({ onOpenWorkspace }) => {
 
       </div>
 
-      <Pagination
+       <Pagination
         page={page}
         totalPages={pagination.totalPages}
         total={pagination.total}
         onPageChange={cambiarPagina}
-      />
-
-      <OrderForm
-        isOpen={mostrarModalForm}
-        onClose={async () => {
-
-          setMostrarModalForm(false);
-          await cargarPedidos();
-
-        }}
-        formData={formData}
-        setFormData={setFormData}
       />
 
     </div>
