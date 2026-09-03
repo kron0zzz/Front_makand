@@ -115,13 +115,13 @@ const SupplierPage = () => {
                 </td>
                 <td className="actions-cell">
                   {hasPermission('Ver Detalle de Proveedor') && (
-                    <button className="action-btn view" onClick={() => cargarProveedor(s.supplier_id, "detalle")}><Eye size={18} /></button>
+                    <button className="action-btn view" onClick={() => cargarProveedor(s.supplier_id, "detalle")} title="Ver"><Eye size={18} /></button>
                   )}
                   {hasPermission('Editar Proveedor') && (
-                    <button className="action-btn edit" onClick={() => cargarProveedor(s.supplier_id, "editar")}><Edit size={18} /></button>
+                    <button className="action-btn edit" onClick={() => cargarProveedor(s.supplier_id, "editar")} title="Editar"><Edit size={18} /></button>
                   )}
                   {hasPermission('Eliminar Proveedor') && (
-                    <button className="action-btn delete" onClick={() => eliminarProveedor(s.supplier_id)}><Trash2 size={18} /></button>
+                    <button className="action-btn delete" onClick={() => eliminarProveedor(s.supplier_id)} title="Eliminar"><Trash2 size={18} /></button>
                   )}
                 </td>
               </tr>
