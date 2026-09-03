@@ -8,17 +8,14 @@ import { useAlertModal } from "../../../../shared/alertModal";
 const RoleForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarRoles }) => {
   const { showAlert, showConfirm } = useAlertModal();
   const [currentPermissions, setCurrentPermissions] = useState([]);
-  // Nuevo estado para guardar la lista completa de todos los permisos disponibles en el sistema
   const [allPermissions, setAllPermissions] = useState([]);
 
   useEffect(() => {
     const fetchPermissions = async () => {
       try {
-        // 1. Cargamos TODOS los permisos disponibles para saber cuáles existen
         const resAll = await apiClient.get('/roles/permissions/list');
         setAllPermissions(resAll.data);
 
-        // 2. Si estamos editando, cargamos los permisos que ya tiene el rol asignados
         if (isEditing && formData.role_id) {
           const resRole = await apiClient.get(`roles/${formData.role_id}/permissions`);
           setCurrentPermissions(resRole.data.map(p => p.id));
@@ -42,14 +39,11 @@ const RoleForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarRol
     }));
   };
 
-  // Función para manejar el "Seleccionar todos"
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      // Si se marca, extraemos los IDs de todos los permisos disponibles
-      const allIds = allPermissions.map(p => p.id || p.permission_id); // Ajusta 'id' según tu backend si es necesario
+      const allIds = allPermissions.map(p => p.id || p.permission_id);
       setCurrentPermissions(allIds);
     } else {
-      // Si se desmarca, vaciamos la selección
       setCurrentPermissions([]);
     }
   };
@@ -104,7 +98,6 @@ const RoleForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarRol
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                 <h3>Permisos del Rol</h3>
                 
-                {/* Checkbox Maestro para Seleccionar Todos */}
                 <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', cursor: 'pointer', fontWeight: '500' }}>
                   <input 
                     type="checkbox" 
@@ -125,11 +118,23 @@ const RoleForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarRol
               </div>
             </div>
 
-            <div className="form-checkbox-container">
-              <label className="form-label">
-                <input name="role_status" type="checkbox" checked={!!formData.role_status} onChange={handleChange} />
-                Rol Activo
-              </label>
+            {/* Switch de Estado idéntico al de la tabla */}
+            <div className="form-checkbox-container" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label className="form-label">Estado del Rol</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <label className="switch">
+                  <input 
+                    name="role_status" 
+                    type="checkbox" 
+                    checked={!!formData.role_status} 
+                    onChange={handleChange} 
+                  />
+                  <span className="slider round"></span>
+                </label>
+                <span style={{ fontSize: '14px', color: formData.role_status ? '#16a34a' : '#dc2626', fontWeight: '500' }}>
+                  {formData.role_status ? 'Activo' : 'Inactivo'}
+                </span>
+              </div>
             </div>
           </div>
 
