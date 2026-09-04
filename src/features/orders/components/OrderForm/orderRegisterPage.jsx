@@ -403,71 +403,74 @@ const OrderRegisterPage = ({ onBack }) => {
         <div className="register-page-center">
           {/* Columna izquierda: datos del pedido + controles de maquinaria */}
           <div className="register-left">
-            <div className="register-left-section">
-              <label className="form-label">Cliente</label>
-              <select
-                className="form-input"
-                value={selectedCustomerId}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setSelectedCustomerId(value);
-                  setFormData((prev) => ({ ...prev, project_id: "" }));
-                  setProjectSearch("");
-                }}
-              >
-                <option value="">Todos los clientes</option>
-                {customers.map((c) => (
-                  <option key={c.customer_id} value={c.customer_id}>
-                    {c.customer_name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="register-left-section">
-              <label className="form-label">Proyecto *</label>
-              <input
-                type="text"
-                className="form-input"
-                placeholder="Escribe para buscar un proyecto..."
-                value={projectSearch}
-                onChange={(e) => {
-                  setProjectSearch(e.target.value);
-                  setShowProjectDropdown(true);
-                  if (e.target.value === "") {
+            {/* Fila superior: Cliente + Proyecto */}
+            <div className="register-left-row">
+              <div className="register-left-section">
+                <label className="form-label">Cliente</label>
+                <select
+                  className="form-input"
+                  value={selectedCustomerId}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setSelectedCustomerId(value);
                     setFormData((prev) => ({ ...prev, project_id: "" }));
-                  }
-                }}
-                onFocus={() => setShowProjectDropdown(true)}
-                required={!formData.project_id}
-              />
+                    setProjectSearch("");
+                  }}
+                >
+                  <option value="">Todos los clientes</option>
+                  {customers.map((c) => (
+                    <option key={c.customer_id} value={c.customer_id}>
+                      {c.customer_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-              {showProjectDropdown && (
-                <ul className="register-dropdown">
-                  {filteredProjects.length > 0 ? (
-                    filteredProjects.map((project) => (
-                      <li
-                        key={project.project_id}
-                        className="register-dropdown-item"
-                        onClick={() => {
-                          setFormData((prev) => ({
-                            ...prev,
-                            project_id: project.project_id,
-                          }));
-                          setProjectSearch(project.project_name);
-                          setShowProjectDropdown(false);
-                        }}
-                      >
-                        {project.project_name}
+              <div className="register-left-section">
+                <label className="form-label">Proyecto *</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="Escribe para buscar un proyecto..."
+                  value={projectSearch}
+                  onChange={(e) => {
+                    setProjectSearch(e.target.value);
+                    setShowProjectDropdown(true);
+                    if (e.target.value === "") {
+                      setFormData((prev) => ({ ...prev, project_id: "" }));
+                    }
+                  }}
+                  onFocus={() => setShowProjectDropdown(true)}
+                  required={!formData.project_id}
+                />
+
+                {showProjectDropdown && (
+                  <ul className="register-dropdown">
+                    {filteredProjects.length > 0 ? (
+                      filteredProjects.map((project) => (
+                        <li
+                          key={project.project_id}
+                          className="register-dropdown-item"
+                          onClick={() => {
+                            setFormData((prev) => ({
+                              ...prev,
+                              project_id: project.project_id,
+                            }));
+                            setProjectSearch(project.project_name);
+                            setShowProjectDropdown(false);
+                          }}
+                        >
+                          {project.project_name}
+                        </li>
+                      ))
+                    ) : (
+                      <li className="register-dropdown-empty">
+                        No se encontraron proyectos
                       </li>
-                    ))
-                  ) : (
-                    <li className="register-dropdown-empty">
-                      No se encontraron proyectos
-                    </li>
-                  )}
-                </ul>
-              )}
+                    )}
+                  </ul>
+                )}
+              </div>
             </div>
 
             <div className="register-left-section">
@@ -573,51 +576,53 @@ const OrderRegisterPage = ({ onBack }) => {
                 )}
               </div>
 
-              {selectedMachine?.is_motorized ? (
-                <div className="register-machine-quantity">
-                  <label className="form-label">Cantidad</label>
+              <div className="register-machine-row-inputs">
+                {selectedMachine?.is_motorized ? (
+                  <div className="register-machine-quantity">
+                    <label className="form-label">Cantidad</label>
+                    <input
+                      type="number"
+                      className="form-input"
+                      value={0}
+                      readOnly
+                      disabled
+                    />
+                    <small className="register-hint">
+                      La cantidad se define al seleccionar equipos.
+                    </small>
+                  </div>
+                ) : (
+                  <div className="register-machine-quantity">
+                    <label className="form-label">Cantidad</label>
+                    <input
+                      type="number"
+                      min="1"
+                      max={selectedMachine?.available_stock || selectedMachine?.total_stock || undefined}
+                      className="form-input"
+                      value={inputQuantity}
+                      onChange={(e) => setInputQuantity(e.target.value)}
+                      disabled={!selectedMachine}
+                    />
+                    {selectedMachine && (
+                      <small className="register-hint">
+                        Disponibles: {selectedMachine.available_stock ?? selectedMachine.total_stock ?? 0}
+                      </small>
+                    )}
+                  </div>
+                )}
+
+                <div className="register-machine-price">
+                  <label className="form-label">Precio</label>
                   <input
-                    type="number"
+                    type="text"
                     className="form-input"
-                    value={0}
-                    readOnly
-                    disabled
-                  />
-                  <small className="register-hint">
-                    La cantidad se define al seleccionar equipos.
-                  </small>
-                </div>
-              ) : (
-                <div className="register-machine-quantity">
-                  <label className="form-label">Cantidad</label>
-                  <input
-                    type="number"
-                    min="1"
-                    max={selectedMachine?.total_stock || undefined}
-                    className="form-input"
-                    value={inputQuantity}
-                    onChange={(e) => setInputQuantity(e.target.value)}
+                    inputMode="numeric"
+                    placeholder="Ej: 50.000"
+                    value={priceDisplay}
+                    onChange={handlePriceChange}
                     disabled={!selectedMachine}
                   />
-                  {selectedMachine && (
-                    <small className="register-hint">
-                      Disponibles: {selectedMachine.total_stock ?? 0}
-                    </small>
-                  )}
                 </div>
-              )}
-
-              <div className="register-machine-price">
-                <label className="form-label">Precio</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  inputMode="numeric"
-                  placeholder="Ej: 50.000"
-                  value={priceDisplay}
-                  onChange={handlePriceChange}
-                  disabled={!selectedMachine}
-                />
               </div>
 
               <button
@@ -670,15 +675,37 @@ const OrderRegisterPage = ({ onBack }) => {
                           </button>
                         </div>
                       ) : (
-                        <input
-                          type="number"
-                          min="1"
-                          className="form-input register-machine-qty"
-                          value={detail.quantity_to_dispatch}
-                          onChange={(e) =>
-                            actualizarDetalle(index, "quantity_to_dispatch", e.target.value)
-                          }
-                        />
+                        <div className="register-machine-qty-cell">
+                          <input
+                            type="number"
+                            min="1"
+                            max={maquina?.available_stock || maquina?.total_stock || undefined}
+                            className="form-input register-machine-qty"
+                            value={detail.quantity_to_dispatch}
+                            onChange={(e) => {
+                              const raw = e.target.value;
+                              if (raw === "") {
+                                actualizarDetalle(index, "quantity_to_dispatch", raw);
+                                return;
+                              }
+                              const value = Number(raw);
+                              const stockDisponible =
+                                Number(maquina?.available_stock) || Number(maquina?.total_stock) || 0;
+                              if (value > stockDisponible) {
+                                showAlert(
+                                  `La cantidad para "${detail.machineSearch}" supera el stock disponible (${stockDisponible}).`
+                                );
+                                return;
+                              }
+                              actualizarDetalle(index, "quantity_to_dispatch", raw);
+                            }}
+                          />
+                          {maquina && (
+                            <small className="register-hint">
+                              Disp: {maquina.available_stock ?? maquina.total_stock ?? 0}
+                            </small>
+                          )}
+                        </div>
                       )}
 
                       <input

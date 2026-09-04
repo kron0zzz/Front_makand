@@ -1,12 +1,20 @@
 /* Contenedor principal de la pantalla */
 .register-page-container {
-    min-height: 100vh;
+    height: 100vh;
     background-color: #f9fafb;
     padding: 24px;
     display: flex;
     flex-direction: column;
     gap: 16px;
     box-sizing: border-box;
+    overflow: hidden;
+}
+
+.register-page-form {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Sección superior: título + total */
@@ -40,6 +48,7 @@
     gap: 16px;
     flex: 1;
     min-height: 0;
+    overflow: hidden;
 }
 
 /* Columna izquierda: datos del pedido + controles de maquinaria */
@@ -60,6 +69,17 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+    position: relative;
+}
+
+.register-left-row {
+    display: flex;
+    gap: 16px;
+}
+
+.register-left-row .register-left-section {
+    flex: 1;
+    min-width: 0;
 }
 
 .register-transport-row {
@@ -119,6 +139,17 @@
     gap: 6px;
 }
 
+.register-machine-row-inputs {
+    display: flex;
+    gap: 12px;
+}
+
+.register-machine-row-inputs .register-machine-quantity,
+.register-machine-row-inputs .register-machine-price {
+    flex: 1;
+    min-width: 0;
+}
+
 .register-machine-quantity,
 .register-machine-price {
     display: flex;
@@ -151,7 +182,8 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    overflow-y: auto;
+    overflow: hidden;
+    min-height: 0;
 }
 
 .register-right h3 {
@@ -212,10 +244,18 @@
     gap: 4px;
 }
 
+.register-machine-qty-cell {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
 .register-machine-qty,
 .register-machine-price {
     flex: 2;
-    min-width: 90px;
+    min-width: 50px;
 }
 
 .register-delete-btn {
