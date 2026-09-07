@@ -14,8 +14,8 @@ const menuItems = [
     name: "Usuarios", icon: Users, key: "users-parent",
     submenu: [
       { name: "Cargos", icon: Wrench, key: "cargos" },
-      { name: "Usuarios", icon: Users, key: "usuarios" },
       { name: "Roles", icon: UserCog, key: "roles" },
+      { name: "Usuarios", icon: Users, key: "usuarios" },
     ]
   },
   {

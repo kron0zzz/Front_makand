@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { X } from 'lucide-react';
 import { useCustomers } from "../../hooks/useCustomers";
 import './CustomerForm.css';
@@ -6,11 +7,36 @@ import { useAlertModal } from "../../../../shared/alertModal";
 const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
   const { showSuccess, showError } = useAlertModal();
   const { cargarClientes } = useCustomers();
+  const [errores, setErrores] = useState({});
+
+  const validarCampo = (name, value) => {
+    let error = "";
+    if (name === "customer_document_number") {
+      if (!value.trim()) error = "Este campo es obligatorio.";
+      else if (value.length > 10) error = "Máximo 10 dígitos.";
+      else if (!/^\d+$/.test(value)) error = "Solo se permiten números.";
+    }
+    if (name === "customer_email") {
+      if (value.length > 60) error = "Máximo 60 caracteres.";
+      else if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) error = "Formato de correo inválido.";
+    }
+    if (name === "customer_phone") {
+      if (!value.trim()) error = "Este campo es obligatorio.";
+      else if (value.length > 10) error = "Máximo 10 dígitos.";
+      else if (!/^\d+$/.test(value)) error = "Solo se permiten números.";
+    }
+    setErrores(prev => ({ ...prev, [name]: error }));
+  };
 
   if (!isOpen) return null;
 
   const handleChange = (e) => {
   const { name, value } = e.target;
+  let valor = value;
+  if (name === "customer_document_number" || name === "customer_phone") {
+    valor = value.replace(/\D/g, '');
+    if (valor.length > 10) valor = valor.slice(0, 10);
+  }
 
   if (name === "organization_type") {
     setFormData({
@@ -29,12 +55,27 @@ const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
 
   setFormData({
     ...formData,
-    [name]: value
+    [name]: valor
   });
+  validarCampo(name, valor);
 };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const nuevosErrores = {};
+    if (!formData.customer_document_number || !/^\d+$/.test(formData.customer_document_number) || formData.customer_document_number.length > 10) {
+      nuevosErrores.customer_document_number = "Máximo 10 dígitos y solo números.";
+    }
+    if ((formData.customer_email || '').length > 60 || (formData.customer_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.customer_email))) {
+      nuevosErrores.customer_email = "Máximo 60 caracteres y formato de correo válido.";
+    }
+    if (!formData.customer_phone || !/^\d+$/.test(formData.customer_phone) || formData.customer_phone.length > 10) {
+      nuevosErrores.customer_phone = "Máximo 10 dígitos y solo números.";
+    }
+    setErrores(nuevosErrores);
+    if (Object.keys(nuevosErrores).length > 0) return;
+
     const token = localStorage.getItem("token"); 
     const dataToSend = {
       organization_type: formData.organization_type,
@@ -182,19 +223,22 @@ const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
             {/* Número de Identificación */}
             <div>
               <label className="form-label">Número de Documento *</label>
-              <input name="customer_document_number" type="text" className="form-input" value={formData.customer_document_number || ''} onChange={handleChange} required />
+              <input name="customer_document_number" type="text" className={`form-input ${errores.customer_document_number ? 'input-error' : ''}`} maxLength={10} value={formData.customer_document_number || ''} onChange={handleChange} required />
+              {errores.customer_document_number && <span className="error-text">{errores.customer_document_number}</span>}
             </div>
 
             {/* Teléfono de Contacto */}
             <div>
               <label className="form-label">Teléfono / Celular *</label>
-              <input name="customer_phone" type="text" className="form-input" value={formData.customer_phone || ''} onChange={handleChange} required />
+              <input name="customer_phone" type="text" className={`form-input ${errores.customer_phone ? 'input-error' : ''}`} maxLength={10} inputMode="numeric" value={formData.customer_phone || ''} onChange={handleChange} required />
+              {errores.customer_phone && <span className="error-text">{errores.customer_phone}</span>}
             </div>
 
             {/* Correo Electrónico */}
             <div>
               <label className="form-label">Correo Electrónico</label>
-              <input name="customer_email" type="email" className="form-input" value={formData.customer_email || ''} onChange={handleChange} />
+              <input name="customer_email" type="email" className={`form-input ${errores.customer_email ? 'input-error' : ''}`} maxLength={60} value={formData.customer_email || ''} onChange={handleChange} />
+              {errores.customer_email && <span className="error-text">{errores.customer_email}</span>}
             </div>
 
             {/* Dirección de Residencia/Oficina */}

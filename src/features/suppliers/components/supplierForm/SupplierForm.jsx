@@ -46,16 +46,26 @@ const SupplierForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
   const validarCampo = (name, value) => {
     let error = "";    
     if (name === "document_number" && value.length > 10) error = "El número es demasiado largo (máx 10).";
+    if (name === "document_number" && value && !/^\d+$/.test(value)) error = "Solo se permiten números.";
     if (name === "supplier_phone" && value.length > 10) error = "El teléfono es demasiado largo (máx 10).";
-    if (name === "supplier_email" && value && !/\S+@\S+\.\S+/.test(value)) error = "Formato de correo inválido.";
+    if (name === "supplier_phone" && value && !/^\d+$/.test(value)) error = "Solo se permiten números.";
+    if (name === "supplier_email") {
+      if (value && value.length > 60) error = "Máximo 60 caracteres.";
+      else if (value && !/\S+@\S+\.\S+/.test(value)) error = "Formato de correo inválido.";
+    }
     
     setErrores(prev => ({ ...prev, [name]: error }));
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    validarCampo(name, value);
+    let valor = value;
+    if (name === "document_number" || name === "supplier_phone") {
+      valor = value.replace(/\D/g, '');
+      if (valor.length > 10) valor = valor.slice(0, 10);
+    }
+    setFormData({ ...formData, [name]: valor });
+    validarCampo(name, valor);
   };
 
   const handleSubmit = async (e) => {
@@ -151,19 +161,19 @@ const SupplierForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
 
             <div>
               <label className="form-label">Número de Documento *</label>
-              <input name="document_number" className={`form-input ${errores.document_number ? 'input-error' : ''}`} value={formData.document_number || ''} onChange={handleChange} required />
+              <input name="document_number" className={`form-input ${errores.document_number ? 'input-error' : ''}`} maxLength={10} value={formData.document_number || ''} onChange={handleChange} required />
               {errores.document_number && <span className="error-text">{errores.document_number}</span>}
             </div>
 
             <div>
               <label className="form-label">Teléfono *</label>
-              <input name="supplier_phone" className={`form-input ${errores.supplier_phone ? 'input-error' : ''}`} value={formData.supplier_phone || ''} onChange={handleChange} required />
+              <input name="supplier_phone" className={`form-input ${errores.supplier_phone ? 'input-error' : ''}`} maxLength={10} value={formData.supplier_phone || ''} onChange={handleChange} required />
               {errores.supplier_phone && <span className="error-text">{errores.supplier_phone}</span>}
             </div>
 
             <div>
               <label className="form-label">Correo</label>
-              <input name="supplier_email" className={`form-input ${errores.supplier_email ? 'input-error' : ''}`} value={formData.supplier_email || ''} onChange={handleChange} />
+              <input name="supplier_email" className={`form-input ${errores.supplier_email ? 'input-error' : ''}`} maxLength={60} value={formData.supplier_email || ''} onChange={handleChange} />
               {errores.supplier_email && <span className="error-text">{errores.supplier_email}</span>}
             </div>
 

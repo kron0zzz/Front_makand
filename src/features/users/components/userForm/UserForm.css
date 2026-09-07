@@ -79,6 +79,17 @@
     box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.2);
 }
 
+.form-input.input-error {
+    border: 2px solid #ef4444;
+}
+
+.error-text {
+    color: #ef4444;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
+
 .form-footer {
     margin-top: 24px;
     display: flex;

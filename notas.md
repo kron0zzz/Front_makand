@@ -25,6 +25,11 @@ Este archivo es pa borrar luego, son cosas que deberíamos tener en cuenta.
 
 - aparte de hacer los ajustes de arriba, falta entonces el editar pedido
 
+### workspace
+#### returns
+- en lugar de que cada card de maquinaria tenga su propio botón de devolución, se debería agregar un botón global que abra una modal para seleccionar cuáles equipos se devolvieron, en que cantidad y en que fecha, de esta manera la devolución no se hace pensando en la maquina que se devolvió sino en la fecha
+#### cuts
+- por qué mierda no me deja cerrar un pedido si no hice un corte un día después de las devoluciones?, es decir, puede que yo haya devuelto todo el 11 pero si el corte lo hice el mismo 11, el sistema aparentemente exige que el corte se registre un día después para poder cerrar el pedido
 
 ### users 
 - al editar un usuario y asignar una contraseña, esta queda en texto plano en la db, es decir, no se encripta

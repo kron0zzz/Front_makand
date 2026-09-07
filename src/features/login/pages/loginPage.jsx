@@ -103,17 +103,21 @@ function LoginPage({ onLogin }) {
           {!isForgotMode ? (
             <>
               <h2>Iniciar Sesión</h2>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} autoComplete="off">
+                {/* Truco para engañar al autocompletado de Opera/Chrome */}
+                <input type="text" style={{ display: "none" }} aria-hidden="true" />
+                <input type="password" style={{ display: "none" }} aria-hidden="true" />
                 <div className="input-group">
                   <label>Correo Electrónico</label>
                   <div className="input-container">
                     <Mail size={20} className="input-icon" />
                     <input
                       type="email"
-                      placeholder="tu-email@makandsmr.com"
+                      placeholder="tu-email@gmail.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
+                      autoComplete="off"
                     />
                   </div>
                 </div>
@@ -128,6 +132,7 @@ function LoginPage({ onLogin }) {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
+                      autoComplete="new-password"
                     />
                   </div>
                 </div>

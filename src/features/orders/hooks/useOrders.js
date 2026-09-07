@@ -9,7 +9,6 @@ export const useOrders = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // asignar estados para paginación
   const [page, setPage] = useState(1);
   const [limit] = useState(9);
   const [search, setSearch] = useState("");
@@ -81,14 +80,14 @@ export const useOrders = () => {
     }
   };
 
-  const obtenerPedidoCompleto = async (id) => {
+  const obtenerPedidoCompleto = useCallback(async (id) => {
     try {
       const { data } = await api.get(`/orders/${id}/full`);
       return data;
     } catch (err) {
       handleError(err);
     }
-  };
+  }, []);
 
   const anularPedido = async (id) => {
     if (!await showConfirm(
@@ -124,9 +123,19 @@ Esta acción no se puede deshacer.
     }
   };
 
+  const actualizarPedido = useCallback(async (id, pedidoData) => {
+    try {
+      const data = await orderService.actualizar(id, pedidoData);
+      await cargarPedidos();
+      return data;
+    } catch (err) {
+      handleError(err);
+    }
+  }, [cargarPedidos]);
+
   useEffect(() => {
   cargarPedidos();
-}, [cargarPedidos]);
+  }, [cargarPedidos]);
 
   return { 
     orders, 
@@ -134,6 +143,7 @@ Esta acción no se puede deshacer.
     error, 
     cargarPedidos, 
     crearPedidoCompleto,
+    actualizarPedido,
     eliminarPedido,
     obtenerPedidoCompleto, 
     anularPedido,

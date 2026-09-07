@@ -20,6 +20,7 @@ import MaintenancesPage from './features/maintenances/pages/MaintenancesPage';
 import UsersPage from './features/users/pages/UsersPage';
 import OrderStatusPage from './features/order-status/pages/OrderStatusPage';
 import OrderWorkspace from "./features/orders/components/OrderWorkspace/OrderWorkspace";
+import OrderRegisterPage from "./features/orders/components/OrderForm/orderRegisterPage";
 import Dashboard from './features/dashboard/Dashboard'; 
 import RolePage from './features/roles/pages/RolePage'; 
 import LoginPage from './features/login/pages/loginPage';
@@ -93,6 +94,13 @@ function AppContent() {
               orderId={selectedOrderId}
               onBack={() => {
                 setSelectedOrderId(null);
+                navigate("/pedidos");
+              }}
+            />
+          } />
+          <Route path="/pedido-registro" element={
+            <OrderRegisterPage
+              onBack={() => {
                 navigate("/pedidos");
               }}
             />

@@ -129,6 +129,11 @@ function ResetPasswordPage() {
             >
               {loading ? "Actualizando..." : "Restablecer Contraseña"}
             </button>
+            <div style={{ textAlign: "center", marginTop: "15px" }}>
+              <a href="/" className="back-to-login-link">
+                ← Volver al Login
+            </a>
+          </div>
           </form>
         </div>
       </div>

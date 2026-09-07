@@ -11,6 +11,17 @@ const ProjectForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
   const [customers, setCustomers] = useState([]);
   const [departamentos, setDepartamentos] = useState([]);
   const [ciudades, setCiudades] = useState([]);
+  const [errores, setErrores] = useState({});
+
+  const validarCampo = (name, value) => {
+    let error = "";
+    if (name === "project_phone") {
+      if (!value.trim()) error = "Este campo es obligatorio.";
+      else if (value.length > 10) error = "Máximo 10 dígitos.";
+      else if (!/^\d+$/.test(value)) error = "Solo se permiten números.";
+    }
+    setErrores(prev => ({ ...prev, [name]: error }));
+  };
 
   // 1. Cargar Clientes (API Interna)
   useEffect(() => {
@@ -68,16 +79,29 @@ const ProjectForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // Si cambia el departamento, limpiamos la ciudad seleccionada
-    if (name === 'project_state') {
-      setFormData(prev => ({ ...prev, [name]: value, project_city: '' }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+    let valor = value;
+    if (name === 'project_phone') {
+      valor = value.replace(/\D/g, '');
+      if (valor.length > 10) valor = valor.slice(0, 10);
     }
+    if (name === 'project_state') {
+      setFormData(prev => ({ ...prev, [name]: valor, project_city: '' }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: valor }));
+    }
+    validarCampo(name, valor);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const nuevosErrores = {};
+    if (!formData.project_phone || !/^\d+$/.test(formData.project_phone) || formData.project_phone.length > 10) {
+      nuevosErrores.project_phone = "Máximo 10 dígitos y solo números.";
+    }
+    setErrores(nuevosErrores);
+    if (Object.keys(nuevosErrores).length > 0) return;
+
     const dataToSend = {
       project_name: formData.project_name,
       project_address: formData.project_address,
@@ -155,7 +179,8 @@ const ProjectForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
 
             <div>
               <label className="form-label">Teléfono *</label>
-              <input name="project_phone" className="form-input" value={formData.project_phone || ''} onChange={handleChange} required />
+              <input name="project_phone" className={`form-input ${errores.project_phone ? 'input-error' : ''}`} maxLength={10} inputMode="numeric" value={formData.project_phone || ''} onChange={handleChange} required />
+              {errores.project_phone && <span className="error-text">{errores.project_phone}</span>}
             </div>
 
             <div className="form-full-width">
