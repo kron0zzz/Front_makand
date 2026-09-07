@@ -39,9 +39,6 @@ const EmployeePage = () => {
     setMostrarModalDetalle(false);
   };
 
-  
-
-
   const busquedaDebounce = useDebounce(busqueda, 300);
   useEffect(() => {
     cambiarBusqueda(busquedaDebounce);
@@ -110,17 +107,17 @@ const EmployeePage = () => {
                   </td>
                   <td className="actions-cell">
                     {hasPermission('Ver Detalle de Empleado') && (
-                      <button className="action-btn view" onClick={() => { setEmployeeSeleccionado(emp); setMostrarModalDetalle(true); }}>
+                      <button className="action-btn view" onClick={() => { setEmployeeSeleccionado(emp); setMostrarModalDetalle(true); }} title="Ver">
                         <Eye size={18} />
                       </button>
                     )}
                     {hasPermission('Editar Empleado') && (
-                      <button className="action-btn edit" onClick={() => prepararEdicion(emp)}>
+                      <button className="action-btn edit" onClick={() => prepararEdicion(emp)} title="Editar">
                         <Edit size={18} />
                       </button>
                     )}
                     {hasPermission('Eliminar Empleado') && (
-                      <button className="action-btn delete" onClick={() => eliminarEmpleado(emp.employee_id)}>
+                      <button className="action-btn delete" onClick={() => eliminarEmpleado(emp.employee_id)} title="Eliminar">
                         <Trash2 size={18} />
                       </button>
                     )}
