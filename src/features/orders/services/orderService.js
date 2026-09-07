@@ -115,5 +115,37 @@ export const orderService = {
   anular: async(id) => {
     const {data} = await apiClient.put(`/orders/${id}/cancel`);
     return data;
+  },
+
+  actualizar: async (id, data) => {
+    const token =
+      localStorage.getItem("token");
+
+    const response = await fetch(
+      `${API_URL}/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type":
+            "application/json",
+          Authorization:
+            `Bearer ${token}`
+        },
+        body: JSON.stringify(data)
+      }
+    );
+
+    if (!response.ok) {
+      const error =
+        await response.json();
+
+      throw new Error(
+        error.error ||
+        error.message ||
+        "Error actualizando pedido"
+      );
+    }
+
+    return await response.json();
   }
 };

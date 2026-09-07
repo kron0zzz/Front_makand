@@ -3,7 +3,8 @@ import {
   Plus,
   Search,
   ArrowRightCircle,
-  Ban
+  Ban,
+  Edit
 } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
@@ -16,6 +17,7 @@ import useDebounce from "../../../shared/hooks/useDebounce";
 
 import "./OrderPage.css";
 import { useAlertModal } from "../../../shared/alertModal";
+import OrderForm from "../components/OrderForm/OrderForm";
 
 const OrderPage = ({ onOpenWorkspace }) => {
   const navigate = useNavigate();
@@ -35,6 +37,8 @@ const OrderPage = ({ onOpenWorkspace }) => {
   } = useOrders();
 
   const [busqueda, setBusqueda] = useState("");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingOrderId, setEditingOrderId] = useState(null);
 
   const handleAnularPedido = async (orderId) => {
 
@@ -56,6 +60,16 @@ const OrderPage = ({ onOpenWorkspace }) => {
 
     }
 
+  };
+
+  const handleOpenEdit = (orderId) => {
+    setEditingOrderId(orderId);
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseEdit = () => {
+    setIsEditModalOpen(false);
+    setEditingOrderId(null);
   };
 
   const busquedaDebounce =
@@ -154,6 +168,7 @@ const OrderPage = ({ onOpenWorkspace }) => {
 
               orders.map((order) => {
 
+                const isClosed = order.order_status_id === 4;
                 const isCancelled = order.order_status_id === 5;
 
                 return (
@@ -221,6 +236,26 @@ const OrderPage = ({ onOpenWorkspace }) => {
 
                       )}
 
+                      {hasPermission("Editar Orden") &&
+                        !isClosed &&
+                        !isCancelled && (
+
+                          <button
+                            className="action-btn edit"
+                            title="Editar Pedido"
+                            onClick={() =>
+                              handleOpenEdit(
+                                order.order_id
+                              )
+                            }
+                          >
+
+                            <Edit size={18} />
+
+                          </button>
+
+                        )}
+
                       {hasPermission("Anular Pedido") &&
                         !isCancelled && (
 
@@ -274,6 +309,12 @@ const OrderPage = ({ onOpenWorkspace }) => {
         </table>
 
       </div>
+
+      <OrderForm
+        isOpen={isEditModalOpen}
+        onClose={handleCloseEdit}
+        orderId={editingOrderId}
+      />
 
        <Pagination
         page={page}
