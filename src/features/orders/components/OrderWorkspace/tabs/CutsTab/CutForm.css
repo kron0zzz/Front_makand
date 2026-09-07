@@ -204,3 +204,25 @@
     background:#f55920;
 
 }
+
+.cut-date-input{
+
+    color-scheme: light;
+}
+
+.cut-date-input:invalid{
+
+    color:#bbb;
+    background:#fafafa;
+}
+
+.cut-date-hint{
+
+    display:block;
+
+    margin-top:6px;
+
+    color:#888;
+
+    font-size:.8rem;
+}

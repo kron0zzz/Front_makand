@@ -400,3 +400,83 @@ input:checked + .slider:before {
   font-weight: 500;
   color: #374151;
 }
+
+/* Cut status badges */
+.cut-status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.cut-pending {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.cut-up-to-date {
+  background-color: #ecfdf5;
+  color: #059669;
+}
+
+/* === Ícono de corte pendiente en la tabla === */
+.order-id-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.cut-warning-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.cut-warning-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: #fef3c7;
+  color: #f59e0b;
+  border: 1px solid #fbbf24;
+  transition: all 0.2s ease;
+}
+
+.cut-warning-wrapper:hover .cut-warning-badge {
+  background-color: #fde68a;
+  color: #d97706;
+  transform: scale(1.15);
+}
+
+.cut-warning-tooltip {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1f2937;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  z-index: 1000;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.cut-warning-wrapper:hover .cut-warning-tooltip {
+  visibility: visible;
+  opacity: 1;
+}

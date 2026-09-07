@@ -3,7 +3,8 @@ import {
   Plus,
   Search,
   ArrowRightCircle,
-  Ban
+  Ban,
+  AlertTriangle
 } from "lucide-react";
 
 import { useOrders } from "../hooks/useOrders";
@@ -137,75 +138,87 @@ const OrderPage = ({ onOpenWorkspace }) => {
 
         <table className="custom-table">
 
-          <thead>
+           <thead>
 
-            <tr>
+              <tr>
 
-              <th>ID</th>
-              <th>Fecha</th>
-              <th>Proyecto</th>
-              <th>Cliente</th>
-              <th>Estado</th>
-              <th>Gestión</th>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Proyecto</th>
+                <th>Cliente</th>
+                <th>Estado</th>
+                <th>Gestión</th>
 
-            </tr>
+              </tr>
 
-          </thead>
+           </thead>
 
-          <tbody>
+           <tbody>
 
-            {orders.length > 0 ? (
+              {orders.length > 0 ? (
 
-              orders.map((order) => {
+                orders.map((order) => {
 
-                const isCancelled = order.order_status_id === 5;
+                  const isCancelled = order.order_status_id === 5;
 
-                return (
+                  return (
 
-                  <tr
-                    key={order.order_id}
-                    className={
-                      isCancelled
-                        ? "row-cancelled"
-                        : ""
-                    }
-                  >
+                    <tr
+                      key={order.order_id}
+                      className={
+                        isCancelled
+                          ? "row-cancelled"
+                          : ""
+                      }
+                    >
 
-                    <td>
+                     <td>
 
-                      #{order.order_id}
+                         <span className="order-id-cell">
 
-                    </td>
+                             #{order.order_id}
 
-                    <td>
+                             {order.cut_status === 'PENDING' && (
+                                 <span className="cut-warning-wrapper" title="Hay cortes por facturar">
+                                     <span className="cut-warning-badge">
+                                         <AlertTriangle size={14} />
+                                     </span>
+                                     
+                                 </span>
+                             )}
 
-                      {formatDate(
-                        order.order_creation_date
-                      )}
+                         </span>
 
-                    </td>
+                       </td>
 
-                    <td>
+                      <td>
 
-                      {order.project_name}
+                        {formatDate(
+                          order.order_creation_date
+                        )}
 
-                    </td>
+                      </td>
 
-                    <td>
+                      <td>
 
-                      {order.customer_name}
+                        {order.project_name}
 
-                    </td>
+                      </td>
 
-                    <td>
+                      <td>
 
-                      <span className={`status-badge status-${order.order_status_id}`}>
-                        {order.order_status_name}
-                      </span>
+                        {order.customer_name}
 
-                    </td>
+                      </td>
 
-                    <td className="actions-cell">
+                      <td>
+                        <span className={`status-badge status-${order.order_status_id}`}>
+                          {order.order_status_name}
+                        </span>
+                      </td>
+
+
+                      <td className="actions-cell">
 
                       {hasPermission("Gestionar Pedido") && (
 
@@ -252,26 +265,26 @@ const OrderPage = ({ onOpenWorkspace }) => {
 
               })
 
-            ) : (
+             ) : (
 
-              <tr>
+               <tr>
 
-                <td
-                  colSpan="6"
-                  className="empty-row"
-                  style={{
-                    textAlign: "center",
-                    padding: "40px"
-                  }}
-                >
+                       <td
+                    colSpan="6"
+                    className="empty-row"
+                   style={{
+                     textAlign: "center",
+                     padding: "40px"
+                   }}
+                 >
 
-                  No se encontraron coincidencias para "{busqueda}"
+                   No se encontraron coincidencias para "{busqueda}"
 
-                </td>
+                 </td>
 
-              </tr>
+               </tr>
 
-            )}
+             )}
 
           </tbody>
 

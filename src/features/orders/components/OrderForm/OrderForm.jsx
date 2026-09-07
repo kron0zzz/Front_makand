@@ -357,9 +357,9 @@ const OrderForm = ({
       const payload = {
         project_id: Number(formData.project_id),
         order_creation_date: formData.order_creation_date,
+        cut_frequency: formData.cut_frequency || null,
         discount_amount: discountDisplay === "" ? "0" : Number(discountDisplay.replace(/\./g, "")).toString(),
         order_description: formData.order_description,
-        // Nuevos campos adaptados al backend para el transporte de ida
         delivery_transport_price: includeDeliveryTransport 
           ? (deliveryTransportPriceDisplay === "" ? "0" : Number(deliveryTransportPriceDisplay.replace(/\./g, "")).toString()) 
           : "0",
@@ -476,18 +476,31 @@ const OrderForm = ({
                )}
             </div>
 
-             <div>
-               <label className="form-label">Fecha Inicio *</label>
-              <input
-                type="date"
-                name="order_creation_date"
-                className="form-input"
-                value={formData.order_creation_date || ""}
-                onChange={handleChange}
-                required
-              />
-             </div>
-               {/* el descuento no se va a hacer(porque es innecesario y que hp pereza),
+              <div>
+                <label className="form-label">Fecha Inicio *</label>
+               <input
+                 type="date"
+                 name="order_creation_date"
+                 className="form-input"
+                 value={formData.order_creation_date || ""}
+                 onChange={handleChange}
+                 required
+               />
+              </div>
+              <div>
+                <label className="form-label">Frecuencia de corte</label>
+                <select
+                  name="cut_frequency"
+                  className="form-input"
+                  value={formData.cut_frequency || ""}
+                  onChange={handleChange}
+                >
+                  <option value="">Sin frecuencia</option>
+                  <option value="QUINCENAL">Quincenal</option>
+                  <option value="MENSUAL">Mensual</option>
+                </select>
+              </div>
+                {/* el descuento no se va a hacer(porque es innecesario y que hp pereza),
                    dejen esto así comentado
 
              <div>
