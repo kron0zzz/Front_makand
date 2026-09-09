@@ -212,7 +212,7 @@ Esta acción no se puede deshacer.
                  success: false,
                  message:
                      error.response?.data?.message ||
-                     "No fue posible eliminar la devolución."
+                     "No fue posible eliminar la devolución. Verifica que no hayan cortes cubriendo la fecha de esta devolución."
              };
 
          }
