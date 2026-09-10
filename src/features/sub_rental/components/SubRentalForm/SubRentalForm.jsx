@@ -1,49 +1,65 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { subRentalService } from '../../services/subRentalService';
 import { useAlertModal } from "../../../../shared/alertModal";
 
 const SubRentalForm = ({ isOpen, onClose, formData, setFormData, isEditing, onSuccess }) => {
   const [suppliers, setSuppliers] = useState([]);
   const [machines, setMachines] = useState([]);
+  const [machineSearch, setMachineSearch] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [loadingMachines, setLoadingMachines] = useState(false);
   const [error, setError] = useState('');
   const [cargando, setCargando] = useState(false);
   const { showAlert } = useAlertModal();
 
-  // 1. Carga de Catálogos desde la API al abrir el modal
-  useEffect(() => {
-    const cargarCatalogos = async () => {
-      try {
-        const token = localStorage.getItem('token')?.replace(/^"|"$/g, '');
-        const headers = {
-          'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : ''
-        };
-
-        const [resSuppliers, resMachines] = await Promise.all([
-          fetch('http://localhost:3000/api/suppliers', { method: 'GET', headers }),
-          fetch('http://localhost:3000/api/stock', { method: 'GET', headers })
-        ]);
-
-        if (resSuppliers.ok) {
-          const dataSuppliers = await resSuppliers.json();
-          setSuppliers(dataSuppliers);
+  const cargarMaquinas = useCallback(async () => {
+    setLoadingMachines(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        "http://localhost:3000/api/machines/table?page=1&limit=1000&search=",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
-        if (resMachines.ok) {
-          const dataMachines = await resMachines.json();
-          setMachines(dataMachines);
-        }
-
-      } catch (err) {
-        console.error("Error al cargar catálogos en subalquileres:", err);
-      }
-    };
-
-    if (isOpen) {
-      cargarCatalogos();
+      );
+      const data = await response.json();
+      setMachines(data.data || []);
+    } catch (err) {
+      console.error("Error cargando máquinas:", err);
+    } finally {
+      setLoadingMachines(false);
     }
-  }, [isOpen]);
+  }, []);
 
-  // 2. 🌟 SALVAGUARDA DE SINCRONIZACIÓN: Forzar actualización de IDs cuando los catálogos terminen de cargar
+  const cargarProveedores = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('token')?.replace(/^"|"$/g, '');
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': token ? `Bearer ${token}` : ''
+      };
+
+      const resSuppliers = await fetch('http://localhost:3000/api/suppliers', { method: 'GET', headers });
+
+      if (resSuppliers.ok) {
+        const dataSuppliers = await resSuppliers.json();
+        setSuppliers(dataSuppliers);
+      }
+    } catch (err) {
+      console.error("Error al cargar proveedores:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      cargarMaquinas();
+      cargarProveedores();
+    }
+  }, [isOpen, cargarMaquinas, cargarProveedores]);
+
   useEffect(() => {
     if (isOpen && isEditing && (machines.length > 0 || suppliers.length > 0)) {
       setFormData(prev => ({
@@ -54,13 +70,31 @@ const SubRentalForm = ({ isOpen, onClose, formData, setFormData, isEditing, onSu
     }
   }, [machines, suppliers, isOpen, isEditing, setFormData]);
 
-  if (!isOpen) return null;
+  const hasSubRentalStock = (machine) => {
+    if (!machine.stock_details || !Array.isArray(machine.stock_details)) return false;
+    return machine.stock_details.some(stock => stock.is_owned === false);
+  };
+
+  const filteredMachines = machines.filter((m) =>
+    hasSubRentalStock(m) &&
+    m.machinery_name.toLowerCase().includes(machineSearch.toLowerCase())
+  );
+
+  const handleMachineSelect = (machine) => {
+    setMachineSearch(machine.machinery_name);
+    
+    const subRentalStock = machine.stock_details.find(stock => stock.is_owned === false);
+    if (subRentalStock) {
+      setFormData({ ...formData, stock_id: Number(subRentalStock.stock_id) });
+    }
+    setShowDropdown(false);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     
     let valorProcesado = value;
-    if (name === 'supplier_id' || name === 'stock_id') {
+    if (name === 'supplier_id') {
       valorProcesado = value === '' ? '' : parseInt(value, 10);
     } else if (name === 'sub_rental_status') {
       valorProcesado = value === 'true';
@@ -100,6 +134,8 @@ const SubRentalForm = ({ isOpen, onClose, formData, setFormData, isEditing, onSu
     }
   };
 
+  if (!isOpen) return null;
+
   return (
     <div className="form-modal-overlay">
       <div className="form-modal-container">
@@ -113,27 +149,43 @@ const SubRentalForm = ({ isOpen, onClose, formData, setFormData, isEditing, onSu
         <form onSubmit={handleSubmit} className="form-body">
           <div className="form-grid">
             
-            {/* Selector de Maquinaria */}
+            {/* Selector de Maquinaria - Autocomplete */}
             <div className="form-group">
               <label className="form-label">Maquinaria Asignada *</label>
-              <select
-                name="stock_id"
-                className="form-input"
-                value={formData.stock_id !== undefined && formData.stock_id !== null ? formData.stock_id : ''}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Seleccione la maquinaria...</option>
-                {machines.map((m) => {
-                  // Evaluamos dinámicamente cómo se llama el ID del elemento del catálogo
-                  const currentId = m.stock_id || m.id || m.id_machinery;
-                  return (
-                    <option key={currentId} value={Number(currentId)}>
-                      {m.machinery_name} {m.machinery_model ? `(${m.machinery_model})` : ''}
-                    </option>
-                  );
-                })}
-              </select>
+              <div className="machine-search-wrapper">
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="Buscar maquinaria..."
+                  value={machineSearch}
+                  onChange={(e) => {
+                    setMachineSearch(e.target.value);
+                    setShowDropdown(true);
+                  }}
+                  onFocus={() => setShowDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+                  required
+                />
+                {showDropdown && (
+                  <ul className="machine-dropdown">
+                    {loadingMachines ? (
+                      <li className="machine-dropdown-item disabled">Cargando...</li>
+                    ) : filteredMachines.length === 0 ? (
+                      <li className="machine-dropdown-item disabled">Sin resultados</li>
+                    ) : (
+                      filteredMachines.map((machine) => (
+                        <li
+                          key={machine.machinery_id}
+                          className="machine-dropdown-item"
+                          onMouseDown={() => handleMachineSelect(machine)}
+                        >
+                          {machine.machinery_name}
+                        </li>
+                      ))
+                    )}
+                  </ul>
+                )}
+              </div>
             </div>
 
             {/* Selector de Proveedor */}
@@ -148,7 +200,6 @@ const SubRentalForm = ({ isOpen, onClose, formData, setFormData, isEditing, onSu
               >
                 <option value="">Seleccione el proveedor...</option>
                 {suppliers.map((sup) => {
-                  // Evaluamos dinámicamente cómo se llama el ID del elemento del catálogo
                   const currentSupId = sup.supplier_id || sup.id || sup.id_supplier;
                   return (
                     <option key={currentSupId} value={Number(currentSupId)}>

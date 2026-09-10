@@ -7,7 +7,7 @@ import { useAlertModal } from "../../../../shared/alertModal";
 import StockSelectionModal from "../../../../shared/components/stockSelection/StockSelectionModal";
 
 const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showAlert } = useAlertModal();
   const { cargarMaintenances } = useMaintenances();
   const [machines, setMachines] = useState([]);
   const [machineSearch, setMachineSearch] = useState("");
@@ -15,21 +15,7 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
   const [selectedStocks, setSelectedStocks] = useState([]);
   const [stockModalOpen, setStockModalOpen] = useState(false);
   const [loadingMachines, setLoadingMachines] = useState(false);
-
-  useEffect(() => {
-    if (isOpen) {
-      cargarMaquinas();
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (isEditing && formData?.stock_id) {
-      const stockId = formData.stock_id;
-      const stock = selectedStocks.find((s) => s.stock_id === stockId);
-      if (stock) return;
-      fetchStockForForm(stockId);
-    }
-  }, [isEditing, formData?.stock_id, isOpen]);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const cargarMaquinas = useCallback(async () => {
     setLoadingMachines(true);
@@ -53,7 +39,7 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
     }
   }, []);
 
-  const fetchStockForForm = async (stockId) => {
+  const fetchStockForForm = useCallback(async (stockId) => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
@@ -71,17 +57,41 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
       );
       if (stock) {
         setSelectedStocks([stock]);
-        setSelectedMachine({
+        const machineData = {
           machinery_id: stock.machinery_id,
           machinery_name: stock.machinery_name,
-        });
+        };
+        setSelectedMachine(machineData);
+        setMachineSearch(stock.machinery_name);
       }
     } catch (err) {
       console.error("Error cargando stock:", err);
     }
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      cargarMaquinas();
+    }
+  }, [isOpen, cargarMaquinas]);
+
+  useEffect(() => {
+    if (isEditing && formData?.stock_id) {
+      const stockId = formData.stock_id;
+      const stock = selectedStocks.find((s) => s.stock_id === stockId);
+      if (stock) return;
+      fetchStockForForm(stockId);
+    }
+  }, [isEditing, formData?.stock_id, isOpen, fetchStockForForm, selectedStocks]);
+
+  const hasMaintenanceStock = (machine) => {
+    if (!machine.stock_details || !Array.isArray(machine.stock_details)) return false;
+    return machine.stock_details.some(stock => stock.status_id === 2);
   };
 
   const filteredMachines = machines.filter((m) =>
+    m.is_motorized &&
+    hasMaintenanceStock(m) &&
     m.machinery_name.toLowerCase().includes(machineSearch.toLowerCase())
   );
 
@@ -90,6 +100,7 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
     setMachineSearch(machine.machinery_name);
     setFormData({ ...formData, machinery_id: machine.machinery_id });
     setSelectedStocks([]);
+    setShowDropdown(false);
   };
 
   const openStockModal = () => {
@@ -185,11 +196,13 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
                       setSelectedMachine(null);
                       setSelectedStocks([]);
                     }
+                    setShowDropdown(true);
                   }}
-                  onFocus={() => setMachineSearch("")}
+                  onFocus={() => setShowDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
                   required
                 />
-                {machineSearch && (
+                {showDropdown && (
                   <ul className="machine-dropdown">
                     {loadingMachines ? (
                       <li className="machine-dropdown-item disabled">Cargando...</li>
