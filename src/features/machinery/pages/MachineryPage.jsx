@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, Eye, Edit, Trash2, Download } from 'lucide-react';
+import { Plus, Search, Eye, Edit, Trash2 } from 'lucide-react';
 import { useMachinery } from '../hooks/useMachinery';
 import { useAuth } from '../../../shared/context/AuthContext';
-import { machineryService } from '../services/machineryService';
 import MachineryForm from '../components/machineryForm/MachineryForm';
 import MachineryDetail from '../components/machineryDetail/MachineryDetail';
 import MachineryStockModal from '../components/machineryStockModal/MachineryStockModal';
@@ -181,29 +180,6 @@ onClick={() => {
                         onClick={() => { setMachinerySeleccionado(machinery); setMostrarModalDetalle(true); }}
                       >
                         <Eye size={18} />
-                      </button>
-                    )}
-                    {hasPermission('Ver Detalle de Maquinaria') && (
-                      <button
-                        className="action-btn pdf"
-                        title="Generar hoja de vida PDF"
-                        onClick={async () => {
-                          try {
-                            const blob = await machineryService.generarPdf(machinery.machinery_id);
-                            const url = window.URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = `hoja-vida-maquinaria-${machinery.machinery_id}.pdf`;
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                            window.URL.revokeObjectURL(url);
-                          } catch {
-                            await showAlert('No se pudo generar el PDF');
-                          }
-                        }}
-                      >
-                        <Download size={18} />
                       </button>
                     )}
                     {hasPermission('Editar Maquinaria') && (

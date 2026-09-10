@@ -1,13 +1,27 @@
-import { X } from 'lucide-react';
+import { X, Download } from 'lucide-react';
+import { machineryService } from '../../services/machineryService';
+import { useAlertModal } from "../../../../shared/alertModal";
 import './MachineryStockModal.css';
 
 const MachineryStockModal = ({ isOpen, onClose, machinery, stockList, loadingStock, stockPagination, cambiarPaginaStock }) => {
+  const { showAlert } = useAlertModal();
+
   if (!isOpen || !machinery) return null;
 
-  const formatDate = (dateStr) => {
-    if (!dateStr) return 'No programada';
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' });
+  const handleGenerarPdf = async (stockId) => {
+    try {
+      const blob = await machineryService.generarPdf(stockId);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `hoja-vida-equipo-${stockId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch {
+      await showAlert('No se pudo generar el PDF');
+    }
   };
 
   return (
@@ -34,7 +48,7 @@ const MachineryStockModal = ({ isOpen, onClose, machinery, stockList, loadingSto
                       <th>ID Stock</th>
                       <th>N° Serie</th>
                       <th>Estado</th>
-                      {/*<th>Próxima Revisión</th>*/}
+                      <th>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -47,7 +61,17 @@ const MachineryStockModal = ({ isOpen, onClose, machinery, stockList, loadingSto
                             {stock.status_name}
                           </span>
                         </td>                        
-                        {/*<td>{formatDate(stock.next_revision_date)}</td>*/}
+                        <td>
+                          {stock.serial_number && (
+                            <button
+                              className="action-btn pdf"
+                              title="Generar hoja de vida PDF"
+                              onClick={() => handleGenerarPdf(stock.stock_id)}
+                            >
+                              <Download size={16} />
+                            </button>
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

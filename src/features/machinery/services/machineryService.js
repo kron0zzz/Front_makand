@@ -45,8 +45,8 @@ export const machineryService = {
     };
   },
 
-  generarPdf: async (id) => {
-    const response = await apiClient.get(`/machines/${id}/pdf`, {
+  generarPdf: async (stockId) => {
+    const response = await apiClient.get(`/stock/${stockId}/pdf`, {
       responseType: 'blob',
     });
     return response.data;
