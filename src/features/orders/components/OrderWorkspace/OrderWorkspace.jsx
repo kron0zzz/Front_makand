@@ -135,6 +135,7 @@ const OrderWorkspace = ({ orderId, onBack }) => {
 
                         <CutsTab
                             cuts = {cuts}
+                            paymentsData={paymentsData}
                             order={workspace}
                             onCreateCut = {registrarCorte}
                         />

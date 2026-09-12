@@ -6,7 +6,7 @@ import { apiClient } from "../../../../../../shared/services/api";
 import "./CutsTab.css";
 import CutForm from "./CutForm";
 
-const CutsTab = ({ cuts, order, onCreateCut }) => {
+const CutsTab = ({ cuts, paymentsData, order, onCreateCut }) => {
 
     const [showCutForm, setShowCutForm] = useState(false);
     const [showInvoiceModal, setShowInvoiceModal] = useState(false);
@@ -22,6 +22,55 @@ const CutsTab = ({ cuts, order, onCreateCut }) => {
                 acc + Number(cut.cut_amount),
             0
         );
+
+    // Extract payments and filter out cancelled ones
+    const payments = paymentsData?.payments || [];
+    const activePayments = payments
+        .filter(p => !p.is_cancelled)
+        .sort((a, b) => new Date(a.payment_date) - new Date(b.payment_date));
+
+    // Calculate payment status for each cut using chronological assignment
+    // Payments are applied sequentially to cuts in chronological order
+    const cutsWithPaymentStatus = (() => {
+        const sortedCutsChrono = [...cuts].sort(
+            (a, b) => new Date(a.period_end_date) - new Date(b.period_end_date)
+        );
+
+        let remainingPayment = activePayments.reduce(
+            (sum, p) => sum + Number(p.payment_amount),
+            0
+        );
+
+        return sortedCutsChrono.map(cut => {
+            const cutAmount = Number(cut.cut_amount);
+            const amountPaid = Math.min(remainingPayment, cutAmount);
+            remainingPayment = Math.max(remainingPayment - cutAmount, 0);
+            const pendingBalance = Math.max(cutAmount - amountPaid, 0);
+            const percentage = cutAmount > 0
+                ? Math.round((amountPaid / cutAmount) * 100)
+                : 100;
+
+            let status = "pending";
+            if (percentage === 100) {
+                status = "paid";
+            } else if (percentage > 0) {
+                status = "partial";
+            }
+
+            return {
+                ...cut,
+                amountPaid,
+                pendingBalance,
+                percentage,
+                status
+            };
+        });
+    })();
+
+    // Map status to the original cuts order for display
+    const statusMap = new Map(
+        cutsWithPaymentStatus.map(c => [c.cut_id, c])
+    );
 
     const pendingCuts = order?.pending_cuts || [];
     const cutStatus = order?.cut_status;
@@ -199,129 +248,169 @@ const CutsTab = ({ cuts, order, onCreateCut }) => {
 
                     )
 
-                    .map(cut=>(
+                    .map(cut=>{
 
-                        <div
-                            className="timeline-item"
-                            key={cut.cut_id}
-                        >
+                        const paymentInfo = statusMap.get(cut.cut_id) || {
+                            amountPaid: 0,
+                            pendingBalance: Number(cut.cut_amount),
+                            percentage: 0,
+                            status: "pending"
+                        };
 
-                            <div className="timeline-marker">
+                        const statusConfig = {
+                            paid: { label: "Pagado", color: "#16a34a", bg: "#dcfce7", icon: "✓" },
+                            partial: { label: "Parcial", color: "#d97706", bg: "#fef3c7", icon: "↻" },
+                            pending: { label: "Pendiente", color: "#dc2626", bg: "#fee2e2", icon: "○" }
+                        };
 
-                                <div className="timeline-head">
+                        const config = statusConfig[paymentInfo.status];
 
-                                    <div className="timeline-dot"/>
+                        return (
 
-                                    <span className="timeline-date">
-                                        {formatDate(cut.period_end_date)}
-                                    </span>
+                            <div
+                                className="timeline-item"
+                                key={cut.cut_id}
+                            >
+
+                                <div className="timeline-marker">
+
+                                    <div className="timeline-head">
+
+                                        <div className="timeline-dot"/>
+
+                                        <span className="timeline-date">
+                                            {formatDate(cut.period_end_date)}
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                                <div className="timeline-card">
+
+                                    <div className="timeline-card-header">
+
+                                        <div className="timeline-range">
+
+                                            <span>
+
+                                                Desde
+
+                                                <strong>
+
+                                                    {
+                                                        formatDate(
+                                                            cut.period_start_date
+                                                        )
+                                                    }
+
+                                                </strong>
+
+                                            </span>
+
+                                            <span className="arrow">
+
+                                                ↓
+
+                                            </span>
+
+                                            <span>
+
+                                                Hasta
+
+                                                <strong>
+
+                                                    {
+                                                        formatDate(
+                                                            cut.period_end_date
+                                                        )
+                                                    }
+
+                                                </strong>
+
+                                            </span>
+
+                                        </div>
+
+                                        <div className="cut-status-badge" style={{ background: config.bg, color: config.color, display: "inline-flex", alignItems: "center", gap: "6px", padding: "4px 12px", borderRadius: "20px", fontSize: "0.8rem", fontWeight: 600 }}>
+
+                                            <span className="status-icon">{config.icon}</span>
+
+                                            <span className="status-label">{config.label}</span>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div className="timeline-info">
+
+                                        <div>
+
+                                            <small>Corte</small>
+
+                                            <strong>
+
+                                                #{cut.cut_id}
+
+                                            </strong>
+
+                                        </div>
+
+                                        <div>
+
+                                            <small>Registrado</small>
+
+                                            <strong>
+
+                                                {
+                                                    formatDate(
+                                                        cut.cut_date
+                                                    )
+                                                }
+
+                                            </strong>
+
+                                        </div>
+
+                                        <div>
+
+                                            <small>Valor</small>
+
+                                            <strong className="amount">
+
+                                                $
+
+                                                {
+
+                                                    Number(
+                                                        cut.cut_amount
+                                                    ).toLocaleString()
+
+                                                }
+
+                                            </strong>
+
+                                        </div>
+
+                                        <div>
+
+                                            <small>Falta</small>
+
+                                            <strong className="pending-amount" style={{ color: "#dc2626" }}>
+
+                                                ${paymentInfo.pendingBalance.toLocaleString()}
+
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
 
                                 </div>
 
                             </div>
 
-                            <div className="timeline-card">
-
-                                <div className="timeline-range">
-
-                                    <span>
-
-                                        Desde
-
-                                        <strong>
-
-                                            {
-                                                formatDate(
-                                                    cut.period_start_date
-                                                )
-                                            }
-
-                                        </strong>
-
-                                    </span>
-
-                                    <span className="arrow">
-
-                                        ↓
-
-                                    </span>
-
-                                    <span>
-
-                                        Hasta
-
-                                        <strong>
-
-                                            {
-                                                formatDate(
-                                                    cut.period_end_date
-                                                )
-                                            }
-
-                                        </strong>
-
-                                    </span>
-
-                                </div>
-
-                                <div className="timeline-info">
-
-                                    <div>
-
-                                        <small>Corte</small>
-
-                                        <strong>
-
-                                            #{cut.cut_id}
-
-                                        </strong>
-
-                                    </div>
-
-                                    <div>
-
-                                        <small>Registrado</small>
-
-                                        <strong>
-
-                                            {
-                                                formatDate(
-                                                    cut.cut_date
-                                                )
-
-                                            }
-
-                                        </strong>
-
-                                    </div>
-
-                                    <div>
-
-                                        <small>Valor</small>
-
-                                        <strong className="amount">
-
-                                            $
-
-                                            {
-
-                                                Number(
-                                                    cut.cut_amount
-                                                ).toLocaleString()
-
-                                            }
-
-                                        </strong>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    ))
+                    )})
 
                 }
 
