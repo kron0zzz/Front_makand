@@ -13,17 +13,19 @@ Este archivo es pa borrar luego, son cosas que deberíamos tener en cuenta.
 - en todos los endpoint de table, se debe organizar el orden en DESC
 
 - El rol de asesor si deja hacer algunas cosas pero le falta la posibilidad de registrar pedidos por ejemplo (tal vez gestinarlo también?)
+
+#### Dashboard
+- hay unas cards de actividad reciente, las cuales tienen un botón de "ver todos" que no funciona
+
+
 #### orders
 
 - la información del usuario no debería ser el correo, más bien el nombre del empleado para identificarlo fácilmente, o no?
-- poner botón de editar en ver detalles
 - entonces que se va a hacer con el precio dentro de detallles? se puede modificar completamente?
 - en la info debe aparecer el peso total
 - en el formulario, no se debe permitir registrar 2 veces la misma maquina, y además se debería mostrar un indicador de que x maquina está en mantenimiento, no disponible, etc
 - el transporte va después de maquinaria, no antes.
 
-
-- aparte de hacer los ajustes de arriba, falta entonces el editar pedido
 
 ### workspace
 #### returns
@@ -32,7 +34,7 @@ Este archivo es pa borrar luego, son cosas que deberíamos tener en cuenta.
 - por qué mierda no me deja cerrar un pedido si no hice un corte un día después de las devoluciones?, es decir, puede que yo haya devuelto todo el 11 pero si el corte lo hice el mismo 11, el sistema aparentemente exige que el corte se registre un día después para poder cerrar el pedido
 
 ### users 
-- al editar un usuario y asignar una contraseña, esta queda en texto plano en la db, es decir, no se encripta
+-
 
 ### tipos de cobro
 - todo melo manito
