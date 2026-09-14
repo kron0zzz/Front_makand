@@ -126,7 +126,7 @@ const EmployeeForm = ({ isOpen, onClose, formData, setFormData, isEditing, carga
         await showAlert(isEditing ? '¡Empleado actualizado con éxito!' : '¡Empleado registrado con éxito!');
       } else {
         const resData = await response.json();
-        const msg = resData.message || 'Error al guardar los datos';
+        const msg = resData.message || 'Error: verifica que el número de documento o el correo no haya sido registrado en otro empleado.';
         setError(msg);
         await showAlert(msg);
       }
@@ -149,7 +149,6 @@ const EmployeeForm = ({ isOpen, onClose, formData, setFormData, isEditing, carga
           </button>
         </div>
 
-        {error && <div className="modal-error-message" style={{color: 'red', marginBottom: '10px'}}>{error}</div>}
         {cargando && <p>Cargando información...</p>}
 
         <form onSubmit={handleSubmit} className="form-body">

@@ -114,7 +114,7 @@ const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
         onClose();
       } else {
         const errorData = await response.json();
-        await showError(`Error del servidor: ${errorData.error || 'No se pudo procesar la solicitud'}`);
+        await showError(`Error: ${'verifica que el número de documento no esté registrado en otro cliente.' || errorData.error }`);
       }
     } catch (error) {
       console.error("Error en la petición:", error);

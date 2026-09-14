@@ -39,11 +39,6 @@ const ChargeTypesPage = () => {
     setMostrarModalForm(true);
   };
 
-  const handleEliminar = async (id) => {
-    if (await showConfirm('¿Estás seguro de que deseas eliminar este tipo de cobro?')) {
-      await eliminarTipoCobro(id);
-    }
-  };
 
   const busquedaDebounce = useDebounce(busqueda, 300);
   useEffect(() => {
@@ -106,7 +101,7 @@ const ChargeTypesPage = () => {
                       <button className="action-btn edit" title="Editar" onClick={() => prepararEdicion(tipoCobro)}><Edit size={18} /></button>
                     )}
                     {hasPermission('Eliminar Tipo de Cargo') && (
-                      <button className="action-btn delete" title="Eliminar" onClick={() => handleEliminar(tipoCobro.charge_type_id)}><Trash2 size={18} /></button>
+                      <button className="action-btn delete" title="Eliminar" onClick={() => eliminarTipoCobro(tipoCobro.charge_type_id)}><Trash2 size={18} /></button>
                     )}
                   </td>
                 </tr>

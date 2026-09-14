@@ -73,7 +73,7 @@ const UserForm = ({
       onClose();
     } catch (error) {
       console.error("Error en la petición:", error);
-      await showAlert("Error de conexión o datos inválidos. Revisa la consola.");
+      await showAlert("Error del servidor, verifique que este empleado no tenga un usuario registrado.");
     }
   };
 

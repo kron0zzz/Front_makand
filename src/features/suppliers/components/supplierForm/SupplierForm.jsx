@@ -105,7 +105,7 @@ const SupplierForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
         onClose();
       } else {
         const errorData = await response.json();
-        await showAlert(`Error al guardar: ${errorData.error || 'Verifica que todos los campos cumplan con el formato requerido.'}`);
+        await showAlert(`Error al guardar: ${'Verifica que el número de documento no esté duplicado.' || errorData.error}`);
       }
     } catch (error) {
       await showAlert("Error de conexión: El servidor no responde.");

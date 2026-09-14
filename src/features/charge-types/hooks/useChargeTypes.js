@@ -58,7 +58,7 @@ export const useChargeTypes = () => {
       setChargeTypes(prev => prev.filter(item => item.charge_type_id !== id));
       await showSuccess("Tipo de cobro eliminado correctamente.");
     } catch (err) {
-      await showError(err.message || 'No se puede eliminar este tipo de cobro.');
+      await showError('Error: verifica que no hayan pedidos con este tipo de cobro añadido.' || err.message);
     }
   }, []);
 

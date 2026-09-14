@@ -34,7 +34,7 @@ Este archivo es pa borrar luego, son cosas que deberíamos tener en cuenta.
 - por qué mierda no me deja cerrar un pedido si no hice un corte un día después de las devoluciones?, es decir, puede que yo haya devuelto todo el 11 pero si el corte lo hice el mismo 11, el sistema aparentemente exige que el corte se registre un día después para poder cerrar el pedido
 
 ### users 
--
+- oe aqui si se tiene que poner la validacion en el login de que si un usuario está inactivo, no puede iniciar sesión
 
 ### tipos de cobro
 - todo melo manito

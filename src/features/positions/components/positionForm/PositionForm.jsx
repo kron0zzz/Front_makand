@@ -38,7 +38,7 @@ const PositionForm = ({ isOpen, onClose, formData, setFormData, isEditing, carga
       
     } catch (error) {
       console.error("Error en la petición:", error);
-      const mensajeError = error.response?.data?.message || 'No se pudo procesar la solicitud';
+      const mensajeError = error.response?.data?.message || 'Verifica que este cargo no exista ya';
       await showAlert(`Error del servidor: ${mensajeError}`);
     }
   };
@@ -74,6 +74,7 @@ const PositionForm = ({ isOpen, onClose, formData, setFormData, isEditing, carga
                 value={formData.position_name || ''} 
                 onChange={handleChange} 
                 required 
+                maxLength={50}
               />
             </div>
           </div>

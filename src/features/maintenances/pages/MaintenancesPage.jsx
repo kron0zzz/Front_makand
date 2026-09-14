@@ -51,11 +51,7 @@ const MaintenancesPage = () => {
     setMostrarModalDetalle(true);
   };
 
-  const handleEliminar = async (id) => {
-    if (await showConfirm('¿Estás seguro de que deseas eliminar este mantenimiento?')) {
-      await eliminarMaintenance(id);
-    }
-  };
+
 
   return (
     <div className="page-container">
@@ -123,7 +119,7 @@ const MaintenancesPage = () => {
                       </button>
                     )}
                     {hasPermission('Eliminar Mantenimiento') && (
-                      <button className="action-btn delete" title="Eliminar" onClick={() => handleEliminar(maintenance.maintenance_id)}>
+                      <button className="action-btn delete" title="Eliminar" onClick={() => eliminarMaintenance(maintenance.maintenance_id)}>
                         <Trash2 size={18} />
                       </button>
                     )}
