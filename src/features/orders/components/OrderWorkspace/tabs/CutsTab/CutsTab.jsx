@@ -1,13 +1,19 @@
-import { Plus} from "lucide-react";
-import {useState} from "react";
+import { Plus, FileText, X, ChevronRight } from "lucide-react";
+import { useState } from "react";
 import { formatDate } from "../../../../../../shared/utils/dateUtils";
+import { apiClient } from "../../../../../../shared/services/api";
 
 import "./CutsTab.css";
 import CutForm from "./CutForm";
 
-const CutsTab = ({cuts, order,onCreateCut}) => {
+const CutsTab = ({ cuts, paymentsData, order, onCreateCut }) => {
 
     const [showCutForm, setShowCutForm] = useState(false);
+    const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+    const [invoiceMode, setInvoiceMode] = useState("single");
+    const [cutStartId, setCutStartId] = useState("");
+    const [cutEndId, setCutEndId] = useState("");
+    const [invoiceLoading, setInvoiceLoading] = useState(false);
 
     const isBlocked = order?.order_status_id === 5 || order?.order_status_id === 4;
 
@@ -17,6 +23,62 @@ const CutsTab = ({cuts, order,onCreateCut}) => {
                 acc + Number(cut.cut_amount),
             0
         );
+
+    // Extract payments and filter out cancelled ones
+    const payments = paymentsData?.payments || [];
+    const activePayments = payments
+        .filter(p => !p.is_cancelled)
+        .sort((a, b) => new Date(a.payment_date) - new Date(b.payment_date));
+
+    // Calculate payment status for each cut using chronological assignment
+    // Payments are applied sequentially to cuts in chronological order
+    const cutsWithPaymentStatus = (() => {
+        const sortedCutsChrono = [...cuts].sort(
+            (a, b) => new Date(a.period_end_date) - new Date(b.period_end_date)
+        );
+        const totalPayment = activePayments.reduce(
+            (sum, payment) => sum + Number(payment.payment_amount),
+            0
+        );
+
+        return sortedCutsChrono.reduce((result, cut) => {
+            const cutAmount = Number(cut.cut_amount);
+            const amountPaid = Math.min(result.remainingPayment, cutAmount);
+            const pendingBalance = Math.max(cutAmount - amountPaid, 0);
+            const percentage = cutAmount > 0
+                ? Math.round((amountPaid / cutAmount) * 100)
+                : 100;
+
+            let status = "pending";
+            if (percentage === 100) {
+                status = "paid";
+            } else if (percentage > 0) {
+                status = "partial";
+            }
+
+            return {
+                remainingPayment: Math.max(result.remainingPayment - cutAmount, 0),
+                cuts: [
+                    ...result.cuts,
+                    {
+                        ...cut,
+                        amountPaid,
+                        pendingBalance,
+                        percentage,
+                        status
+                    }
+                ]
+            };
+        }, {
+            remainingPayment: totalPayment,
+            cuts: []
+        }).cuts;
+    })();
+
+    // Map status to the original cuts order for display
+    const statusMap = new Map(
+        cutsWithPaymentStatus.map(c => [c.cut_id, c])
+    );
 
     const pendingCuts = order?.pending_cuts || [];
     const cutStatus = order?.cut_status;
@@ -28,7 +90,96 @@ const CutsTab = ({cuts, order,onCreateCut}) => {
         return `${day}/${month}/${year}`;
     };
 
+    const monthNames = [
+        "ene", "feb", "mar", "abr", "may", "jun",
+        "jul", "ago", "sep", "oct", "nov", "dic"
+    ];
 
+    const formatCutDate = (dateStr) => {
+        if (!dateStr) return "";
+        const [year, month, day] = dateStr.split("T")[0].split("-");
+        const monthName = monthNames[Number(month) - 1] || month;
+        return `${Number(day)} de ${monthName} de ${year}`;
+    };
+
+    // Show the most recent cuts first in the invoice selectors
+    const sortedCuts = [...cuts].sort((a, b) =>
+        new Date(b.period_end_date) - new Date(a.period_end_date)
+    );
+
+    const resetInvoiceSelection = () => {
+        setInvoiceMode("single");
+        setCutStartId("");
+        setCutEndId("");
+    };
+
+    const openInvoiceModal = () => {
+        resetInvoiceSelection();
+        setShowInvoiceModal(true);
+    };
+
+    const handleInvoiceModeChange = (isRange) => {
+        setInvoiceMode(isRange ? "range" : "single");
+        setCutStartId("");
+        setCutEndId("");
+    };
+
+    const handleGenerateInvoice = async () => {
+        const selectedCutId = cutStartId;
+        const endCutIdValue = invoiceMode === "single" ? cutStartId : cutEndId;
+
+        if (!selectedCutId || !endCutIdValue) return;
+        
+        const startId = Number(selectedCutId);
+        const endId = Number(endCutIdValue);
+        
+        if (startId > endId) {
+            alert("El corte de inicio debe ser anterior o igual al corte final");
+            return;
+        }
+
+        setInvoiceLoading(true);
+        try {
+            const response = await apiClient.get(`/orders/${order.order_id}/invoice`, {
+                params: { cut_start_id: startId, cut_end_id: endId },
+                responseType: 'blob'
+            });
+
+            // Create download link
+            const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `factura-cortes-${startId}-a-${endId}-pedido-${order.order_id}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+
+            setShowInvoiceModal(false);
+            resetInvoiceSelection();
+        } catch (error) {
+            console.error('Error generating invoice:', error);
+            alert('Error al generar la factura');
+        } finally {
+            setInvoiceLoading(false);
+        }
+    };
+
+    const renderCutOptions = (dateField) => sortedCuts.map(cut => {
+        const startDate = formatCutDate(cut.period_start_date);
+        const endDate = formatCutDate(cut.period_end_date);
+        const dateLabel = dateField === "start"
+            ? startDate
+            : dateField === "end"
+                ? endDate
+                : `${startDate} al ${endDate}`;
+
+        return (
+            <option key={cut.cut_id} value={cut.cut_id}>
+                Corte #{cut.cut_id} - {dateLabel}
+            </option>
+        );
+    });
 
     return (
         <div className="cuts-tab">
@@ -40,16 +191,28 @@ const CutsTab = ({cuts, order,onCreateCut}) => {
 
                 </div>
 
-                <button
-                    className="btn-cut"
-                    onClick={() => setShowCutForm(true)}
-                    disabled={isBlocked}
-                >
+                <div className="cuts-header-actions">
+                    <button
+                        className="btn-cut"
+                        onClick={() => setShowCutForm(true)}
+                        disabled={isBlocked}
+                    >
 
-                    <Plus size={18}/>
-                    Registrar corte
-                </button>
+                        <Plus size={18}/>
+                        Registrar corte
+                    </button>
 
+                    {cuts.length > 0 && (
+                        <button
+                            className="btn-invoice"
+                            onClick={openInvoiceModal}
+                            disabled={isBlocked}
+                        >
+                            <FileText size={18}/>
+                            Facturar
+                        </button>
+                    )}
+                </div>
             </div>
 
             {hasPendingCuts && (
@@ -111,6 +274,7 @@ const CutsTab = ({cuts, order,onCreateCut}) => {
 
 
 
+
             {
                 cuts.length === 0 && (
                     <div className="empty-cuts">
@@ -118,6 +282,8 @@ const CutsTab = ({cuts, order,onCreateCut}) => {
                     </div>
                 )
             }
+
+
 
 
 
@@ -137,130 +303,169 @@ const CutsTab = ({cuts, order,onCreateCut}) => {
 
                     )
 
-                    .map(cut=>(
+                    .map(cut=>{
 
-                        <div
-                            className="timeline-item"
-                            key={cut.cut_id}
-                        >
+                        const paymentInfo = statusMap.get(cut.cut_id) || {
+                            amountPaid: 0,
+                            pendingBalance: Number(cut.cut_amount),
+                            percentage: 0,
+                            status: "pending"
+                        };
 
-                            <div className="timeline-marker">
+                        const statusConfig = {
+                            paid: { label: "Pagado", color: "#16a34a", bg: "#dcfce7", icon: "✓" },
+                            partial: { label: "Parcial", color: "#d97706", bg: "#fef3c7", icon: "↻" },
+                            pending: { label: "Pendiente", color: "#dc2626", bg: "#fee2e2", icon: "○" }
+                        };
 
-                                <div className="timeline-head">
+                        const config = statusConfig[paymentInfo.status];
 
-                                    <div className="timeline-dot"/>
+                        return (
 
-                                    <span className="timeline-date">
-                                        {formatDate(cut.period_end_date)}
-                                    </span>
+                            <div
+                                className="timeline-item"
+                                key={cut.cut_id}
+                            >
+
+                                <div className="timeline-marker">
+
+                                    <div className="timeline-head">
+
+                                        <div className="timeline-dot"/>
+
+                                        <span className="timeline-date">
+                                            {formatDate(cut.period_end_date)}
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                                <div className="timeline-card">
+
+                                    <div className="timeline-card-header">
+
+                                        <div className="timeline-range">
+
+                                            <span>
+
+                                                Desde
+
+                                                <strong>
+
+                                                    {
+                                                        formatDate(
+                                                            cut.period_start_date
+                                                        )
+                                                    }
+
+                                                </strong>
+
+                                            </span>
+
+                                            <span className="arrow">
+
+                                                ↓
+
+                                            </span>
+
+                                            <span>
+
+                                                Hasta
+
+                                                <strong>
+
+                                                    {
+                                                        formatDate(
+                                                            cut.period_end_date
+                                                        )
+                                                    }
+
+                                                </strong>
+
+                                            </span>
+
+                                        </div>
+
+                                        <div className="cut-status-badge" style={{ background: config.bg, color: config.color, display: "inline-flex", alignItems: "center", gap: "6px", padding: "4px 12px", borderRadius: "20px", fontSize: "0.8rem", fontWeight: 600 }}>
+
+                                            <span className="status-icon">{config.icon}</span>
+
+                                            <span className="status-label">{config.label}</span>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div className="timeline-info">
+
+                                        <div>
+
+                                            <small>Corte</small>
+
+                                            <strong>
+
+                                                #{cut.cut_id}
+
+                                            </strong>
+
+                                        </div>
+
+                                        <div>
+
+                                            <small>Registrado</small>
+
+                                            <strong>
+
+                                                {
+                                                    formatDate(
+                                                        cut.cut_date
+                                                    )
+                                                }
+
+                                            </strong>
+
+                                        </div>
+
+                                        <div>
+
+                                            <small>Valor</small>
+
+                                            <strong className="amount">
+
+                                                $
+
+                                                {
+
+                                                    Number(
+                                                        cut.cut_amount
+                                                    ).toLocaleString()
+
+                                                }
+
+                                            </strong>
+
+                                        </div>
+
+                                        <div>
+
+                                            <small>Falta</small>
+
+                                            <strong className="pending-amount" style={{ color: "#dc2626" }}>
+
+                                                ${paymentInfo.pendingBalance.toLocaleString()}
+
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
 
                                 </div>
 
                             </div>
 
-                            <div className="timeline-card">
-
-                                <div className="timeline-range">
-
-                                    <span>
-
-                                        Desde
-
-                                        <strong>
-
-                                            {
-                                                formatDate(
-                                                    cut.period_start_date
-                                                )
-                                            }
-
-                                        </strong>
-
-                                    </span>
-
-                                    <span className="arrow">
-
-                                        ↓
-
-                                    </span>
-
-                                    <span>
-
-                                        Hasta
-
-                                        <strong>
-
-                                            {
-                                                formatDate(
-                                                    cut.period_end_date
-                                                )
-                                            }
-
-                                        </strong>
-
-                                    </span>
-
-                                </div>
-
-                                <div className="timeline-info">
-
-                                    <div>
-
-                                        <small>Corte</small>
-
-                                        <strong>
-
-                                            #{cut.cut_id}
-
-                                        </strong>
-
-                                    </div>
-
-                                    <div>
-
-                                        <small>Registrado</small>
-
-                                        <strong>
-
-                                            {
-
-                                                formatDate(
-                                                    cut.cut_date
-                                                )
-
-                                            }
-
-                                        </strong>
-
-                                    </div>
-
-                                    <div>
-
-                                        <small>Valor</small>
-
-                                        <strong className="amount">
-
-                                            $
-
-                                            {
-
-                                                Number(
-                                                    cut.cut_amount
-                                                ).toLocaleString()
-
-                                            }
-
-                                        </strong>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    ))
+                    )})
 
                 }
 
@@ -272,6 +477,118 @@ const CutsTab = ({cuts, order,onCreateCut}) => {
                 order={order}
                 onSubmit={onCreateCut}
             />
+
+            {/* Invoice Modal */}
+            {showInvoiceModal && (
+                <div className="modal-overlay" onClick={() => setShowInvoiceModal(false)}>
+                    <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>Generar Factura</h2>
+                            <button className="modal-close" onClick={() => setShowInvoiceModal(false)}>
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            <p className="modal-description">
+                                {invoiceMode === "single"
+                                    ? "Seleccione el corte que desea incluir en la factura."
+                                    : "Seleccione el rango de cortes que desea incluir en la factura."}
+                            </p>
+
+                            <label className={`invoice-mode-switch ${invoiceMode === "range" ? "is-range" : ""}`}>
+                                <span className={`invoice-mode-label ${invoiceMode === "single" ? "is-active" : ""}`}>
+                                    Un corte
+                                </span>
+                                <input
+                                    className="invoice-mode-input"
+                                    type="checkbox"
+                                    checked={invoiceMode === "range"}
+                                    onChange={(e) => handleInvoiceModeChange(e.target.checked)}
+                                    aria-label="Seleccionar rango de cortes"
+                                />
+                                <span className="invoice-mode-track" aria-hidden="true">
+                                    <span className="invoice-mode-thumb" />
+                                </span>
+                                <span className={`invoice-mode-label ${invoiceMode === "range" ? "is-active" : ""}`}>
+                                    Rango
+                                </span>
+                            </label>
+
+                            {invoiceMode === "single" ? (
+                                <div className="invoice-single-selector">
+                                    <div className="selector-group">
+                                        <label htmlFor="invoice-cut-select">Corte</label>
+                                        <select
+                                            id="invoice-cut-select"
+                                            value={cutStartId}
+                                            onChange={(e) => setCutStartId(e.target.value)}
+                                            className="cut-select"
+                                        >
+                                            <option value="">Seleccionar...</option>
+                                            {renderCutOptions("both")}
+                                        </select>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="invoice-range-selector">
+                                    <div className="selector-group">
+                                        <label htmlFor="invoice-cut-start">Corte inicial</label>
+                                        <select
+                                            id="invoice-cut-start"
+                                            value={cutStartId}
+                                            onChange={(e) => setCutStartId(e.target.value)}
+                                            className="cut-select"
+                                        >
+                                            <option value="">Seleccionar...</option>
+                                            {renderCutOptions("start")}
+                                        </select>
+                                    </div>
+
+                                    <div className="selector-arrow">
+                                        <ChevronRight size={24} />
+                                    </div>
+
+                                    <div className="selector-group">
+                                        <label htmlFor="invoice-cut-end">Corte final</label>
+                                        <select
+                                            id="invoice-cut-end"
+                                            value={cutEndId}
+                                            onChange={(e) => setCutEndId(e.target.value)}
+                                            className="cut-select"
+                                        >
+                                            <option value="">Seleccionar...</option>
+                                            {renderCutOptions("end")}
+                                        </select>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="modal-actions">
+                                <button
+                                    className="btn-cancel"
+                                    onClick={() => {
+                                        setShowInvoiceModal(false);
+                                        resetInvoiceSelection();
+                                    }}
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    className="btn-generate"
+                                    onClick={handleGenerateInvoice}
+                                    disabled={
+                                        invoiceLoading ||
+                                        !cutStartId ||
+                                        (invoiceMode === "range" && !cutEndId)
+                                    }
+                                >
+                                    {invoiceLoading ? 'Generando...' : 'Generar Factura'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
         </div>
 
