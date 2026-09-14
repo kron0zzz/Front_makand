@@ -3,12 +3,14 @@ import { X, Truck, AlertTriangle, Plus } from "lucide-react";
 
 import "./ReturnForm.css";
 import { useAlertModal } from "../../../../../../shared/alertModal";
+import { formatDate } from "../../../../../../shared/utils/dateUtils";
 import StockSelectionModal from "../../../../../../shared/components/stockSelection/StockSelectionModal";
 
 const ReturnForm = ({
     isOpen,
     onClose,
     orderDetail,
+    order,
     isMotorized = false,
     pendingStocks = [],
     onSubmit
@@ -47,11 +49,23 @@ const ReturnForm = ({
         });
     }, [pendingStocks, isMotorized]);
 
+    const minReturnDate = useMemo(() => {
+        if (!order?.last_cut_date) return undefined;
+        const base = order.last_cut_date.split("T")[0];
+        const [y, m, d] = base.split("-").map(Number);
+        const date = new Date(y, m - 1, d);
+        date.setDate(date.getDate() + 1);
+        const ny = date.getFullYear();
+        const nm = String(date.getMonth() + 1).padStart(2, "0");
+        const nd = String(date.getDate()).padStart(2, "0");
+        return `${ny}-${nm}-${nd}`;
+    }, [order]);
+
     useEffect(() => {
         if (!isOpen || !orderDetail) return;
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setForm({
-            returnDate: "",
+            returnDate: minReturnDate || "",
             quantity: pending > 0 ? 1 : 0,
             hasTransport: false,
             returnTransportCost: "",
@@ -60,7 +74,7 @@ const ReturnForm = ({
             damageNotes: "",
             selectedStocks: []
         });
-    }, [isOpen, orderDetail, pending]);
+    }, [isOpen, orderDetail, pending, minReturnDate]);
 
     if (!isOpen || !orderDetail) return null;
 
@@ -70,6 +84,14 @@ const ReturnForm = ({
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (minReturnDate && form.returnDate < minReturnDate) {
+            await showAlert(
+                `La fecha de devolución no puede ser anterior al último corte registrado (${formatDate(order.last_cut_date)}).`
+            );
+            return;
+        }
+
         try {
             const additional_charges = [];
 
@@ -129,8 +151,14 @@ const ReturnForm = ({
                                 type="date"
                                 value={form.returnDate}
                                 onChange={(e) => updateField("returnDate", e.target.value)}
+                                min={minReturnDate}
                                 required
                             />
+                            {minReturnDate && (
+                                <small>
+                                    No se permiten fechas anteriores a {formatDate(order.last_cut_date)}
+                                </small>
+                            )}
                         </div>
 
                         {isMotorized ? (

@@ -17,7 +17,7 @@ import ReturnCard from "./ReturnCard";
 
 import "./MachineCard.css";
 
-const MachineCard = ({ detail, onRegisterReturn, onDeleteReturn, isBlocked }) => {
+const MachineCard = ({ detail, order, onRegisterReturn, onDeleteReturn, isBlocked }) => {
 
     const [open,setOpen]=useState(false);
     const [showReturnForm, setShowReturnForm] = useState(false);
@@ -292,6 +292,7 @@ const MachineCard = ({ detail, onRegisterReturn, onDeleteReturn, isBlocked }) =>
                 isOpen={showReturnForm}
                 onClose={() => setShowReturnForm(false)}
                 orderDetail={detail}
+                order={order}
                 isMotorized={isMotorized}
                 pendingStocks={pendingStockForReturn}
                 onSubmit={handleReturnSubmit}

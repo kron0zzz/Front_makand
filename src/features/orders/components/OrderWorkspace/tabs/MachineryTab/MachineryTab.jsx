@@ -87,13 +87,14 @@ const MachineryTab = ({ order, onRegisterReturn, onDeleteReturn }) => {
 
         {groupedDetails.map((detail) => (
 
-          <MachineCard
-            key={detail._groupKey || detail.order_detail_id}
-            detail={detail}
-            onRegisterReturn={onRegisterReturn}
-            onDeleteReturn={onDeleteReturn}
-            isBlocked={isBlocked}
-          />
+            <MachineCard
+                key={detail._groupKey || detail.order_detail_id}
+                detail={detail}
+                order={order}
+                onRegisterReturn={onRegisterReturn}
+                onDeleteReturn={onDeleteReturn}
+                isBlocked={isBlocked}
+            />
 
         ))}
 
