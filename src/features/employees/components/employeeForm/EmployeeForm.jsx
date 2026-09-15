@@ -15,7 +15,7 @@ const EmployeeForm = ({ isOpen, onClose, formData, setFormData, isEditing, carga
   useEffect(() => {
     const cargarPosiciones = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/positions', {
+        const response = await fetch('https://api-makand.onrender.com/api/positions', {
           headers: { 'Authorization': `Bearer ${getToken()}` }
         });
         if (response.ok) {
@@ -39,7 +39,7 @@ const EmployeeForm = ({ isOpen, onClose, formData, setFormData, isEditing, carga
       if (isOpen && isEditing && formData?.employee_id) {
         setCargando(true);
         try {
-          const response = await fetch(`http://localhost:3000/api/employees/${formData.employee_id}`, {
+          const response = await fetch(`https://api-makand.onrender.com/api/employees/${formData.employee_id}`, {
             headers: { 'Authorization': `Bearer ${getToken()}` }
           });
           if (response.ok) {
@@ -107,8 +107,8 @@ const EmployeeForm = ({ isOpen, onClose, formData, setFormData, isEditing, carga
     if (Object.keys(nuevosErrores).length > 0) return;
 
     const url = isEditing 
-      ? `http://localhost:3000/api/employees/${formData.employee_id}` 
-      : 'http://localhost:3000/api/employees';
+      ? `https://api-makand.onrender.com/api/employees/${formData.employee_id}` 
+      : 'https://api-makand.onrender.com/api/employees';
 
     try {
       const response = await fetch(url, {

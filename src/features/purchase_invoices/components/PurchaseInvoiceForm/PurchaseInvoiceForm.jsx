@@ -46,14 +46,14 @@ const PurchaseInvoiceForm = ({ isOpen, onClose, formData, setFormData, isEditing
       try {
         const token = localStorage.getItem("token");
         const [resSuppliers, resMachines] = await Promise.all([
-          fetch("http://localhost:3000/api/suppliers", {
+          fetch("https://api-makand.onrender.com/api/suppliers", {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
           }),
           fetch(
-            "http://localhost:3000/api/machines/table?page=1&limit=1000&search=",
+            "https://api-makand.onrender.com/api/machines/table?page=1&limit=1000&search=",
             {
               headers: { Authorization: `Bearer ${token}` },
             }

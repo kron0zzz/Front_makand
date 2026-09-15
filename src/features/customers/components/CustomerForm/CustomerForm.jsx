@@ -96,8 +96,8 @@ const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
     };
 
     const url = isEditing 
-      ? `http://localhost:3000/api/customers/${formData.customer_id}` 
-      : 'http://localhost:3000/api/customers';
+      ? `https://api-makand.onrender.com/api/customers/${formData.customer_id}` 
+      : 'https://api-makand.onrender.com/api/customers';
     
     const method = isEditing ? 'PUT' : 'POST';
 

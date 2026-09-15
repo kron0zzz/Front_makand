@@ -5,7 +5,7 @@ import { apiClient } from "../../../shared/services/api";
 // Workspace
 //--------------------------
 export const getWorkspace = async (orderId) => {
-    // Ya no necesitas 'http://localhost:3000/api', apiClient lo hace por ti
+    // Ya no necesitas 'https://api-makand.onrender.com/api', apiClient lo hace por ti
     const { data } = await apiClient.get(`/orders/${orderId}/workspace`);
     return data;
 };

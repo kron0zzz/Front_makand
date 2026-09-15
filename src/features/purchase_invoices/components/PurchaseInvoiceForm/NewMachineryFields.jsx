@@ -12,7 +12,7 @@ const NewMachineryFields = ({ formData, setFormData }) => {
       try {
         setError("");
         const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:3000/api/machine-categories", {
+        const response = await fetch("https://api-makand.onrender.com/api/machine-categories", {
           headers: { Authorization: `Bearer ${token}` },
         });
 

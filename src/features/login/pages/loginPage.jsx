@@ -4,9 +4,9 @@ import { Mail, Lock, ArrowLeft } from "lucide-react";
 import axios from "axios";
 import { useAuth } from "../../../shared/context/AuthContext";
 
-const API_LOGIN_URL = "http://localhost:3000/api/auth/login";
-const API_FORGOT_URL = "http://localhost:3000/api/auth/forgot-password";
-const API_VERIFY_URL = "http://localhost:3000/api/auth/verify-code";
+const API_LOGIN_URL = "https://api-makand.onrender.com/api/auth/login";
+const API_FORGOT_URL = "https://api-makand.onrender.com/api/auth/forgot-password";
+const API_VERIFY_URL = "https://api-makand.onrender.com/api/auth/verify-code";
 
 function LoginPage({ onLogin }) {
   const { login } = useAuth();

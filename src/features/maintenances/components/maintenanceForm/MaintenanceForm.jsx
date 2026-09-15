@@ -22,7 +22,7 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        "http://localhost:3000/api/machines/table?page=1&limit=1000&search=",
+        "https://api-makand.onrender.com/api/machines/table?page=1&limit=1000&search=",
         {
           headers: {
             "Content-Type": "application/json",
@@ -43,7 +43,7 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/api/stock/table?search=&page=1&limit=1000`,
+        `https://api-makand.onrender.com/api/stock/table?search=&page=1&limit=1000`,
         {
           headers: {
             "Content-Type": "application/json",

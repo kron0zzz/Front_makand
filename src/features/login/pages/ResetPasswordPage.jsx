@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Lock } from "lucide-react";
 import axios from "axios";
 
-const API_RESET_URL = "http://localhost:3000/api/auth/reset-password";
+const API_RESET_URL = "https://api-makand.onrender.com/api/auth/reset-password";
 
 function ResetPasswordPage() {
   // Obtenemos el token automáticamente de los parámetros de la URL (ej: ?token=xyz)

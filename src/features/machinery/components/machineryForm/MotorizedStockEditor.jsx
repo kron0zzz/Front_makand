@@ -100,7 +100,7 @@ const MotorizedStockEditor = ({
       const token = localStorage.getItem("token");
       const serialList = serials.map(s => s.serial).join(",");
       // Always use global check to validate against ALL machinery
-      const url = `http://localhost:3000/api/stock/check-serials-global?serials=${encodeURIComponent(serialList)}`;
+      const url = `https://api-makand.onrender.com/api/stock/check-serials-global?serials=${encodeURIComponent(serialList)}`;
       
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
