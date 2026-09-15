@@ -69,7 +69,7 @@ export const useRoles = () => {
         await showSuccess("Estado del rol actualizado correctamente.");
       } catch (err) {
         console.error("Error al cambiar estado del rol:", err);
-        await showError("No se pudo cambiar el estado del rol. Verifica que tengas permisos de edición.");
+        await showError("No se pudo cambiar el estado del rol. Verifica que este rol no esté siendo usado.");
       }
     }
   };

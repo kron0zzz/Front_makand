@@ -124,7 +124,7 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (selectedStocks.length === 0) {
+    if (!isEditing && selectedStocks.length === 0) {
       await showAlert("Debes seleccionar al menos una máquina en mantenimiento.");
       return;
     }
@@ -133,8 +133,12 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
       revision_notes: formData.revision_notes || "",
     };
     try {
-      for (const stock of selectedStocks) {
-        await maintenanceService.crear({ ...dataToSend, stock_id: stock.stock_id });
+      if (isEditing) {
+        await maintenanceService.actualizar(formData.maintenance_id, { ...dataToSend, stock_id: formData.stock_id });
+      } else {
+        for (const stock of selectedStocks) {
+          await maintenanceService.crear({ ...dataToSend, stock_id: stock.stock_id });
+        }
       }
       await cargarMaintenances();
       setSelectedStocks([]);
@@ -142,7 +146,9 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
       setMachineSearch("");
       onClose();
       await showAlert(
-        `Mantenimiento registrado para ${selectedStocks.length} máquina(s) correctamente.`
+        isEditing
+          ? "Mantenimiento actualizado correctamente."
+          : `Mantenimiento registrado para ${selectedStocks.length} máquina(s) correctamente.`
       );
     } catch (err) {
       console.error("Error al crear mantenimiento:", err);
@@ -182,79 +188,93 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
               />
             </div>
 
-            <div>
-              <label className="form-label">Máquina *</label>
-              <div className="machine-search-wrapper">
-                <input
-                  type="text"
-                  className="form-input"
-                  placeholder="Buscar máquina..."
-                  value={machineSearch}
-                  onChange={(e) => {
-                    setMachineSearch(e.target.value);
-                    if (!isEditing) {
-                      setSelectedMachine(null);
-                      setSelectedStocks([]);
-                    }
-                    setShowDropdown(true);
-                  }}
-                  onFocus={() => setShowDropdown(true)}
-                  onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-                  required
-                />
-                {showDropdown && (
-                  <ul className="machine-dropdown">
-                    {loadingMachines ? (
-                      <li className="machine-dropdown-item disabled">Cargando...</li>
-                    ) : filteredMachines.length === 0 ? (
-                      <li className="machine-dropdown-item disabled">Sin resultados</li>
-                    ) : (
-                      filteredMachines.map((machine) => (
-                        <li
-                          key={machine.machinery_id}
-                          className="machine-dropdown-item"
-                          onMouseDown={() => handleMachineSelect(machine)}
-                        >
-                          {machine.machinery_name}
-                        </li>
-                      ))
+            {!isEditing ? (
+              <>
+                <div>
+                  <label className="form-label">Máquina *</label>
+                  <div className="machine-search-wrapper">
+                    <input
+                      type="text"
+                      className="form-input"
+                      placeholder="Buscar máquina..."
+                      value={machineSearch}
+                      onChange={(e) => {
+                        setMachineSearch(e.target.value);
+                        setSelectedMachine(null);
+                        setSelectedStocks([]);
+                        setShowDropdown(true);
+                      }}
+                      onFocus={() => setShowDropdown(true)}
+                      onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+                      required
+                    />
+                    {showDropdown && (
+                      <ul className="machine-dropdown">
+                        {loadingMachines ? (
+                          <li className="machine-dropdown-item disabled">Cargando...</li>
+                        ) : filteredMachines.length === 0 ? (
+                          <li className="machine-dropdown-item disabled">Sin resultados</li>
+                        ) : (
+                          filteredMachines.map((machine) => (
+                            <li
+                              key={machine.machinery_id}
+                              className="machine-dropdown-item"
+                              onMouseDown={() => handleMachineSelect(machine)}
+                            >
+                              {machine.machinery_name}
+                            </li>
+                          ))
+                        )}
+                      </ul>
                     )}
-                  </ul>
-                )}
-              </div>
-            </div>
+                  </div>
+                </div>
 
-            {selectedMachine && (
-              <div className="machine-selected-row">
-                <span className="machine-selected-name">
-                  {selectedMachine.machinery_name}
-                </span>
-                <button
-                  type="button"
-                  className="btn-secondary btn-sm"
-                  onClick={openStockModal}
-                >
-                  Seleccionar Equipos ({selectedStocks.length})
-                </button>
-              </div>
-            )}
-
-            {selectedStocks.length > 0 && (
-              <div className="selected-stocks-tags">
-                {selectedStocks.map((stock) => (
-                  <span key={stock.stock_id} className="stock-tag">
-                    #{stock.stock_id} - {stock.machinery_name}{" "}
-                    {stock.serial_number ? `(${stock.serial_number})` : ""}
+                {selectedMachine && (
+                  <div className="machine-selected-row">
+                    <span className="machine-selected-name">
+                      {selectedMachine.machinery_name}
+                    </span>
                     <button
                       type="button"
-                      className="stock-tag-remove"
-                      onMouseDown={() => removeStock(stock.stock_id)}
+                      className="btn-secondary btn-sm"
+                      onClick={openStockModal}
                     >
-                      &times;
+                      Seleccionar Equipos ({selectedStocks.length})
                     </button>
-                  </span>
-                ))}
-              </div>
+                  </div>
+                )}
+
+                {selectedStocks.length > 0 && (
+                  <div className="selected-stocks-tags">
+                    {selectedStocks.map((stock) => (
+                      <span key={stock.stock_id} className="stock-tag">
+                        #{stock.stock_id} - {stock.machinery_name}{" "}
+                        {stock.serial_number ? `(${stock.serial_number})` : ""}
+                        <button
+                          type="button"
+                          className="stock-tag-remove"
+                          onMouseDown={() => removeStock(stock.stock_id)}
+                        >
+                          &times;
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                <div>
+                  <label className="form-label">Máquina</label>
+                  <input
+                    type="text"
+                    className="form-input form-input-disabled"
+                    value={selectedMachine?.machinery_name || formData.machinery_name || "Cargando..."}
+                    disabled
+                  />
+                </div>
+              </>
             )}
 
             <div>
@@ -290,17 +310,17 @@ const MaintenanceForm = ({ isOpen, onClose, formData, setFormData, isEditing }) 
             </button>
           </div>
         </form>
-      </div>
 
-      <StockSelectionModal
-        key={selectedMachine?.machinery_id}
-        isOpen={stockModalOpen}
-        onClose={() => setStockModalOpen(false)}
-        machinery={selectedMachine}
-        onConfirm={handleStockConfirm}
-        initialSelectedIds={selectedStocks}
-        statusFilter={2}
-      />
+        <StockSelectionModal
+          key={selectedMachine?.machinery_id}
+          isOpen={stockModalOpen}
+          onClose={() => setStockModalOpen(false)}
+          machinery={selectedMachine}
+          onConfirm={handleStockConfirm}
+          initialSelectedIds={selectedStocks}
+          statusFilter={2}
+        />
+      </div>
     </div>
   );
 };

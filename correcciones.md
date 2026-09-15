@@ -30,13 +30,3 @@ Este archivo es para anotar todas las cosas que hay que corregir y que el agente
 
 ## orders
 - en el formulario de orders, en el campo de frecuencia de cortes no puede haber una opción de "sin frecuencia", solo deben haber las opciones de quincenal o mensual  y este campo debe ser obligatorio
-
-### returns
-- en las devoluciones, la fecha debe validar que no se pueda ingresar una fecha que ya fue cubierta por un corte
-
-### cuts
-- eliminar corte
-
-### payments
-- eliminar/anular pago
-

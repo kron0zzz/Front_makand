@@ -493,8 +493,9 @@ const OrderRegisterPage = ({ onBack }) => {
                     className="form-input"
                     value={formData.cut_frequency || ""}
                     onChange={handleChange}
+                    required
                   >
-                    <option value="">Sin frecuencia</option>
+                    <option value="">Seleccione una frecuencia</option>
                     <option value="QUINCENAL">Quincenal</option>
                     <option value="MENSUAL">Mensual</option>
                   </select>

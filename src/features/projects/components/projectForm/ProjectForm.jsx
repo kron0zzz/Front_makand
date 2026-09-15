@@ -6,7 +6,7 @@ import './ProjectForm.css';
 import { useAlertModal } from "../../../../shared/alertModal";
 
 const ProjectForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showAlert } = useAlertModal();
   const { cargarProyectos } = useProjects();
   const [customers, setCustomers] = useState([]);
   const [departamentos, setDepartamentos] = useState([]);
@@ -156,7 +156,14 @@ const ProjectForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
               <select name="customer_id" className="form-input" value={formData.customer_id || ''} onChange={handleChange} required>
                 <option value="">Seleccione un cliente</option>
                 {customers.map(c => (
-                  <option key={c.customer_id} value={c.customer_id}>{c.customer_name}</option>
+                  <option 
+                    key={c.customer_id} 
+                    value={c.customer_id}
+                    disabled={c.customer_status === false}
+                    style={{ opacity: c.customer_status === false ? 0.5 : 1, color: c.customer_status === false ? '#9ca3af' : 'inherit' }}
+                  >
+                    {c.customer_name} {c.customer_status === false ? '(Inactivo)' : ''}
+                  </option>
                 ))}
               </select>
             </div>

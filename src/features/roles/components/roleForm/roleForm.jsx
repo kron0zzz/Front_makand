@@ -6,7 +6,7 @@ import './roleForm.css';
 import { useAlertModal } from "../../../../shared/alertModal";
 
 const RoleForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarRoles }) => {
-  const { showAlert, showConfirm } = useAlertModal();
+  const { showAlert } = useAlertModal();
   const [currentPermissions, setCurrentPermissions] = useState([]);
   const [allPermissions, setAllPermissions] = useState([]);
 
