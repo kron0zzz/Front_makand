@@ -9,6 +9,7 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crea
 
   const [categories, setCategories] = useState([]);
   const [errorForm, setErrorForm] = useState("");
+  const [serialValidation, setSerialValidation] = useState({ isValid: true, isValidating: false, errors: {} });
 
   useEffect(() => {
     const cargarOpciones = async () => {
@@ -84,6 +85,23 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crea
       weight_kg: formData.weight_kg ? parseFloat(formData.weight_kg) : null,
       is_motorized: !!formData.is_motorized,
     };
+
+    // Validate serials for motorized machinery
+    if (dataToSend.is_motorized && !isEditing) {
+      if (!serialValidation.isValid) {
+        setErrorForm("Hay errores en los seriales. Corríjalos antes de guardar.");
+        return;
+      }
+      if (serialValidation.isValidating) {
+        setErrorForm("Validando seriales, espere un momento...");
+        return;
+      }
+      const serials = formData.teams?.map(t => t.serial?.trim()).filter(s => s.length > 0) || [];
+      if (serials.length !== (formData.teamCount || 0)) {
+        setErrorForm(`Debe ingresar ${formData.teamCount || 0} seriales para la maquinaria motorizada.`);
+        return;
+      }
+    }
 
     try {
       let result;
@@ -253,14 +271,14 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crea
               {isMotorized ? (
                 <MotorizedStockEditor
                   quantity={formData.teamCount || 0}
-                  machineryName={formData.machinery_name || ""}
-                  existingSerials={formData.existingSerials || []}
+                  machineryId={undefined}
                   onQuantityChange={(val) => {
                     setFormData((prev) => ({ ...prev, teamCount: val }));
                   }}
                   onTeamsChange={(teams) => {
                     setFormData((prev) => ({ ...prev, teams }));
                   }}
+                  onSubmitValidation={setSerialValidation}
                 />
               ) : (
                 <div className="inventory-card">

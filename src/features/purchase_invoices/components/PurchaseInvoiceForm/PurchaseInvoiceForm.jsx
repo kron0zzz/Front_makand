@@ -22,6 +22,8 @@ const PurchaseInvoiceForm = ({ isOpen, onClose, formData, setFormData, isEditing
     machineSearch: "",
     showDropdown: false,
     serial_numbers: [],
+    teams: [],
+    serialValidation: { isValid: true, isValidating: false, errors: {} },
   });
 
   const [formularioNuevo, setFormularioNuevo] = useState({
@@ -103,6 +105,17 @@ const PurchaseInvoiceForm = ({ isOpen, onClose, formData, setFormData, isEditing
     }
   }, [isOpen]);
 
+  // Ensure purchase_date is in correct format for date input when in edit mode
+  useEffect(() => {
+    if (isEditing && formData.purchase_date && !formData.purchase_date.includes("T")) {
+      // Date might already be in correct format, but ensure it's YYYY-MM-DD
+      const dateStr = formData.purchase_date.substring(0, 10);
+      if (dateStr !== formData.purchase_date) {
+        setFormData(prev => ({ ...prev, purchase_date: dateStr }));
+      }
+    }
+  }, [isEditing, formData.purchase_date, setFormData]);
+
   if (!isOpen) return null;
 
   const handleChange = (e) => {
@@ -155,6 +168,23 @@ const PurchaseInvoiceForm = ({ isOpen, onClose, formData, setFormData, isEditing
       (m) => Number(m.machinery_id) === Number(formularioExistente.machinery_id)
     );
 
+    // Validate serials for motorized machinery
+    if (maquina?.is_motorized) {
+      if (!formularioExistente.serialValidation.isValid) {
+        await showAlert("Hay errores en los seriales. Corríjalos antes de agregar.");
+        return;
+      }
+      if (formularioExistente.serialValidation.isValidating) {
+        await showAlert("Validando seriales, espere un momento...");
+        return;
+      }
+      const serials = formularioExistente.serial_numbers || [];
+      if (serials.length !== Number(formularioExistente.quantity)) {
+        await showAlert(`Debe ingresar ${formularioExistente.quantity} seriales para la maquinaria motorizada.`);
+        return;
+      }
+    }
+
     const detalle = {
       tipo: "existente",
       machinery_id: Number(formularioExistente.machinery_id),
@@ -176,6 +206,8 @@ const PurchaseInvoiceForm = ({ isOpen, onClose, formData, setFormData, isEditing
       machineSearch: "",
       showDropdown: false,
       serial_numbers: [],
+      teams: [],
+      serialValidation: { isValid: true, isValidating: false, errors: {} },
     });
   };
 
@@ -203,6 +235,23 @@ const PurchaseInvoiceForm = ({ isOpen, onClose, formData, setFormData, isEditing
     if (!formularioNuevo.unit_cost || Number(formularioNuevo.unit_cost) <= 0) {
       showAlert("Ingrese un costo unitario válido.");
       return;
+    }
+
+    // Validate serials for motorized machinery
+    if (formularioNuevo.is_motorized) {
+      if (!formularioNuevo.serialValidation?.isValid) {
+        showAlert("Hay errores en los seriales. Corríjalos antes de agregar.");
+        return;
+      }
+      if (formularioNuevo.serialValidation?.isValidating) {
+        showAlert("Validando seriales, espere un momento...");
+        return;
+      }
+      const serials = formularioNuevo.serial_numbers || [];
+      if (serials.length !== Number(formularioNuevo.quantity)) {
+        showAlert(`Debe ingresar ${formularioNuevo.quantity} seriales para la maquinaria motorizada.`);
+        return;
+      }
     }
 
     const detalle = {
@@ -248,12 +297,20 @@ const PurchaseInvoiceForm = ({ isOpen, onClose, formData, setFormData, isEditing
     e.preventDefault();
     setError("");
 
+    // In edit mode, formData should already be populated from parent
+    // In create mode, user must fill the fields
     if (!formData.supplier_id) {
       setError("Seleccione un proveedor.");
       return;
     }
     if (!formData.purchase_date) {
       setError("Ingrese la fecha de compra.");
+      return;
+    }
+
+    // Additional check for edit mode - ensure formData has the required fields
+    if (isEditing && (!formData.invoice_id || !formData.supplier_id || !formData.purchase_date)) {
+      setError("Error: datos de la factura incompletos. Cierre e intente editar nuevamente.");
       return;
     }
 
@@ -265,6 +322,7 @@ const PurchaseInvoiceForm = ({ isOpen, onClose, formData, setFormData, isEditing
           supplier_id: Number(formData.supplier_id),
           purchase_date: formData.purchase_date,
           invoice_photo: formData.invoice_photo || null,
+          total_amount: formData.total_amount,
         });
         await showAlert("¡Factura actualizada con éxito!");
         onSuccess?.();
@@ -401,8 +459,13 @@ const PurchaseInvoiceForm = ({ isOpen, onClose, formData, setFormData, isEditing
                 >
                   <option value="">Seleccione un proveedor...</option>
                   {suppliers.map((sup) => (
-                    <option key={sup.supplier_id} value={sup.supplier_id}>
-                      {sup.supplier_name}
+                    <option 
+                      key={sup.supplier_id} 
+                      value={sup.supplier_id}
+                      disabled={sup.supplier_status === false}
+                      style={{ opacity: sup.supplier_status === false ? 0.5 : 1, color: sup.supplier_status === false ? '#9ca3af' : 'inherit' }}
+                    >
+                      {sup.supplier_name} {sup.supplier_status === false ? '(Inactivo)' : ''}
                     </option>
                   ))}
                 </select>
@@ -419,6 +482,19 @@ const PurchaseInvoiceForm = ({ isOpen, onClose, formData, setFormData, isEditing
                   required
                 />
               </div>
+
+              {isEditing && formData.total_amount !== undefined && (
+                <div className="purchase-form-group">
+                  <label className="purchase-form-label">Monto Total</label>
+                  <input
+                    type="text"
+                    className="purchase-form-input"
+                    value={`$${Number(formData.total_amount).toLocaleString()}`}
+                    readOnly
+                    style={{ backgroundColor: "#f5f5f5", cursor: "not-allowed" }}
+                  />
+                </div>
+              )}
 
               <div className="purchase-form-group purchase-form-full-width">
                 <label className="purchase-form-label">Foto / Imagen de Factura</label>
@@ -577,8 +653,7 @@ const PurchaseInvoiceForm = ({ isOpen, onClose, formData, setFormData, isEditing
                               <label className="purchase-form-label">Asignar Equipos *</label>
                               <MotorizedStockEditor
                                 quantity={formularioExistente.quantity || 0}
-                                machineryName={formularioExistente.machineSearch || ""}
-                                existingSerials={[]}
+                                machineryId={formularioExistente.machinery_id}
                                 onQuantityChange={(val) => {
                                   setFormularioExistente((prev) => ({ ...prev, quantity: val }));
                                 }}
@@ -590,6 +665,12 @@ const PurchaseInvoiceForm = ({ isOpen, onClose, formData, setFormData, isEditing
                                     ...prev,
                                     teams,
                                     serial_numbers: serialNumbers,
+                                  }));
+                                }}
+                                onSubmitValidation={(validation) => {
+                                  setFormularioExistente((prev) => ({
+                                    ...prev,
+                                    serialValidation: validation,
                                   }));
                                 }}
                               />
@@ -693,8 +774,12 @@ const PurchaseInvoiceForm = ({ isOpen, onClose, formData, setFormData, isEditing
             >
               Cancelar
             </button>
-            <button type="submit" className="purchase-btn-submit" disabled={cargando}>
-              {cargando ? "Procesando..." : "Registrar compra"}
+            <button 
+              type="submit" 
+              className="purchase-btn-submit" 
+              disabled={cargando || (isEditing && (!formData.supplier_id || !formData.purchase_date))}
+            >
+              {cargando ? "Procesando..." : (isEditing ? "Guardar Cambios" : "Registrar compra")}
             </button>
           </div>
         </form>

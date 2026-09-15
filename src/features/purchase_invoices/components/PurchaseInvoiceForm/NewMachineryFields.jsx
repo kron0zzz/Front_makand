@@ -39,6 +39,13 @@ const NewMachineryFields = ({ formData, setFormData }) => {
 
   const isMotorized = !!formData.is_motorized;
 
+  const handleValidation = (validation) => {
+    setFormData(prev => ({
+      ...prev,
+      serialValidation: validation,
+    }));
+  };
+
   return (
     <div className="new-machinery-fields">
       {error && <div className="form-error-alert">{error}</div>}
@@ -161,8 +168,7 @@ const NewMachineryFields = ({ formData, setFormData }) => {
               <label className="form-label">Equipos a Registrar *</label>
               <MotorizedStockEditor
                 quantity={formData.quantity || 0}
-                machineryName={formData.machinery_name || ""}
-                existingSerials={[]}
+                machineryId={undefined}
                 onQuantityChange={(val) => {
                   setFormData((prev) => ({ ...prev, quantity: val }));
                 }}
@@ -176,6 +182,7 @@ const NewMachineryFields = ({ formData, setFormData }) => {
                     serial_numbers: serialNumbers,
                   }));
                 }}
+                onSubmitValidation={handleValidation}
               />
             </div>
           ) : (

@@ -23,53 +23,6 @@
     letter-spacing: -0.01em;
 }
 
-.motorized-serial-toggle {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.toggle-label {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    font-weight: 500;
-    opacity: 0.9;
-}
-
-.toggle-switch {
-    position: relative;
-    width: 40px;
-    height: 22px;
-    background-color: rgba(255, 255, 255, 0.3);
-    border: none;
-    border-radius: 11px;
-    cursor: pointer;
-    padding: 0;
-    transition: background-color 0.2s;
-}
-
-.toggle-switch.active {
-    background-color: rgba(255, 255, 255, 0.7);
-}
-
-.toggle-knob {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 18px;
-    height: 18px;
-    background-color: white;
-    border-radius: 50%;
-    transition: transform 0.2s;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-.toggle-switch.active .toggle-knob {
-    transform: translateX(18px);
-}
-
 .motorized-stock-cards {
     display: flex;
     flex-direction: column;
@@ -107,14 +60,14 @@
     letter-spacing: 0.03em;
 }
 
-.team-card-auto-badge {
+.team-card-error-badge {
     font-size: 10px;
     font-weight: 600;
-    color: #059669;
-    background-color: #ecfdf5;
+    color: #dc2626;
+    background-color: #fef2f2;
     padding: 2px 8px;
     border-radius: 10px;
-    border: 1px solid #a7f3d0;
+    border: 1px solid #fecaca;
 }
 
 .team-card-fields {
@@ -125,7 +78,7 @@
 
 .team-field {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 8px;
 }
 
@@ -137,13 +90,14 @@
     letter-spacing: 0.03em;
     min-width: 80px;
     flex-shrink: 0;
+    margin-top: 4px;
 }
 
 .serial-input-wrapper,
 .date-input-wrapper {
     display: flex;
-    align-items: center;
-    gap: 6px;
+    flex-direction: column;
+    gap: 4px;
     flex: 1;
     position: relative;
 }
@@ -167,35 +121,28 @@
     box-sizing: border-box;
 }
 
-.serial-input-wrapper input:disabled {
-    background-color: #f3f4f6;
-    color: #9ca3af;
-    cursor: not-allowed;
-}
-
 .serial-input-wrapper input:focus,
 .date-input-wrapper input:focus {
     border-color: #ff6b35;
     background-color: white;
 }
 
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    font-size: 13px;
-    color: #374151;
+.serial-input-wrapper input.input-error {
+    border-color: #ef4444;
+    background-color: #fef2f2;
 }
 
-.checkbox-label input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    accent-color: #ff6b35;
-    cursor: pointer;
+.serial-error-msg {
+    font-size: 11px;
+    color: #dc2626;
+    margin-left: 2px;
 }
 
 .motorized-quantity-input {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
     padding: 12px 16px;
     background-color: white;
     border-bottom: 1px solid #e2e8f0;
@@ -203,10 +150,42 @@
 
 .motorized-quantity-input .form-label {
     margin-bottom: 6px;
+    min-width: 120px;
 }
 
 .motorized-quantity-input .form-input {
     max-width: 120px;
+    flex: 1;
+    min-width: 100px;
+}
+
+.serial-hint {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid;
+    min-width: 200px;
+}
+
+.serial-hint.validating {
+    background-color: #fffbeb;
+    border-color: #fde68a;
+    color: #92400e;
+}
+
+.serial-hint.error {
+    background-color: #fef2f2;
+    border-color: #fecaca;
+    color: #dc2626;
+}
+
+.serial-hint.success {
+    background-color: #f0fdf4;
+    border-color: #bbf7d0;
+    color: #16a34a;
 }
 
 .motorized-empty-state {
@@ -223,7 +202,7 @@
     border-top: 1px solid #e2e8f0;
     font-size: 12px;
     font-weight: 600;
-    color: #64748b;
+    color: #64728b;
     text-align: center;
 }
 
