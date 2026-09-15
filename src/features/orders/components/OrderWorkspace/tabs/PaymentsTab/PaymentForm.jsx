@@ -16,6 +16,30 @@ const PaymentForm = ({
     const [paymentAmount, setPaymentAmount] = useState("");
     const [paymentInCash, setPaymentInCash] = useState(true);
 
+    const minPaymentDate = (() => {
+        const creationDate = order?.order_creation_date;
+
+        if (!creationDate) return undefined;
+
+        if (creationDate instanceof Date) {
+            const year = creationDate.getFullYear();
+            const month = String(creationDate.getMonth() + 1).padStart(2, "0");
+            const day = String(creationDate.getDate()).padStart(2, "0");
+            return `${year}-${month}-${day}`;
+        }
+
+        const date = String(creationDate).split("T")[0];
+        return /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : undefined;
+    })();
+
+    const handlePaymentDateChange = (e) => {
+        const selectedDate = e.target.value;
+
+        if (minPaymentDate && selectedDate < minPaymentDate) return;
+
+        setPaymentDate(selectedDate);
+    };
+
 
 
     useEffect(() => {
@@ -64,7 +88,7 @@ const PaymentForm = ({
 
         } catch (err) {
 
-            await showAlert(`Error al registrar abono: ${err.message}`);
+            await showAlert(`Error al registrar abono: el monto sobrepasó el saldo pendiente`);
 
         }
 
@@ -149,15 +173,9 @@ const PaymentForm = ({
 
                                 value={paymentDate}
 
-                                onChange={(e)=>
+                                onChange={handlePaymentDateChange}
 
-                                    setPaymentDate(
-
-                                        e.target.value
-
-                                    )
-
-                                }
+                                min={minPaymentDate}
 
                                 required
 
