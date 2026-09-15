@@ -318,7 +318,7 @@ const Dashboard = () => {
             <div className="activity-card">
               <div className="activity-card-header">
                 <h3 className="activity-card-title">Pedidos Recientes</h3>
-                <button className="btn-view-all">Ver todos</button>
+                
               </div>
               <div className="activity-table-wrapper">
                 <table className="activity-table">
@@ -354,7 +354,7 @@ const Dashboard = () => {
             <div className="activity-card">
               <div className="activity-card-header">
                 <h3 className="activity-card-title">Pagos Recientes</h3>
-                <button className="btn-view-all">Ver todos</button>
+                
               </div>
               <div className="activity-table-wrapper">
                 <table className="activity-table">
