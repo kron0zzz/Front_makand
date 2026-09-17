@@ -28,7 +28,7 @@ const ProjectForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
     const fetchCustomers = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch('http://localhost:3000/api/customers', {
+        const response = await fetch('https://api-makand.onrender.com/api/customers', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (response.ok) {

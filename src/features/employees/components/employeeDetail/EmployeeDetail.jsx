@@ -13,7 +13,7 @@ const EmployeeDetail = ({ isOpen, onClose, empleado, onEdit }) => {
       setCargando(true);
       try {
         // CORRECCIÓN: Agregado el header de Authorization
-        const response = await fetch(`http://localhost:3000/api/employees/${empleado.employee_id}`, {
+        const response = await fetch(`https://api-makand.onrender.com/api/employees/${empleado.employee_id}`, {
           headers: { 'Authorization': `Bearer ${getToken()}` }
         });
         

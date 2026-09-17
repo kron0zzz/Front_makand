@@ -13,7 +13,7 @@ import { useAlertModal } from "../../../shared/alertModal";
 //       setError(null);
 //       try {
 //         const token = localStorage.getItem("token");
-//         const response = await fetch('http://localhost:3000/api/machine-statuses/table', {
+//         const response = await fetch('https://api-makand.onrender.com/api/machine-statuses/table', {
 //           headers: {
 //             'Authorization': `Bearer ${token}`
 //           }
@@ -37,7 +37,7 @@ import { useAlertModal } from "../../../shared/alertModal";
 //     if (window.confirm('¿Estás seguro de que deseas eliminar este estado de maquinaria?')) {
 //       try {
 //         const token = localStorage.getItem("token");
-//         const response = await fetch(`http://localhost:3000/api/machine-statuses/${id}`, {
+//         const response = await fetch(`https://api-makand.onrender.com/api/machine-statuses/${id}`, {
 //           method: 'DELETE',
 //           headers: {
 //             'Authorization': `Bearer ${token}`

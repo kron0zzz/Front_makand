@@ -25,8 +25,8 @@ const MachineryStatusForm = ({ isOpen, onClose, formData, setFormData, isEditing
 
     // Apuntamos a la URL de machine-statuses que configuramos en tu servidor Express
     const url = isEditing 
-      ? `http://localhost:3000/api/machine-statuses/${formData.status_id}` 
-      : 'http://localhost:3000/api/machine-statuses';
+      ? `https://api-makand.onrender.com/api/machine-statuses/${formData.status_id}` 
+      : 'https://api-makand.onrender.com/api/machine-statuses';
     
     const method = isEditing ? 'PUT' : 'POST';
     const token = localStorage.getItem("token");

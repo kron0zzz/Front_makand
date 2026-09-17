@@ -17,7 +17,7 @@ const SubRentalForm = ({ isOpen, onClose, formData, setFormData, isEditing, onSu
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        "http://localhost:3000/api/machines/table?page=1&limit=1000&search=",
+        "https://api-makand.onrender.com/api/machines/table?page=1&limit=1000&search=",
         {
           headers: {
             "Content-Type": "application/json",
@@ -42,7 +42,7 @@ const SubRentalForm = ({ isOpen, onClose, formData, setFormData, isEditing, onSu
         'Authorization': token ? `Bearer ${token}` : ''
       };
 
-      const resSuppliers = await fetch('http://localhost:3000/api/suppliers', { method: 'GET', headers });
+      const resSuppliers = await fetch('https://api-makand.onrender.com/api/suppliers', { method: 'GET', headers });
 
       if (resSuppliers.ok) {
         const dataSuppliers = await resSuppliers.json();

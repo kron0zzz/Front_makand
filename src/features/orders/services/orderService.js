@@ -1,7 +1,7 @@
 import { apiClient } from "../../../shared/services/api";
 
 const API_URL =
-  "http://localhost:3000/api/orders";
+  "https://api-makand.onrender.com/api/orders";
 
 export const orderService = {
 

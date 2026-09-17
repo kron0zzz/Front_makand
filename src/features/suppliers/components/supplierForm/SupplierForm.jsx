@@ -100,7 +100,7 @@ const SupplierForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
       supplier_status: formData.supplier_status !== undefined ? formData.supplier_status : true
     };
 
-    const url = isEditing ? `http://localhost:3000/api/suppliers/${formData.supplier_id}` : 'http://localhost:3000/api/suppliers';
+    const url = isEditing ? `https://api-makand.onrender.com/api/suppliers/${formData.supplier_id}` : 'https://api-makand.onrender.com/api/suppliers';
     const method = isEditing ? 'PUT' : 'POST';
     
     try {

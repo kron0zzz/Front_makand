@@ -32,8 +32,8 @@ const MachineryCategoryForm = ({ isOpen, onClose, formData, setFormData, isEditi
     };
 
     const url = isEditing 
-      ? `http://localhost:3000/api/machine-categories/${formData.category_id}` 
-      : 'http://localhost:3000/api/machine-categories';
+      ? `https://api-makand.onrender.com/api/machine-categories/${formData.category_id}` 
+      : 'https://api-makand.onrender.com/api/machine-categories';
     
     const method = isEditing ? 'PUT' : 'POST';
     const token = localStorage.getItem("token");
