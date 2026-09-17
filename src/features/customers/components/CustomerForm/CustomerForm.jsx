@@ -30,12 +30,24 @@ const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
 
   if (!isOpen) return null;
 
+  const sanitizeTextName = (value) => {
+    return value
+      .replace(/[^a-zA-Z0-9\s]/g, '')
+      .replace(/\s{2,}/g, ' ');
+  };
+
   const handleChange = (e) => {
   const { name, value } = e.target;
   let valor = value;
   if (name === "customer_document_number" || name === "customer_phone") {
     valor = value.replace(/\D/g, '');
     if (valor.length > 10) valor = valor.slice(0, 10);
+  }
+  if (name === "customer_name" || name === "legal_representative") {
+    valor = sanitizeTextName(value);
+  }
+  if (name === "customer_address") {
+    valor = value.slice(0, 98);
   }
 
   if (name === "organization_type") {
@@ -244,7 +256,7 @@ const CustomerForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
             {/* Dirección de Residencia/Oficina */}
             <div className="form-full-width">
               <label className="form-label">Dirección Completa</label>
-              <input name="customer_address" type="text" className="form-input" value={formData.customer_address || ''} onChange={handleChange} />
+              <input name="customer_address" type="text" className="form-input" maxLength={98} value={formData.customer_address || ''} onChange={handleChange} />
             </div>
 
             {/* --- NUEVO CAMPO: ESTADO (Solo visible al editar) --- */}

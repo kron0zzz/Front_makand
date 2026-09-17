@@ -77,12 +77,24 @@ const ProjectForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
     cargarCiudades();
   }, [formData.project_state, departamentos, isOpen]);
 
+  const sanitizeTextName = (value) => {
+    return value
+      .replace(/[^a-zA-Z0-9\s]/g, '')
+      .replace(/\s{2,}/g, ' ');
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     let valor = value;
     if (name === 'project_phone') {
       valor = value.replace(/\D/g, '');
       if (valor.length > 10) valor = valor.slice(0, 10);
+    }
+    if (name === 'project_name') {
+      valor = sanitizeTextName(value);
+    }
+    if (name === 'project_address') {
+      valor = value.slice(0, 98);
     }
     if (name === 'project_state') {
       setFormData(prev => ({ ...prev, [name]: valor, project_city: '' }));
@@ -192,7 +204,7 @@ const ProjectForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => {
 
             <div className="form-full-width">
               <label className="form-label">Dirección Completa</label>
-              <input name="project_address" className="form-input" value={formData.project_address || ''} onChange={handleChange} />
+              <input name="project_address" className="form-input" maxLength={98} value={formData.project_address || ''} onChange={handleChange} />
             </div>
           </div>
 

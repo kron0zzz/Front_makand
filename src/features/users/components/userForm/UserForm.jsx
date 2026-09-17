@@ -24,6 +24,9 @@ const UserForm = ({
       if (value.length > 60) error = "Máximo 60 caracteres.";
       else if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) error = "Formato de correo inválido.";
     }
+    if (name === "password") {
+      if (value && value.length < 8) error = "La contraseña debe tener al menos 8 caracteres.";
+    }
     setErrores(prev => ({ ...prev, [name]: error }));
   };
 
@@ -47,6 +50,9 @@ const UserForm = ({
     const nuevosErrores = {};
     if ((formData.user_email || '').length > 60 || (formData.user_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.user_email))) {
       nuevosErrores.user_email = "Máximo 60 caracteres y formato de correo válido.";
+    }
+    if (!isEditing && formData.password && formData.password.length < 8) {
+      nuevosErrores.password = "La contraseña debe tener al menos 8 caracteres.";
     }
     setErrores(nuevosErrores);
     if (Object.keys(nuevosErrores).length > 0) return;
@@ -171,13 +177,14 @@ const UserForm = ({
               <input
                 name="password"
                 type="password"
-                className="form-input"
+                className={`form-input ${errores.password ? 'input-error' : ''}`}
                 value={formData.password || ''}
                 onChange={handleChange}
                 placeholder={isEditing ? "Dejar vacío para no cambiar" : ""}
                 required={!isEditing}
                 autoComplete="new-password"
               />
+              {errores.password && <span className="error-text">{errores.password}</span>}
             </div>
 
             {/* Estado Switch */}

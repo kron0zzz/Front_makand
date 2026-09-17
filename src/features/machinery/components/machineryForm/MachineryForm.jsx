@@ -64,11 +64,35 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crea
     }));
   };
 
+  const sanitizeTextName = (value) => {
+    return value
+      .replace(/[^a-zA-Z0-9\s]/g, '')
+      .replace(/\s{2,}/g, ' ');
+  };
+
+  const sanitizePositiveNumber = (value) => {
+    let cleaned = value.replace(/[^0-9.]/g, '');
+    const parts = cleaned.split('.');
+    if (parts.length > 2) {
+      cleaned = parts[0] + '.' + parts.slice(1).join('');
+    }
+    const num = parseFloat(cleaned);
+    if (num < 0) cleaned = cleaned.replace(/^-/, '');
+    return cleaned;
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    let valor = value;
+    if (name === 'machinery_name') {
+      valor = sanitizeTextName(value);
+    }
+    if (name === 'sale_price' || name === 'daily_rental_price' || name === 'weight_kg') {
+      valor = sanitizePositiveNumber(value);
+    }
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === "checkbox" ? checked : valor,
     }));
   };
 

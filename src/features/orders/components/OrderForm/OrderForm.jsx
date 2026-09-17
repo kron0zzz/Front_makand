@@ -220,7 +220,8 @@ const OrderForm = ({
 
   const handleTransportPriceChange = (e) => {
     if (hasCuts) return;
-    const raw = e.target.value.replace(/\D/g, "");
+    let raw = e.target.value.replace(/\D/g, '');
+    if (raw.length > 7) raw = raw.slice(0, 7);
     if (raw === "") {
       setDeliveryTransportPriceDisplay("");
       return;

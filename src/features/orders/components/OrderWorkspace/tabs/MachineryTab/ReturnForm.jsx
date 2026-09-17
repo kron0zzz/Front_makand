@@ -126,8 +126,27 @@ const ReturnForm = ({
         }
     };
 
-    const updateField = (field, value) =>
-        setForm(f => ({ ...f, [field]: value }));
+    const sanitizeTextName = (value) => {
+    return value
+      .replace(/[^a-zA-Z0-9\s]/g, '')
+      .replace(/\s{2,}/g, ' ');
+  };
+
+  const sanitizePositiveNumber8 = (value) => {
+    let cleaned = value.replace(/[^0-9]/g, '');
+    if (cleaned.length > 8) cleaned = cleaned.slice(0, 8);
+    return cleaned;
+  };
+
+  const updateField = (field, value) => {
+    if (field === 'damageNotes') {
+      value = sanitizeTextName(value);
+    }
+    if (field === 'returnTransportCost' || field === 'damageFee') {
+      value = sanitizePositiveNumber8(value);
+    }
+    setForm(f => ({ ...f, [field]: value }));
+  };
 
     return (
         <div className="return-modal-overlay">

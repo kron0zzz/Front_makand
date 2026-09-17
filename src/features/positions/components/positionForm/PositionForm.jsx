@@ -9,9 +9,19 @@ const PositionForm = ({ isOpen, onClose, formData, setFormData, isEditing, carga
   
   if (!isOpen) return null;
 
+  const sanitizePositionName = (value) => {
+    return value
+      .replace(/[^a-zA-Z0-9\s]/g, '') // Eliminar caracteres especiales
+      .replace(/\s{2,}/g, ' '); // Reemplazar 2 o más espacios con uno solo
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    if (name === 'position_name') {
+      setFormData({ ...formData, [name]: sanitizePositionName(value) });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {

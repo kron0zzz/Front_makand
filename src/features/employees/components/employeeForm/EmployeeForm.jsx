@@ -75,12 +75,24 @@ const EmployeeForm = ({ isOpen, onClose, formData, setFormData, isEditing, carga
     setErrores(prev => ({ ...prev, [name]: error }));
   };
 
+  const sanitizeTextName = (value) => {
+    return value
+      .replace(/[^a-zA-Z0-9\s]/g, '')
+      .replace(/\s{2,}/g, ' ');
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     let valor = value;
     if (name === 'employee_document_number' || name === 'employee_phone') {
       valor = value.replace(/\D/g, '');
       if (valor.length > 10) valor = valor.slice(0, 10);
+    }
+    if (name === 'employee_first_name' || name === 'employee_last_name') {
+      valor = sanitizeTextName(value);
+    }
+    if (name === 'employee_eps') {
+      valor = value.slice(0, 48);
     }
     setFormData({
       ...formData,
@@ -193,7 +205,7 @@ const EmployeeForm = ({ isOpen, onClose, formData, setFormData, isEditing, carga
 
             <div className="form-group">
               <label className="form-label">EPS *</label>
-              <input type="text" name="employee_eps" className="form-input" value={formData.employee_eps || ''} onChange={handleChange} required />
+              <input type="text" name="employee_eps" className="form-input" maxLength={48} value={formData.employee_eps || ''} onChange={handleChange} required />
             </div>
 
             <div className="form-group">

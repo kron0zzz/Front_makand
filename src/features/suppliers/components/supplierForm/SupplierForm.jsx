@@ -57,12 +57,24 @@ const SupplierForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
     setErrores(prev => ({ ...prev, [name]: error }));
   };
 
+  const sanitizeTextName = (value) => {
+    return value
+      .replace(/[^a-zA-Z0-9\s]/g, '')
+      .replace(/\s{2,}/g, ' ');
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     let valor = value;
     if (name === "document_number" || name === "supplier_phone") {
       valor = value.replace(/\D/g, '');
       if (valor.length > 10) valor = valor.slice(0, 10);
+    }
+    if (name === "supplier_name") {
+      valor = sanitizeTextName(value);
+    }
+    if (name === "supplier_address") {
+      valor = value.slice(0, 98);
     }
     setFormData({ ...formData, [name]: valor });
     validarCampo(name, valor);
@@ -179,7 +191,7 @@ const SupplierForm = ({ isOpen, onClose, formData, setFormData, isEditing }) => 
 
             <div className="form-full-width">
               <label className="form-label">Dirección</label>
-              <input name="supplier_address" type="text" className="form-input" value={formData.supplier_address || ''} onChange={handleChange} />
+              <input name="supplier_address" type="text" className="form-input" maxLength={98} value={formData.supplier_address || ''} onChange={handleChange} />
             </div>
 
             {isEditing && (

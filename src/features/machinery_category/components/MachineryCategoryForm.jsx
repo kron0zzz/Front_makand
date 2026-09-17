@@ -9,9 +9,19 @@ const MachineryCategoryForm = ({ isOpen, onClose, formData, setFormData, isEditi
 
   if (!isOpen) return null;
 
+  const sanitizeCategoryName = (value) => {
+    return value
+      .replace(/[^a-zA-Z0-9\s]/g, '')
+      .replace(/\s{2,}/g, ' ');
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    let valor = value;
+    if (name === 'categoryName') {
+      valor = sanitizeCategoryName(value);
+    }
+    setFormData({ ...formData, [name]: valor });
   };
 
   const handleSubmit = async (e) => {

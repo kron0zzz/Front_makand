@@ -31,11 +31,21 @@ const RoleForm = ({ isOpen, onClose, formData, setFormData, isEditing, cargarRol
 
   if (!isOpen) return null;
 
+  const sanitizeRoleName = (value) => {
+    return value
+      .replace(/[^a-zA-Z0-9\s]/g, '')
+      .replace(/\s{2,}/g, ' ');
+  };
+
   const handleChange = (e) => {
     const { name, type, checked, value } = e.target;
+    let valor = value;
+    if (name === 'role_name') {
+      valor = sanitizeRoleName(value);
+    }
     setFormData(prev => ({ 
       ...prev, 
-      [name]: type === 'checkbox' ? checked : value 
+      [name]: type === 'checkbox' ? checked : valor 
     }));
   };
 
