@@ -205,8 +205,12 @@ const InfoTab = ({ order, onCloseOrder, onAnularOrder }) => {
                         </div>
 
                         <p className="main-text">
-                            {order.customer_name}
+                            {order.customer_name} - {order.legal_representative}
                         </p>
+
+                        <small>
+                            {order.customer_document_type}: {order.customer_document_number}
+                        </small>
 
                         <small>
                             Teléfono
@@ -364,7 +368,7 @@ const InfoTab = ({ order, onCloseOrder, onAnularOrder }) => {
                     <strong>
 
                         $
-                        {totalPedido.toLocaleString()}
+                        {totalPedido.toLocaleString()} COP
 
                     </strong>
 

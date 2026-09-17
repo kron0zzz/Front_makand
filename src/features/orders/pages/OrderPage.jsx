@@ -28,6 +28,8 @@ const OrderPage = ({ onOpenWorkspace }) => {
 
   const {
     orders,
+    actualizarPedido,
+    obtenerPedidoCompleto,
     anularPedido,
 
     page,
@@ -327,6 +329,8 @@ const OrderPage = ({ onOpenWorkspace }) => {
         isOpen={isEditModalOpen}
         onClose={handleCloseEdit}
         orderId={editingOrderId}
+        actualizarPedido={actualizarPedido}
+        obtenerPedidoCompleto={obtenerPedidoCompleto}
       />
 
        <Pagination

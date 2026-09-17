@@ -8,6 +8,15 @@ const MachineryTab = ({ order, onRegisterReturn, onDeleteReturn }) => {
 
   const details = order?.details;
 
+   const totalPedido =
+        order.details?.reduce(
+            (acc, item) =>
+                acc +
+                Number(item.rental_unit_price) *
+                Number(item.quantity_to_dispatch),
+            0
+        ) || 0;
+
   const groupedDetails = useMemo(() => {
     if (!details?.length) return [];
 
@@ -82,6 +91,7 @@ const MachineryTab = ({ order, onRegisterReturn, onDeleteReturn }) => {
     <div className="machinery-tab">
 
       <h2>Equipos alquilados</h2>
+      <h3>Total diario: {totalPedido.toLocaleString()} COP</h3>
 
       <div className="machinery-list">
 

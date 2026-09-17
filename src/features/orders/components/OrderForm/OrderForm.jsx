@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { X, Truck } from "lucide-react";
 
-import { useOrders } from "../../hooks/useOrders";
-
 import "./OrderForm.css";
 import { useAlertModal } from "../../../../shared/alertModal";
 
@@ -10,14 +8,11 @@ const OrderForm = ({
   isOpen,
   onClose,
   orderId,
-  initialOrder
+  initialOrder,
+  actualizarPedido,
+  obtenerPedidoCompleto
 }) => {
   const { showAlert } = useAlertModal();
-
-  const {
-    actualizarPedido,
-    obtenerPedidoCompleto
-  } = useOrders();
 
   const [projects, setProjects] = useState([]);
   const [customers, setCustomers] = useState([]);

@@ -53,7 +53,11 @@ export const RolePage = () => {
   return (
     <div className="page-container">
       <div className="header-container">
-        <h1>Gestión de Roles</h1>
+
+        <div className="header-text">
+          <h1>Roles</h1>
+          <p>Gestión de roles - Makand</p>
+        </div>
         {hasPermission('crear_roles') && (
           <button className="btn-nuevo" onClick={handleOpenCreate} title="Nuevo Rol">
             <Plus size={20} /> Nuevo Rol
