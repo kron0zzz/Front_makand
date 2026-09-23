@@ -23,7 +23,7 @@ const menuItems = [
     submenu: [
       { name: "Proveedores", icon: Building, key: "proveedores" },
       { name: "Facturas de Compra", icon: FileText, key: "facturas_compra" },
-      { name: "SubAlquileres", icon: FileText, key: "subalquileres" },
+      /*{ name: "SubAlquileres", icon: FileText, key: "subalquileres" },*/
     ]
   },
   {
@@ -55,7 +55,7 @@ const menuItems = [
     submenu: [
       { name: "Clientes", icon: Users, key: "clientes" },
       { name: "Empleados", icon: Users, key: "empleados" },
-      { name: "Tipos de Cobro", icon: ReceiptText, key: "tipos-cobro" },
+      /*{ name: "Tipos de Cobro", icon: ReceiptText, key: "tipos-cobro" },*/
     ]
   },
 ];
