@@ -50,5 +50,10 @@ export const machineryService = {
       responseType: 'blob',
     });
     return response.data;
+  },
+
+  darDeBajaStock: async (stockId, quantity) => {
+    const { data } = await apiClient.patch(`/stock/${stockId}/kill`, { quantity });
+    return data;
   }
 };

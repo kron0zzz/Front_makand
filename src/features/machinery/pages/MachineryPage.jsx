@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, Eye, Edit, Trash2 } from 'lucide-react';
+import { Plus, Search, Eye, Edit, Trash2, Ban, Skull, X} from 'lucide-react';
 import { useMachinery } from '../hooks/useMachinery';
 import { useAuth } from '../../../shared/context/AuthContext';
 import MachineryForm from '../components/machineryForm/MachineryForm';
 import MachineryDetail from '../components/machineryDetail/MachineryDetail';
 import MachineryStockModal from '../components/machineryStockModal/MachineryStockModal';
+import KillStockModal from '../components/killStockModal/KillStockModal';
 import { useAlertModal } from '../../../shared/alertModal';
 import './MachineryPage.css';
 
@@ -14,11 +15,13 @@ import useDebounce from "../../../shared/hooks/useDebounce";
 
 const MachineryPage = () => {
   const { 
-    machineries, 
-    cargarMaquinarias, 
-    eliminarMaquinaria, 
-    crearMaquinaria, 
+    machineries,
+    cargarMaquinarias,
+    eliminarMaquinaria,
+    crearMaquinaria,
     actualizarMaquinaria,
+    darDeBajaMaquinaria,
+    darDeBajaEquipoMotorizado,
 
     page,
     cambiarPagina,
@@ -41,8 +44,10 @@ const MachineryPage = () => {
   const [mostrarModalForm, setMostrarModalForm] = useState(false);
   const [mostrarModalDetalle, setMostrarModalDetalle] = useState(false);
   const [mostrarModalStock, setMostrarModalStock] = useState(false);
+  const [mostrarModalBaja, setMostrarModalBaja] = useState(false);
   const [machinerySeleccionado, setMachinerySeleccionado] = useState(null);
   const [maquinariaStockSeleccionada, setMaquinariaStockSeleccionada] = useState(null);
+  const [maquinariaBajaSeleccionada, setMaquinariaBajaSeleccionada] = useState(null);
 
 
 
@@ -192,15 +197,27 @@ onClick={() => {
                       </button>
                     )}
                     {hasPermission('Eliminar Maquinaria') && (
-                      <button 
-                        className="action-btn delete" 
-                        title="Eliminar" 
+                      <button
+                        className="action-btn delete"
+                        title="Eliminar"
                         onClick={async () => {
                           await eliminarMaquinaria(machinery.machinery_id);
-                          await cargarMaquinarias(); 
+                          await cargarMaquinarias();
                         }}
                       >
                         <Trash2 size={18} />
+                      </button>
+                    )}
+                    {!machinery.is_motorized && machinery.total_stock > 0 && machinery.stock_details?.[0]?.status_name !== 'No disponible' && hasPermission('Editar Stock') && (
+                      <button
+                        className="action-btn kill"
+                        title="Dar de baja"
+                        onClick={() => {
+                          setMaquinariaBajaSeleccionada(machinery);
+                          setMostrarModalBaja(true);
+                        }}
+                      >
+                        <X size={18} />
                       </button>
                     )}
                   </td>
@@ -253,6 +270,14 @@ onClick={() => {
         loadingStock={loadingStock}
         stockPagination={stockPagination}
         cambiarPaginaStock={cambiarPaginaStock}
+        onDarDeBaja={darDeBajaEquipoMotorizado}
+      />
+
+      <KillStockModal
+        isOpen={mostrarModalBaja}
+        onClose={() => setMostrarModalBaja(false)}
+        machinery={maquinariaBajaSeleccionada}
+        onConfirmar={(cantidad) => darDeBajaMaquinaria(maquinariaBajaSeleccionada, cantidad)}
       />
     </div>
   );

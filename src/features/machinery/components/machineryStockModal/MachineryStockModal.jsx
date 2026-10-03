@@ -1,10 +1,13 @@
-import { X, Download } from 'lucide-react';
+import { X, Download, Ban } from 'lucide-react';
 import { machineryService } from '../../services/machineryService';
 import { useAlertModal } from "../../../../shared/alertModal";
+import { useAuth } from "../../../../shared/context/AuthContext";
 import './MachineryStockModal.css';
 
-const MachineryStockModal = ({ isOpen, onClose, machinery, stockList, loadingStock, stockPagination, cambiarPaginaStock }) => {
+const MachineryStockModal = ({ isOpen, onClose, machinery, stockList, loadingStock, stockPagination, cambiarPaginaStock, onDarDeBaja }) => {
   const { showAlert } = useAlertModal();
+
+  const { hasPermission } = useAuth();
 
   if (!isOpen || !machinery) return null;
 
@@ -62,15 +65,26 @@ const MachineryStockModal = ({ isOpen, onClose, machinery, stockList, loadingSto
                           </span>
                         </td>                        
                         <td>
-                          {stock.serial_number && (
-                            <button
-                              className="action-btn pdf"
-                              title="Generar hoja de vida PDF"
-                              onClick={() => handleGenerarPdf(stock.stock_id)}
-                            >
-                              <Download size={16} />
-                            </button>
-                          )}
+                          <div className="stock-actions">
+                            {stock.serial_number && (
+                              <button
+                                className="action-btn pdf"
+                                title="Generar hoja de vida PDF"
+                                onClick={() => handleGenerarPdf(stock.stock_id)}
+                              >
+                                <Download size={16} />
+                              </button>
+                            )}
+                            {stock.status_name !== 'No disponible' && hasPermission('Editar Stock') && (
+                              <button
+                                className="action-btn kill"
+                                title="Dar de baja"
+                                onClick={() => onDarDeBaja(machinery, stock)}
+                              >
+                                <X size={16} />
+                              </button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}

@@ -172,6 +172,52 @@
     border: 1px solid #fecaca;
 }
 
+.status-no-disponible {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.stock-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    transform: scale(1.05);
+}
+
+.action-btn.pdf:hover {
+    color: #ff6b35;
+    border-color: #ff6b35;
+    background-color: #fff7ed;
+}
+
+.action-btn.kill {
+    color: #ef4444;
+}
+
+.action-btn.kill:hover {
+    color: #dc2626;
+    border-color: #ef4444;
+    background-color: #fef2f2;
+}
+
 .stock-pagination {
     display: flex;
     justify-content: space-between;

@@ -168,6 +168,15 @@
     border-color: #ef4444;
 }
 
+.action-btn.kill {
+    color: #ef4444;
+}
+
+.action-btn.kill:hover {
+    background-color: #fef2f2;
+    border-color: #ef4444;
+}
+
 .empty-row {
     color: #9ca3af;
     font-style: italic;
@@ -387,3 +396,4 @@ input:checked + .slider:before {
 .status-disponible { background-color: #d1fae5; color: #065f46; }
 .status-mantenimiento { background-color: #fef3c7; color: #92400e; }
 .status-alquilado { background-color: #e0f2fe; color: #0369a1; }
+.status-no-disponible { background-color: #fee2e2; color: #991b1b; }

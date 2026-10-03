@@ -91,6 +91,69 @@ export const useMachinery = () => {
     }
   };
 
+  // Dar de baja de maquinaria NO motorizada: se descuentan unidades del stock.
+  const darDeBajaMaquinaria = async (machinery, cantidad) => {
+    const stock = (machinery?.stock_details || [])[0];
+
+    if (!stock) {
+      await showError("No se encontró el registro de stock de esta maquinaria.");
+      return false;
+    }
+
+    const disponibles = Number(machinery.total_stock ?? stock.stock_quantity ?? 0);
+    const valor = parseInt(cantidad, 10);
+
+    if (!Number.isInteger(valor) || valor <= 0) {
+      await showError("La cantidad a dar de baja debe ser un número entero mayor a cero.");
+      return false;
+    }
+
+    if (valor > disponibles) {
+      await showError(`La cantidad a dar de baja (${valor}) no puede ser superior a la cantidad disponible (${disponibles}).`);
+      return false;
+    }
+
+    const confirmado = await showConfirm(
+      `¿Estás seguro de que deseas dar de baja ${valor} unidad(es) de "${machinery.machinery_name}"? Esta acción no se puede deshacer.`
+    );
+    if (!confirmado) return false;
+
+    try {
+      await machineryService.darDeBajaStock(stock.stock_id, valor);
+      await cargarMaquinarias();
+      await showSuccess(`${valor} unidad(es) de "${machinery.machinery_name}" se dieron de baja correctamente.`);
+      return true;
+    } catch (err) {
+      console.error("Error al dar de baja la maquinaria:", err);
+      await showError(err.response?.data?.error || "No se pudo dar de baja la maquinaria.");
+      return false;
+    }
+  };
+
+  // Dar de baja de maquinaria motorizada: cada registro es una unidad física (cantidad 1).
+  const darDeBajaEquipoMotorizado = async (machinery, stock) => {
+    const equipo = stock.serial_number || `#${stock.stock_id}`;
+
+    const confirmado = await showConfirm(
+      `¿Estás seguro de que deseas dar de baja el equipo ${equipo} de "${machinery?.machinery_name}"? Esta acción no se puede deshacer.`
+    );
+    if (!confirmado) return false;
+
+    try {
+      await machineryService.darDeBajaStock(stock.stock_id, 1);
+      await cargarMaquinarias();
+      if (machinery?.machinery_id) {
+        await cargarStockPorMaquinaria(machinery.machinery_id, machinery.machinery_name);
+      }
+      await showSuccess(`El equipo ${equipo} se dio de baja correctamente.`);
+      return true;
+    } catch (err) {
+      console.error("Error al dar de baja el equipo motorizado:", err);
+      await showError(err.response?.data?.error || "No se pudo dar de baja el equipo motorizado.");
+      return false;
+    }
+  };
+
   const crearMaquinaria = async (maquinariaData, stockData) => {
     try {
       await machineryService.crearCompleta(maquinariaData, stockData);
@@ -127,6 +190,8 @@ export const useMachinery = () => {
     eliminarMaquinaria, 
     crearMaquinaria, 
     actualizarMaquinaria, 
+    darDeBajaMaquinaria,
+    darDeBajaEquipoMotorizado,
 
     page,
     cambiarPagina,
