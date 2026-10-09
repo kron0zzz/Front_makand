@@ -158,7 +158,7 @@ onClick={() => {
                   <td>#{machinery.machinery_id}</td>
                   <td><strong>{machinery.machinery_name}</strong></td>
                   <td>{machinery.category_name}</td>
-                  <td>{machinery.total_stock} unds</td>
+                  <td>{machinery.available_stock} unds</td>
                   <td>
                     {machinery.is_motorized ? (
                       <button
