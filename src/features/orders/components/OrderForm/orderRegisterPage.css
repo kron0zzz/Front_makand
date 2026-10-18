@@ -105,6 +105,23 @@
     accent-color: #ff6b35;
 }
 
+.register-subrental-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #111827;
+    cursor: pointer;
+}
+
+.register-subrental-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #2563eb;
+}
+
 .register-transport-price {
     display: flex;
     flex-direction: column;

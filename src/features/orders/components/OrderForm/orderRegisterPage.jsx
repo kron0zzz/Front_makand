@@ -19,6 +19,7 @@ const OrderRegisterPage = ({ onBack }) => {
   const [projects, setProjects] = useState([]);
   const [machines, setMachines] = useState([]);
   const [customers, setCustomers] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
   const [allStocks, setAllStocks] = useState([]);
 
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
@@ -41,6 +42,14 @@ const OrderRegisterPage = ({ onBack }) => {
   const [selectedMachine, setSelectedMachine] = useState(null);
   const [inputQuantity, setInputQuantity] = useState(1);
   const [priceDisplay, setPriceDisplay] = useState("");
+
+  // Estado del control izquierdo para subalquiler (maquinaria externa)
+  const [isSubrental, setIsSubrental] = useState(false);
+  const [subName, setSubName] = useState("");
+  const [subPriceDisplay, setSubPriceDisplay] = useState("");
+  const [subQuantity, setSubQuantity] = useState(1);
+  const [subWeight, setSubWeight] = useState("");
+  const [subSupplier, setSubSupplier] = useState("");
 
   const cargarProyectos = useCallback(async () => {
     try {
@@ -82,6 +91,19 @@ const OrderRegisterPage = ({ onBack }) => {
     }
   }, []);
 
+  const cargarProveedores = useCallback(async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("https://api-makand.onrender.com/api/suppliers", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      setSuppliers(Array.isArray(data) ? data : (data.data || []));
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
   const cargarStocks = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
@@ -102,12 +124,13 @@ const OrderRegisterPage = ({ onBack }) => {
         cargarProyectos(),
         cargarMaquinas(),
         cargarClientes(),
+        cargarProveedores(),
         cargarStocks(),
       ]);
     };
 
     inicializarFormulario();
-  }, [cargarProyectos, cargarMaquinas, cargarClientes, cargarStocks]);
+  }, [cargarProyectos, cargarMaquinas, cargarClientes, cargarProveedores, cargarStocks]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -121,6 +144,15 @@ const OrderRegisterPage = ({ onBack }) => {
       return;
     }
     setPriceDisplay(Number(raw).toLocaleString("es-CO"));
+  };
+
+  const handleSubPriceChange = (e) => {
+    const raw = e.target.value.replace(/\D/g, "");
+    if (raw === "") {
+      setSubPriceDisplay("");
+      return;
+    }
+    setSubPriceDisplay(Number(raw).toLocaleString("es-CO"));
   };
 
   const handleDeliveryTransportPriceChange = (e) => {
@@ -146,9 +178,9 @@ const OrderRegisterPage = ({ onBack }) => {
       .toLowerCase()
       .includes((machineSearch || "").toLowerCase());
     const alreadySelected = details.some(
-      (d) => String(d.machinery_id) === String(machine.machinery_id)
+      (d) => String(d.machinery_id) === String(machine.machinery_id) && !isSubrental
     );
-    return matchesSearch && !alreadySelected;
+    return matchesSearch && (!alreadySelected || isSubrental);
   });
 
   const openStockModal = (index, machine) => {
@@ -175,6 +207,59 @@ const OrderRegisterPage = ({ onBack }) => {
   };
 
   const agregarMaquinaria = () => {
+    if (isSubrental) {
+      if (!subName || !subName.trim()) {
+        showAlert("Ingrese el nombre de la maquinaria.");
+        return;
+      }
+
+      const rawPrice = subPriceDisplay === "" ? 0 : Number(subPriceDisplay.replace(/\./g, ""));
+      if (!rawPrice || Number(rawPrice) <= 0) {
+        showAlert("Ingrese un precio unitario válido.");
+        return;
+      }
+
+      const cantidad = Number(subQuantity) || 0;
+      if (cantidad <= 0) {
+        showAlert("Ingrese una cantidad válida.");
+        return;
+      }
+
+      if (!subWeight || !subWeight.trim()) {
+        showAlert("Ingrese el peso en kg.");
+        return;
+      }
+
+      if (!subSupplier || !subSupplier.trim()) {
+        showAlert("Ingrese el proveedor.");
+        return;
+      }
+
+      const selectedSupplier = suppliers.find(s => String(s.supplier_id) === String(subSupplier));
+      const nuevoDetalle = {
+        machinery_id: null,
+        machineSearch: subName.trim(),
+        isMotorized: false,
+        rental_unit_price: rawPrice,
+        quantity_to_dispatch: cantidad,
+        selectedStocks: [],
+        stock_id: null,
+        is_subrental: true,
+        supplier_name: selectedSupplier ? selectedSupplier.supplier_name : String(subSupplier),
+        machinery_name_snapshot: subName.trim(),
+        subtotal_weight_kg: subWeight,
+      };
+
+      setDetails((prev) => [...prev, nuevoDetalle]);
+      setIsSubrental(false);
+      setSubName("");
+      setSubPriceDisplay("");
+      setSubQuantity(1);
+      setSubWeight("");
+      setSubSupplier("");
+      return;
+    }
+
     if (!selectedMachine) {
       showAlert("Seleccione una máquina válida.");
       return;
@@ -196,6 +281,10 @@ const OrderRegisterPage = ({ onBack }) => {
       quantity_to_dispatch: 0,
       selectedStocks: [],
       stock_id: null,
+      is_subrental: false,
+      supplier_name: "MAKAND",
+      machinery_name_snapshot: selectedMachine.machinery_name,
+      subtotal_weight_kg: "",
     };
 
     if (!isMotorized) {
@@ -270,6 +359,22 @@ const OrderRegisterPage = ({ onBack }) => {
     }
 
     for (const item of details) {
+      if (item.is_subrental) {
+        if (!item.machinery_name_snapshot || !item.supplier_name) {
+          await showAlert("Complete los datos de subalquiler.");
+          return;
+        }
+        if (!item.rental_unit_price || Number(item.rental_unit_price) <= 0) {
+          await showAlert("Ingrese un precio válido.");
+          return;
+        }
+        const cantidad = Number(item.quantity_to_dispatch) || 0;
+        if (cantidad <= 0) {
+          await showAlert("Ingrese una cantidad válida.");
+          return;
+        }
+        continue;
+      }
       const maquina = machines.find(
         (m) => Number(m.machinery_id) === Number(item.machinery_id)
       );
@@ -329,6 +434,18 @@ const OrderRegisterPage = ({ onBack }) => {
       const detailsPayload = [];
 
       details.forEach((item) => {
+        if (item.is_subrental) {
+          detailsPayload.push({
+            is_subrental: true,
+            machinery_name_snapshot: item.machinery_name_snapshot,
+            rental_unit_price: Number(item.rental_unit_price),
+            quantity_to_dispatch: Number(item.quantity_to_dispatch),
+            subtotal_weight_kg: Number(item.subtotal_weight_kg) || 0,
+            supplier_name: item.supplier_name,
+            machinery_rental_status: true,
+          });
+          return;
+        }
         const maquina = machines.find(
           (m) => Number(m.machinery_id) === Number(item.machinery_id)
         );
@@ -341,6 +458,8 @@ const OrderRegisterPage = ({ onBack }) => {
               quantity_to_dispatch: 1,
               rental_unit_price: Number(item.rental_unit_price),
               machinery_rental_status: true,
+              is_subrental: false,
+              supplier_name: "MAKAND",
             });
           });
         } else {
@@ -349,6 +468,8 @@ const OrderRegisterPage = ({ onBack }) => {
             quantity_to_dispatch: Number(item.quantity_to_dispatch),
             rental_unit_price: Number(item.rental_unit_price),
             machinery_rental_status: true,
+            is_subrental: false,
+            supplier_name: "MAKAND",
           });
         }
       });
@@ -547,7 +668,18 @@ const OrderRegisterPage = ({ onBack }) => {
             <div className="register-machinery-controls">
               <h3>Maquinaria</h3>
 
-              <div className="register-machine-search">
+              <label className="form-label register-subrental-label">
+                <input
+                  type="checkbox"
+                  checked={isSubrental}
+                  onChange={(e) => setIsSubrental(e.target.checked)}
+                />
+                ¿Es subalquilada?
+              </label>
+
+              {!isSubrental ? (
+                <>
+                  <div className="register-machine-search">
                 <label className="form-label">Seleccionar maquinaria</label>
                 <input
                   type="text"
@@ -640,16 +772,93 @@ const OrderRegisterPage = ({ onBack }) => {
                     disabled={!selectedMachine}
                   />
                 </div>
-              </div>
+                </div>
+                </>
+              ) : (
+                <>
+                  <div className="register-machine-search">
+                    <label className="form-label">Nombre de la maquinaria</label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      placeholder="Ej: Generador 5 kW"
+                      value={subName}
+                      onChange={(e) => setSubName(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="register-machine-row-inputs">
+                    <div className="register-machine-price">
+                      <label className="form-label">Precio unitario (COP)</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        inputMode="numeric"
+                        placeholder="Ej: 50.000"
+                        value={subPriceDisplay}
+                        onChange={handleSubPriceChange}
+                      />
+                    </div>
+                    <div className="register-machine-quantity">
+                      <label className="form-label">Cantidad</label>
+                      <input
+                        type="number"
+                        min="1"
+                        className="form-input"
+                        value={subQuantity}
+                        onChange={(e) => setSubQuantity(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="register-machine-row-inputs">
+                    <div className="register-machine-weight">
+                      <label className="form-label">Peso (kg)</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        className="form-input"
+                        placeholder="Ej: 120.50"
+                        value={subWeight}
+                        onChange={(e) => setSubWeight(e.target.value)}
+                      />
+                    </div>
+                    <div className="register-machine-supplier">
+                      <label className="form-label">Proveedor</label>
+                      <select
+                        className="form-input"
+                        value={subSupplier}
+                        onChange={(e) => setSubSupplier(e.target.value)}
+                      >
+                        <option value="">Seleccione proveedor</option>
+                        {suppliers.map((s) => (
+                          <option key={s.supplier_id} value={s.supplier_id}>
+                            {s.supplier_name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </>
+              )}
 
               <button
                 type="button"
                 className="btn-submit register-add-btn"
                 onClick={agregarMaquinaria}
-                disabled={!selectedMachine}
+                disabled={
+                  isSubrental
+                    ? !subName ||
+                      !subPriceDisplay ||
+                      Number(subPriceDisplay.replace(/\./g, "")) <= 0 ||
+                      !subQuantity ||
+                      !subWeight ||
+                      !subSupplier
+                    : !selectedMachine
+                }
               >
                 <Plus size={18} />
-                Agregar maquinaria
+                {isSubrental ? "Agregar subalquiler" : "Agregar maquinaria"}
               </button>
             </div>
           </div>
@@ -672,7 +881,10 @@ const OrderRegisterPage = ({ onBack }) => {
                   const isMotorized = Boolean(detail.isMotorized);
 
                   return (
-                    <div key={index} className="register-machine-row">
+                    <div key={index} className="register-machine-row" style={{ position: "relative" }}>
+                      {detail.is_subrental && (
+                        <span style={{ position: "absolute", top: 2, left: 2, color: "#2563eb", fontSize: 14, lineHeight: 1 }}>⚑</span>
+                      )}
                       <div className="register-machine-name" title={detail.machineSearch}>
                         <span>{detail.machineSearch || "Máquina"}</span>
                       </div>
@@ -682,6 +894,7 @@ const OrderRegisterPage = ({ onBack }) => {
                           <small className="register-hint">
                             {detail.selectedStocks.length} equipo(s)
                           </small>
+
                           <button
                             type="button"
                             className="register-stock-btn"
@@ -726,13 +939,18 @@ const OrderRegisterPage = ({ onBack }) => {
                       )}
 
                       <input
-                        type="number"
-                        step="0.01"
+                        type="text"
+                        inputMode="numeric"
                         className="form-input register-machine-price"
-                        value={detail.rental_unit_price || ""}
-                        onChange={(e) =>
-                          actualizarDetalle(index, "rental_unit_price", e.target.value)
-                        }
+                        value={detail.rental_unit_price ? Number(detail.rental_unit_price).toLocaleString("es-CO") : ""}
+                        onChange={(e) => {
+                          const raw = e.target.value.replace(/\D/g, "");
+                          if (raw === "") {
+                            actualizarDetalle(index, "rental_unit_price", "");
+                            return;
+                          }
+                          actualizarDetalle(index, "rental_unit_price", Number(raw));
+                        }}
                       />
 
                       <button
