@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 export const apiClient = axios.create({
-  baseURL: 'https://api-makand.onrender.com/api', 
+  baseURL: 'http://localhost:3000/api',
+  // baseURL: 'http://localhost:3000/api', 
   headers: {
     'Content-Type': 'application/json',
   },

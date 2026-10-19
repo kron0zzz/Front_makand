@@ -34,7 +34,7 @@ const StockSelectionModal = ({
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `https://api-makand.onrender.com/api/stock/table?search=${encodeURIComponent(machinery.machinery_name || "")}`,
+          `http://localhost:3000/api/stock/table?search=${encodeURIComponent(machinery.machinery_name || "")}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

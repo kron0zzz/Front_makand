@@ -18,11 +18,22 @@ import ReturnCard from "./ReturnCard";
 import "./MachineCard.css";
 
 const MachineCard = ({ detail, order, onRegisterReturn, onDeleteReturn, isBlocked }) => {
+    console.log("datos de la tarjeta:", detail);
+
 
     const [open,setOpen]=useState(false);
     const [showReturnForm, setShowReturnForm] = useState(false);
 
     const isMotorized = detail._isMotorized;
+
+    const isSubrented = Boolean(
+        detail.is_subrental === true ||
+        detail.is_subrental === "true" ||
+        detail.is_subrental === 1 ||
+        detail.is_subrental === "1" ||
+    );
+
+    const supplierName = detail.supplier_name;
 
     const cantidadDevuelta =
 
@@ -99,7 +110,7 @@ const MachineCard = ({ detail, order, onRegisterReturn, onDeleteReturn, isBlocke
 
         <div className="machine-card">
 
-            <div className="machine-header">
+            <div className="machine-header" style={{ alignItems: "flex-start" }}>
 
                 <div>
 
@@ -107,7 +118,32 @@ const MachineCard = ({ detail, order, onRegisterReturn, onDeleteReturn, isBlocke
 
                         {detail.machinery_name_snapshot}
 
+                        {detail.is_subrental && (
+                            <span
+                                style={{
+                                    marginLeft: "8px",
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    padding: "2px 8px",
+                                    borderRadius: "4px",
+                                    backgroundColor: "#fef3c7",
+                                    color: "#92400e",
+                                    fontSize: "11px",
+                                    fontWeight: 600,
+                                    verticalAlign: "middle"
+                                }}
+                            >
+                                Subalquilado
+                            </span>
+                        )}
+
                     </h3>
+
+                    {detail.is_subrental && detail.supplier_name && (
+                        <div style={{ fontSize: "12px", color: "#6b7280", marginTop: "2px" }}>
+                            Proveedor: {detail.supplier_name}
+                        </div>
+                    )}
 
                 </div>
 

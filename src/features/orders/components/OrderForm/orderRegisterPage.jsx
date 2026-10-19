@@ -54,7 +54,7 @@ const OrderRegisterPage = ({ onBack }) => {
   const cargarProyectos = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("https://api-makand.onrender.com/api/projects", {
+      const response = await fetch("http://localhost:3000/api/projects", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
@@ -68,7 +68,7 @@ const OrderRegisterPage = ({ onBack }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        "https://api-makand.onrender.com/api/machines/table?page=1&limit=1000&search=",
+        "http://localhost:3000/api/machines/table?page=1&limit=1000&search=",
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const data = await response.json();
@@ -81,7 +81,7 @@ const OrderRegisterPage = ({ onBack }) => {
   const cargarClientes = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("https://api-makand.onrender.com/api/customers", {
+      const response = await fetch("http://localhost:3000/api/customers", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
@@ -94,7 +94,7 @@ const OrderRegisterPage = ({ onBack }) => {
   const cargarProveedores = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("https://api-makand.onrender.com/api/suppliers", {
+      const response = await fetch("http://localhost:3000/api/suppliers", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
@@ -108,7 +108,7 @@ const OrderRegisterPage = ({ onBack }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        "https://api-makand.onrender.com/api/stock/table?page=1&limit=1000&search=",
+        "http://localhost:3000/api/stock/table?page=1&limit=1000&search=",
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const data = await response.json();
@@ -668,7 +668,7 @@ const OrderRegisterPage = ({ onBack }) => {
             <div className="register-machinery-controls">
               <h3>Maquinaria</h3>
 
-              <label className="form-label register-subrental-label">
+              <label className="form-label register-transport-label">
                 <input
                   type="checkbox"
                   checked={isSubrental}
@@ -882,12 +882,35 @@ const OrderRegisterPage = ({ onBack }) => {
 
                   return (
                     <div key={index} className="register-machine-row" style={{ position: "relative" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "4px", flex: 3, minWidth: 0 }}>
                       {detail.is_subrental && (
-                        <span style={{ position: "absolute", top: 2, left: 2, color: "#2563eb", fontSize: 14, lineHeight: 1 }}>⚑</span>
+                        <span
+                          style={{
+                            alignSelf: "flex-start",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            padding: "2px 6px",
+                            borderRadius: "4px",
+                            backgroundColor: "#fef3c7",
+                            color: "#92400e",
+                            fontSize: "10px",
+                            fontWeight: 600,
+                            lineHeight: 1,
+                            marginBottom: "2px"
+                          }}
+                        >
+                          Subalquilado
+                        </span>
                       )}
-                      <div className="register-machine-name" title={detail.machineSearch}>
+                      <div className="register-machine-name" title={detail.machineSearch} style={{ flex: "none", whiteSpace: "normal" }}>
                         <span>{detail.machineSearch || "Máquina"}</span>
                       </div>
+                      {detail.is_subrental && detail.supplier_name && (
+                        <div style={{ fontSize: "11px", color: "#6b7280" }}>
+                          {detail.supplier_name}
+                        </div>
+                      )}
+                    </div>
 
                       {isMotorized ? (
                         <div className="register-machine-quantity-cell">

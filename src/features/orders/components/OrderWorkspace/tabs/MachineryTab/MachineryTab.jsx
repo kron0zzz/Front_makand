@@ -24,6 +24,7 @@ const MachineryTab = ({ order, onRegisterReturn, onDeleteReturn }) => {
 
     details.forEach(detail => {
       const isMotorized = Boolean(detail.is_motorized);
+      
 
       if (isMotorized) {
         const key = `${detail.machinery_id || detail.machinery_name_snapshot}`;
@@ -39,6 +40,8 @@ const MachineryTab = ({ order, onRegisterReturn, onDeleteReturn }) => {
             order_id: detail.order_id,
             machinery_id: detail.machinery_id,
             machinery_name_snapshot: detail.machinery_name_snapshot,
+            is_subrental: detail.is_subrental,
+            supplier_name: detail.supplier_name,
             is_motorized: true,
             quantity_to_dispatch: 0,
             rental_unit_price: detail.rental_unit_price,

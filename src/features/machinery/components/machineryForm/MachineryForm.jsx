@@ -17,7 +17,7 @@ const MachineryForm = ({ isOpen, onClose, formData, setFormData, isEditing, crea
         setErrorForm("");
         const token = localStorage.getItem("token");
         const [resCategories] = await Promise.all([
-          fetch("https://api-makand.onrender.com/api/machine-categories", {
+          fetch("http://localhost:3000/api/machine-categories", {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
