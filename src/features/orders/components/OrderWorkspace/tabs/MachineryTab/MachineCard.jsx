@@ -26,15 +26,6 @@ const MachineCard = ({ detail, order, onRegisterReturn, onDeleteReturn, isBlocke
 
     const isMotorized = detail._isMotorized;
 
-    const isSubrented = Boolean(
-        detail.is_subrental === true ||
-        detail.is_subrental === "true" ||
-        detail.is_subrental === 1 ||
-        detail.is_subrental === "1" ||
-    );
-
-    const supplierName = detail.supplier_name;
-
     const cantidadDevuelta =
 
         detail.returns.reduce(
