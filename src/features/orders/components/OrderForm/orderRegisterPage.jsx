@@ -174,6 +174,8 @@ const OrderRegisterPage = ({ onBack }) => {
   });
 
   const filteredMachines = machines.filter((machine) => {
+    const isInternalSubrental = machine.machinery_name?.toLowerCase().trim() === "maquinaria subalquilada";
+    if (isInternalSubrental) return false;
     const matchesSearch = machine.machinery_name
       .toLowerCase()
       .includes((machineSearch || "").toLowerCase());

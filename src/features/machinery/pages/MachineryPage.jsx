@@ -91,7 +91,7 @@ const MachineryPage = () => {
   }, [busquedaDebounce]);
 
   const machineriesFiltradas = machineries.filter(
-    (machinery) => machinery.machinery_id !== 1012 && machinery.machinery_name !== "Maquinaria subalquilada"
+    (machinery) => machinery.machinery_name?.toLowerCase().trim() !== "maquinaria subalquilada" 
   );
 
   return (

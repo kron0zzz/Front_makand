@@ -43,6 +43,10 @@ const MachineryCategoryPage = () => {
   useEffect(() => {
     cambiarBusqueda(busquedaDebounce);
   }, [busquedaDebounce]);
+
+  const categoriesFiltradas = categories.filter(
+  (cat) => cat.category_name?.toLowerCase().trim() !== "subalquiler"
+  );
  
 
 
@@ -92,8 +96,8 @@ const MachineryCategoryPage = () => {
             </tr>
           </thead>
           <tbody>
-            {categories.length > 0 ? (
-              categories.map((cat) => (
+            {categoriesFiltradas.length > 0 ? (
+              categoriesFiltradas.map((cat) => (
                 <tr key={cat.category_id}>
                   <td>#{cat.category_id}</td>
                   <td>{cat.category_name}</td>
