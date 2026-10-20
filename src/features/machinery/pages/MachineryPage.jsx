@@ -90,6 +90,10 @@ const MachineryPage = () => {
     cambiarBusqueda(busquedaDebounce);
   }, [busquedaDebounce]);
 
+  const machineriesFiltradas = machineries.filter(
+    (machinery) => machinery.machinery_id !== 1012 && machinery.machinery_name !== "Maquinaria subalquilada"
+  );
+
   return (
     <div className="page-container">
       <div className="header-container">
@@ -151,9 +155,10 @@ onClick={() => {
               <th>Gestión</th>
             </tr>
           </thead>
+
           <tbody>
-            {machineries.length > 0 ? (
-              machineries.map((machinery) => (
+            {machineriesFiltradas.length > 0 ? (
+              machineriesFiltradas.map((machinery) => (
                 <tr key={machinery.machinery_id}>
                   <td>#{machinery.machinery_id}</td>
                   <td><strong>{machinery.machinery_name}</strong></td>
