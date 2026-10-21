@@ -54,7 +54,7 @@ const OrderRegisterPage = ({ onBack }) => {
   const cargarProyectos = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:3000/api/projects", {
+      const response = await fetch("https://api-makand-umi7.onrender.com/api/projects", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
@@ -68,7 +68,7 @@ const OrderRegisterPage = ({ onBack }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        "http://localhost:3000/api/machines/table?page=1&limit=1000&search=",
+        "https://api-makand-umi7.onrender.com/api/machines/table?page=1&limit=1000&search=",
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const data = await response.json();
@@ -81,7 +81,7 @@ const OrderRegisterPage = ({ onBack }) => {
   const cargarClientes = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:3000/api/customers", {
+      const response = await fetch("https://api-makand-umi7.onrender.com/api/customers", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
@@ -94,7 +94,7 @@ const OrderRegisterPage = ({ onBack }) => {
   const cargarProveedores = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:3000/api/suppliers", {
+      const response = await fetch("https://api-makand-umi7.onrender.com/api/suppliers", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
@@ -108,7 +108,7 @@ const OrderRegisterPage = ({ onBack }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        "http://localhost:3000/api/stock/table?page=1&limit=1000&search=",
+        "https://api-makand-umi7.onrender.com/api/stock/table?page=1&limit=1000&search=",
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const data = await response.json();

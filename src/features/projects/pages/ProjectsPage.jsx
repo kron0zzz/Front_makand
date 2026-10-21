@@ -42,7 +42,7 @@ const ProjectsPage = () => {
     
     if (await showConfirm(mensaje)) {
       try {
-        const response = await fetch(`http://localhost:3000/api/projects/${proyectoId}`, {
+        const response = await fetch(`https://api-makand-umi7.onrender.com/api/projects/${proyectoId}`, {
           method: 'PUT',
           headers: { 
             'Content-Type': 'application/json',
